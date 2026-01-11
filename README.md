@@ -142,13 +142,61 @@ metric = DocumentSemantics({'model_name': 'all-mpnet-base-v2'})
 diversity = metric(corpus)
 ```
 
-### Coming Soon
+### Syntactic Diversity
 
-- **Syntactic**: Dependency and constituency parse tree diversity
-- **Morphological**: Part-of-speech sequence diversity
-- **Phonological**: Rhythmic pattern diversity
+**DependencyParse**: Diversity of dependency parse tree structures
+```python
+from linguistic_diversity import DependencyParse
 
-*(The semantic modules are fully implemented; other modules are being ported and optimized)*
+# Fast: using graph embeddings
+metric = DependencyParse({'similarity_type': 'ldp'})
+diversity = metric(corpus)
+
+# Exact: using tree edit distance (slow)
+metric = DependencyParse({'similarity_type': 'tree_edit_distance'})
+diversity = metric(corpus)
+```
+
+**ConstituencyParse**: Diversity of constituency (phrase structure) parse trees
+```python
+from linguistic_diversity import ConstituencyParse
+
+metric = ConstituencyParse({'similarity_type': 'ldp'})
+diversity = metric(corpus)
+```
+
+*Note: Constituency parsing requires `benepar`. Install with: `pip install linguistic-diversity[syntactic]`*
+
+### Morphological Diversity
+
+**PartOfSpeechSequence**: Diversity of POS tag sequences using biological sequence alignment
+```python
+from linguistic_diversity import PartOfSpeechSequence
+
+metric = PartOfSpeechSequence()
+diversity = metric(corpus)
+```
+
+### Phonological Diversity
+
+**Rhythmic**: Diversity of rhythmic patterns (stress and syllable weight)
+```python
+from linguistic_diversity import Rhythmic
+
+metric = Rhythmic()
+diversity = metric(corpus)
+```
+
+**Phonemic**: Diversity of phoneme sequences (IPA representation)
+```python
+from linguistic_diversity import Phonemic
+
+metric = Phonemic()
+diversity = metric(corpus)
+```
+
+*Note: Phonological metrics require additional dependencies. Install with: `pip install linguistic-diversity[phonological]`*
+*Also requires `espeak-ng` system library (see System Requirements below)*
 
 ## System Requirements
 
