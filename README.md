@@ -207,7 +207,7 @@ diversity = metric(corpus)
 
 ### Optional Dependencies
 
-**Phonological diversity** requires `espeak-ng`:
+**Phonemic diversity** requires `espeak-ng` system library:
 
 **Linux**:
 ```bash
@@ -224,14 +224,7 @@ brew install espeak-ng
 - Install `espeak-ng-X64.msi` or `espeak-ng-X86.msi`
 - Set environment variable: `PHONEMIZER_ESPEAK_LIBRARY=C:\Program Files\eSpeak NG\libespeak-ng.dll`
 
-**Syntactic diversity visualization** (optional):
-```bash
-# Linux
-sudo apt-get install graphviz libgraphviz-dev
-
-# macOS
-brew install graphviz
-```
+**Note**: `espeak-ng` is only required if you plan to use the `Phonemic` diversity metric. All other metrics (including `Rhythmic`, syntactic, semantic, and morphological) work without any system dependencies.
 
 ## Theory: Similarity-Sensitive Hill Numbers
 
