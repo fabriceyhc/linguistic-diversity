@@ -33,6 +33,9 @@ class PhonologicalConfig(MetricConfig):
     pad_to_max_len: bool = False
     split_sentences: bool = False
 
+    # Backend selection (for Phonemic)
+    backend: str = "g2p_en"  # "g2p_en" (pure Python) or "phonemizer" (needs espeak-ng)
+
 
 # Model caching
 _SPACY_MODEL_CACHE: dict[str, Any] = {}
@@ -261,18 +264,26 @@ class Phonemic(TextDiversity):
     """Phonemic diversity based on phoneme sequences.
 
     This metric computes diversity based on phonemic representations of text.
-    It uses the phonemizer library to convert text to IPA phonemes.
+    Supports two backends:
+    1. g2p_en (default) - Pure Python, no system dependencies
+    2. phonemizer - Requires espeak-ng system library
 
     Example:
+        >>> # Using g2p_en (pure Python, default)
         >>> metric = Phonemic()
         >>> corpus = ['hello world', 'goodbye moon']
         >>> diversity = metric(corpus)
 
+        >>> # Using phonemizer (requires espeak-ng)
+        >>> metric = Phonemic({'backend': 'phonemizer'})
+        >>> diversity = metric(corpus)
+
     Note:
-        Requires phonemizer and espeak-ng to be installed.
-        On Linux: sudo apt-get install espeak-ng
-        On macOS: brew install espeak-ng
-        On Windows: See https://github.com/espeak-ng/espeak-ng/releases
+        - g2p_en (default): Pure Python, works out of the box
+        - phonemizer: Requires espeak-ng system library
+          - Linux: sudo apt-get install espeak-ng
+          - macOS: brew install espeak-ng
+          - Windows: See https://github.com/espeak-ng/espeak-ng/releases
     """
 
     def __init__(self, config: dict[str, Any] | None = None) -> None:
@@ -280,12 +291,27 @@ class Phonemic(TextDiversity):
 
         Args:
             config: Optional configuration dict.
+                   Use {'backend': 'phonemizer'} for phonemizer backend.
         """
         super().__init__(config)
         self.aligner = Align.PairwiseAligner()
         self.max_len = 0
 
-        # Import phonemizer (may not be installed)
+        # Get backend preference (default to g2p_en)
+        backend = self.config.backend
+
+        # Try g2p_en first (pure Python, no system deps)
+        if backend == 'g2p_en':
+            try:
+                from g2p_en import G2p
+                self.g2p = G2p()
+                self.backend = 'g2p_en'
+                return
+            except ImportError:
+                if self.config.verbose if hasattr(self.config, 'verbose') else False:
+                    print("g2p_en not found, trying phonemizer...")
+
+        # Fall back to phonemizer
         try:
             from phonemizer import phonemize
             from phonemizer.backend import EspeakBackend
@@ -296,11 +322,12 @@ class Phonemic(TextDiversity):
             self.EspeakBackend = EspeakBackend
             self.Punctuation = Punctuation
             self.Separator = Separator
+            self.backend = 'phonemizer'
         except ImportError:
             raise ImportError(
-                "phonemizer library is required for phonemic diversity. "
-                "Install it with: pip install phonemizer\n"
-                "Also requires espeak-ng to be installed on your system."
+                "No phoneme conversion library found. Install one of:\n"
+                "  1. g2p_en (pure Python, recommended): pip install g2p-en\n"
+                "  2. phonemizer (requires espeak-ng): pip install phonemizer"
             )
 
     @classmethod
@@ -345,20 +372,31 @@ class Phonemic(TextDiversity):
         if self.config.split_sentences:
             corpus = split_sentences(corpus)
 
-        # Convert to phonemes
+        # Convert to phonemes based on backend
         try:
-            phonemes = self.phonemize(
-                corpus,
-                language="en-us",
-                backend="espeak",
-                strip=True,
-                preserve_punctuation=False,
-                with_stress=False,
-            )
+            if self.backend == 'g2p_en':
+                # Use g2p_en (pure Python)
+                phonemes = []
+                for text in corpus:
+                    # g2p returns list of phonemes
+                    phoneme_list = self.g2p(text)
+                    # Join into string with spaces
+                    phoneme_str = " ".join(phoneme_list)
+                    phonemes.append(phoneme_str)
+            else:
+                # Use phonemizer (requires espeak-ng)
+                phonemes = self.phonemize(
+                    corpus,
+                    language="en-us",
+                    backend="espeak",
+                    strip=True,
+                    preserve_punctuation=False,
+                    with_stress=False,
+                )
 
-            # Convert to list if single string
-            if isinstance(phonemes, str):
-                phonemes = [phonemes]
+                # Convert to list if single string
+                if isinstance(phonemes, str):
+                    phonemes = [phonemes]
 
         except Exception as e:
             if self.config.verbose:

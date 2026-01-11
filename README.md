@@ -191,12 +191,16 @@ diversity = metric(corpus)
 ```python
 from linguistic_diversity import Phonemic
 
+# Default: uses g2p_en (pure Python, no system dependencies)
 metric = Phonemic()
+diversity = metric(corpus)
+
+# Optional: use phonemizer backend (requires espeak-ng)
+metric = Phonemic({'backend': 'phonemizer'})
 diversity = metric(corpus)
 ```
 
 *Note: Phonological metrics require additional dependencies. Install with: `pip install linguistic-diversity[phonological]`*
-*Also requires `espeak-ng` system library (see System Requirements below)*
 
 ## System Requirements
 
@@ -205,26 +209,31 @@ diversity = metric(corpus)
 - Python 3.9 or higher
 - For GPU acceleration: CUDA-compatible GPU with appropriate drivers
 
-### Optional Dependencies
+### Optional System Dependencies
 
-**Phonemic diversity** requires `espeak-ng` system library:
+**All metrics work with pure Python packages - no system dependencies required!**
+
+However, if you want to use the `phonemizer` backend for `Phonemic` diversity (instead of the default `g2p_en`), you'll need `espeak-ng`:
 
 **Linux**:
 ```bash
 sudo apt-get install espeak-ng
+pip install phonemizer  # then use Phonemic({'backend': 'phonemizer'})
 ```
 
 **macOS**:
 ```bash
 brew install espeak-ng
+pip install phonemizer  # then use Phonemic({'backend': 'phonemizer'})
 ```
 
 **Windows**:
 - Download from [espeak-ng releases](https://github.com/espeak-ng/espeak-ng/releases)
 - Install `espeak-ng-X64.msi` or `espeak-ng-X86.msi`
 - Set environment variable: `PHONEMIZER_ESPEAK_LIBRARY=C:\Program Files\eSpeak NG\libespeak-ng.dll`
+- `pip install phonemizer` then use `Phonemic({'backend': 'phonemizer'})`
 
-**Note**: `espeak-ng` is only required if you plan to use the `Phonemic` diversity metric. All other metrics (including `Rhythmic`, syntactic, semantic, and morphological) work without any system dependencies.
+**Note**: The default `g2p_en` backend for `Phonemic` is pure Python and works everywhere without system dependencies.
 
 ## Theory: Similarity-Sensitive Hill Numbers
 

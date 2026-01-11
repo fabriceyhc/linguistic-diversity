@@ -74,8 +74,10 @@ syntactic = [
 ]
 
 phonological = [
-    "phonemizer>=3.2.0",
+    "g2p-en>=2.1.0",  # Pure Python, no system dependencies
     "cadences>=0.3.4",
+    # Optional: phonemizer (requires espeak-ng system library)
+    # "phonemizer>=3.2.0",
 ]
 
 all = [

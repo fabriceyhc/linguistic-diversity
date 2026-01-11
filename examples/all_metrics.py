@@ -12,14 +12,18 @@ from linguistic_diversity import (
     PartOfSpeechSequence,
     # Phonological
     Rhythmic,
-    # Phonemic requires espeak-ng, so we'll try to import it
+    # Phonemic (optional - uses g2p_en by default)
 )
 
 try:
     from linguistic_diversity import Phonemic
-
-    PHONEMIC_AVAILABLE = True
-except (ImportError, OSError):
+    # Try to import g2p_en to check if phonemic will work
+    try:
+        from g2p_en import G2p  # noqa: F401
+        PHONEMIC_AVAILABLE = True
+    except ImportError:
+        PHONEMIC_AVAILABLE = False
+except ImportError:
     PHONEMIC_AVAILABLE = False
 
 
@@ -206,13 +210,9 @@ def main() -> None:
             print(f"    {corpus2_name}:   {div2:.2f}")
         except Exception as e:
             print(f"    Skipped: {str(e)[:60]}")
-            if "espeak" in str(e).lower():
-                print("    Install espeak-ng:")
-                print("      Linux: sudo apt-get install espeak-ng")
-                print("      macOS: brew install espeak-ng")
     else:
-        print("    Skipped: phonemizer library not installed")
-        print("    Install with: pip install phonemizer")
+        print("    Skipped: g2p_en library not installed")
+        print("    Install with: pip install linguistic-diversity[phonological]")
 
     # ================================================================
     # SUMMARY TABLE

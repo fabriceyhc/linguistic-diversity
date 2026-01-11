@@ -87,20 +87,39 @@ class TestPhonemic:
     """Tests for Phonemic metric."""
 
     @pytest.mark.slow
-    def test_basic_diversity(self, sample_corpus):
-        """Test basic phonemic diversity."""
+    def test_basic_diversity_g2p(self, sample_corpus):
+        """Test basic phonemic diversity with g2p_en backend."""
+        try:
+            from g2p_en import G2p  # noqa: F401
+        except ImportError:
+            pytest.skip("g2p_en library not installed")
+
+        metric = Phonemic()  # Uses g2p_en by default
+        diversity = metric(sample_corpus)
+
+        # Should return a positive diversity score
+        assert diversity >= 0
+        assert diversity <= 4
+        # Verify backend
+        assert metric.backend == 'g2p_en'
+
+    @pytest.mark.slow
+    def test_basic_diversity_phonemizer(self, sample_corpus):
+        """Test basic phonemic diversity with phonemizer backend."""
         try:
             from phonemizer import phonemize  # noqa: F401
         except ImportError:
             pytest.skip("phonemizer library not installed")
 
         try:
-            metric = Phonemic()
+            metric = Phonemic({'backend': 'phonemizer'})
             diversity = metric(sample_corpus)
 
             # Should return a positive diversity score
             assert diversity >= 0
             assert diversity <= 4
+            # Verify backend
+            assert metric.backend == 'phonemizer'
         except Exception as e:
             # espeak-ng might not be installed
             if "espeak" in str(e).lower():
@@ -111,60 +130,47 @@ class TestPhonemic:
     def test_similar_phonemes(self):
         """Test corpus with similar phonetic content."""
         try:
-            from phonemizer import phonemize  # noqa: F401
+            from g2p_en import G2p  # noqa: F401
         except ImportError:
-            pytest.skip("phonemizer library not installed")
+            pytest.skip("g2p_en library not installed")
 
         corpus = [
             "cat bat rat",
             "hat mat sat",
         ]
 
-        try:
-            metric = Phonemic()
-            diversity = metric(corpus)
+        metric = Phonemic()  # Uses g2p_en by default
+        diversity = metric(corpus)
 
-            # Similar phonemes should give lower diversity
-            assert diversity >= 0
-        except Exception as e:
-            if "espeak" in str(e).lower():
-                pytest.skip("espeak-ng not installed")
-            raise
+        # Similar phonemes should give lower diversity
+        assert diversity >= 0
 
     def test_config_override(self):
         """Test configuration override."""
         try:
-            from phonemizer import phonemize  # noqa: F401
+            from g2p_en import G2p  # noqa: F401
         except ImportError:
-            pytest.skip("phonemizer library not installed")
+            pytest.skip("g2p_en library not installed")
 
         config = {
             "pad_to_max_len": False,
             "split_sentences": False,
+            "backend": "g2p_en",
         }
 
-        try:
-            metric = Phonemic(config)
-            assert metric.config.pad_to_max_len is False
-            assert metric.config.split_sentences is False
-        except Exception as e:
-            if "espeak" in str(e).lower():
-                pytest.skip("espeak-ng not installed")
-            raise
+        metric = Phonemic(config)
+        assert metric.config.pad_to_max_len is False
+        assert metric.config.split_sentences is False
+        assert metric.config.backend == "g2p_en"
 
     @pytest.mark.slow
     def test_empty_corpus(self):
         """Test handling of empty corpus."""
         try:
-            from phonemizer import phonemize  # noqa: F401
+            from g2p_en import G2p  # noqa: F401
         except ImportError:
-            pytest.skip("phonemizer library not installed")
+            pytest.skip("g2p_en library not installed")
 
-        try:
-            metric = Phonemic()
-            diversity = metric([])
-            assert diversity == 0.0
-        except Exception as e:
-            if "espeak" in str(e).lower():
-                pytest.skip("espeak-ng not installed")
-            raise
+        metric = Phonemic()  # Uses g2p_en by default
+        diversity = metric([])
+        assert diversity == 0.0
