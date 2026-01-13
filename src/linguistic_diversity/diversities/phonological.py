@@ -61,7 +61,7 @@ class Rhythmic(TextDiversity):
 
     This metric computes diversity based on the rhythmic patterns of text,
     using sequences of stressed/unstressed and weighted/unweighted syllables.
-    It uses the cadences library for syllable analysis.
+    It uses pyphen for syllabification and pronouncing for stress patterns.
 
     Example:
         >>> metric = Rhythmic()
@@ -73,7 +73,7 @@ class Rhythmic(TextDiversity):
         >>> diversity = metric(corpus)
 
     Note:
-        Requires the cadences library to be installed.
+        Requires pyphen and pronouncing libraries (pure Python, no system dependencies).
     """
 
     def __init__(self, config: dict[str, Any] | None = None) -> None:
@@ -83,19 +83,18 @@ class Rhythmic(TextDiversity):
             config: Optional configuration dict.
         """
         super().__init__(config)
-        self.model = _get_spacy_model()
         self.aligner = Align.PairwiseAligner()
         self.max_len = 0
 
-        # Import cadences (may not be installed)
+        # Import rhythmic analyzer
         try:
-            import cadences as cd  # type: ignore
+            from .rhythmic_analyzer import RhythmicAnalyzer
 
-            self.cadences = cd
-        except ImportError:
+            self.analyzer = RhythmicAnalyzer()
+        except ImportError as e:
             raise ImportError(
-                "cadences library is required for rhythmic diversity. "
-                "Install it with: pip install cadences"
+                f"Rhythmic analysis dependencies not installed: {e}. "
+                "Install with: pip install pyphen pronouncing"
             )
 
     @classmethod
@@ -119,8 +118,16 @@ class Rhythmic(TextDiversity):
         Returns:
             Alignment score.
         """
-        alignments = self.aligner.align(seq1, seq2)
-        return float(alignments.score)
+        # Handle empty sequences
+        if not seq1 or not seq2:
+            return 0.0
+
+        try:
+            alignments = self.aligner.align(seq1, seq2)
+            return float(alignments.score)
+        except (ValueError, IndexError):
+            # Alignment failed (e.g., empty sequences after processing)
+            return 0.0
 
     def extract_features(
         self, corpus: list[str]
@@ -146,21 +153,13 @@ class Rhythmic(TextDiversity):
             for text in corpus
         ]
 
-        # Extract rhythmic patterns
+        # Extract rhythmic patterns using custom analyzer
         rhythms = []
         for text in corpus_no_punct:
             try:
-                prose = self.cadences.Prose(text)
-                df = prose.sylls().reset_index()
-
-                # Check if required columns exist
-                if all(c in df.columns for c in ["syll_stress", "syll_weight"]):
-                    # Get rhythm pattern for first syllable of each word
-                    rhythm = df[df["word_ipa_i"] == 1][
-                        ["syll_stress", "syll_weight"]
-                    ].values
-                    rhythm = ["".join(str(v) for v in row) for row in rhythm]
-                else:
+                # Get rhythm pattern as list of stress+weight codes
+                rhythm = self.analyzer.extract_rhythm_pattern(text)
+                if not rhythm:
                     rhythm = [""]
             except Exception:
                 # If parsing fails, use empty rhythm
@@ -351,8 +350,16 @@ class Phonemic(TextDiversity):
         Returns:
             Alignment score.
         """
-        alignments = self.aligner.align(seq1, seq2)
-        return float(alignments.score)
+        # Handle empty sequences
+        if not seq1 or not seq2:
+            return 0.0
+
+        try:
+            alignments = self.aligner.align(seq1, seq2)
+            return float(alignments.score)
+        except (ValueError, IndexError):
+            # Alignment failed (e.g., empty sequences after processing)
+            return 0.0
 
     def extract_features(
         self, corpus: list[str]

@@ -276,8 +276,11 @@ class TextDiversity(DiversityMetric):
         if q == 1:
             # Shannon diversity case: D = 1 / prod(Zp^p)
             # = exp(-sum(p * log(Zp)))
+            # Use log-space calculation to avoid numerical underflow
             with np.errstate(divide="ignore", invalid="ignore"):
-                D = 1.0 / np.prod(np.power(Zp, p))
+                # Add small epsilon to avoid log(0)
+                log_D = -np.sum(p * np.log(Zp + 1e-10))
+                D = np.exp(log_D)
         elif q == float("inf"):
             # Simpson diversity case: D = 1 / max(Zp)
             D = 1.0 / Zp.max()

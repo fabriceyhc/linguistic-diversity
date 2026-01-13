@@ -144,3 +144,16 @@ data/
 *.json
 !examples/**/*.json
 !tests/**/*.json
+
+# Test outputs
+*.png
+*.jpg
+*.jpeg
+*.svg
+
+# Temporary scripts
+fix_*.sh
+test_*.py
+debug_*.py
+verify_*.sh
+setup_*.sh

@@ -76,8 +76,15 @@ class TestTextDiversity:
         metric_q2 = DummyDiversity({"q": 2})
         div_q2 = metric_q2(corpus)
 
-        # Hill number property: diversity decreases as q increases
-        assert div_q0 >= div_q1 >= div_q2
+        # Hill number property: diversity decreases (or stays same) as q increases
+        # Use approximate comparison for floating point precision
+        assert div_q0 >= div_q1 - 1e-6  # Allow small numerical error
+        assert div_q1 >= div_q2 - 1e-6  # Allow small numerical error
+
+        # All should be close to 3 for uniform distribution
+        assert abs(div_q0 - 3.0) < 0.1
+        assert abs(div_q1 - 3.0) < 0.01
+        assert abs(div_q2 - 3.0) < 0.01
 
     def test_similarity_method(self):
         """Test similarity calculation."""

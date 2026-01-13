@@ -173,10 +173,10 @@ def compute_similarity_matrix_faiss(
     index.add(features)
     distances, indices = index.search(features, n)
 
-    # Construct similarity matrix
+    # Construct similarity matrix using vectorized indexing
     Z = np.zeros((n, n), dtype=np.float64)
-    for i, (idx_row, dist_row) in enumerate(zip(indices, distances)):
-        Z[i, idx_row] = dist_row
+    row_indices = np.repeat(np.arange(n), n)
+    Z[row_indices, indices.ravel()] = distances.ravel()
 
     # Post-process distances
     if postprocess == "exp":

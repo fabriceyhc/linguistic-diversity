@@ -16,8 +16,16 @@ import numpy as np
 import numpy.typing as npt
 import spacy
 import zss  # type: ignore
-from karateclub import FeatherGraph, LDP  # type: ignore
 from sklearn.decomposition import PCA
+
+# Karateclub is optional - only needed for ldp/feather similarity types
+try:
+    from karateclub import FeatherGraph, LDP  # type: ignore
+    KARATECLUB_AVAILABLE = True
+except ImportError:
+    KARATECLUB_AVAILABLE = False
+    FeatherGraph = None  # type: ignore
+    LDP = None  # type: ignore
 
 from ..metric import MetricConfig, TextDiversity
 from ..utils import (
@@ -215,10 +223,22 @@ class DependencyParse(TextDiversity):
 
         # Compute graph embeddings
         if self.config.similarity_type == "ldp":
+            if not KARATECLUB_AVAILABLE:
+                raise ImportError(
+                    "karateclub is required for 'ldp' similarity. "
+                    "Install it with: pip install karateclub\n"
+                    "Note: karateclub has older dependencies. Use 'tree_edit_distance' instead."
+                )
             model = LDP(bins=64)
             model.fit(graphs_int)
             embeddings = model.get_embedding().astype(np.float32)
         elif self.config.similarity_type == "feather":
+            if not KARATECLUB_AVAILABLE:
+                raise ImportError(
+                    "karateclub is required for 'feather' similarity. "
+                    "Install it with: pip install karateclub\n"
+                    "Note: karateclub has older dependencies. Use 'tree_edit_distance' instead."
+                )
             model = FeatherGraph(theta_max=100)
             model.fit(graphs_int)
             embeddings = model.get_embedding().astype(np.float32)
@@ -255,6 +275,14 @@ class DependencyParse(TextDiversity):
         """
         # For edit distance methods, compute pairwise distances
         if "distance" in self.config.similarity_type:
+            # Warn about computational complexity for large corpora
+            if self.config.similarity_type == "graph_edit_distance" and len(features) > 10:
+                raise ValueError(
+                    f"graph_edit_distance has O(n!) complexity and is impractical for "
+                    f"{len(features)} documents (max recommended: 10). "
+                    f"Use 'ldp', 'feather', or 'tree_edit_distance' instead."
+                )
+
             if self.config.similarity_type == "tree_edit_distance":
                 dist_fn = _tree_edit_distance
             elif self.config.similarity_type == "graph_edit_distance":
@@ -426,10 +454,22 @@ class ConstituencyParse(TextDiversity):
         ]
 
         if self.config.similarity_type == "ldp":
+            if not KARATECLUB_AVAILABLE:
+                raise ImportError(
+                    "karateclub is required for 'ldp' similarity. "
+                    "Install it with: pip install karateclub\n"
+                    "Note: karateclub has older dependencies. Use 'tree_edit_distance' instead."
+                )
             model = LDP(bins=64)
             model.fit(graphs_int)
             embeddings = model.get_embedding().astype(np.float32)
         elif self.config.similarity_type == "feather":
+            if not KARATECLUB_AVAILABLE:
+                raise ImportError(
+                    "karateclub is required for 'feather' similarity. "
+                    "Install it with: pip install karateclub\n"
+                    "Note: karateclub has older dependencies. Use 'tree_edit_distance' instead."
+                )
             model = FeatherGraph(theta_max=100)
             model.fit(graphs_int)
             embeddings = model.get_embedding().astype(np.float32)
@@ -460,6 +500,14 @@ class ConstituencyParse(TextDiversity):
             Similarity matrix (n x n).
         """
         if "distance" in self.config.similarity_type:
+            # Warn about computational complexity
+            if self.config.similarity_type == "graph_edit_distance" and len(features) > 10:
+                raise ValueError(
+                    f"graph_edit_distance has O(n!) complexity and is impractical for "
+                    f"{len(features)} documents (max recommended: 10). "
+                    f"Use 'ldp', 'feather', or 'tree_edit_distance' instead."
+                )
+
             if self.config.similarity_type == "tree_edit_distance":
                 dist_fn = _tree_edit_distance
             else:

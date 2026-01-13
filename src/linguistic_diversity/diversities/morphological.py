@@ -101,8 +101,16 @@ class PartOfSpeechSequence(TextDiversity):
         Returns:
             Alignment score.
         """
-        alignments = self.aligner.align(seq1, seq2)
-        return float(alignments.score)
+        # Handle empty sequences
+        if not seq1 or not seq2:
+            return 0.0
+
+        try:
+            alignments = self.aligner.align(seq1, seq2)
+            return float(alignments.score)
+        except (ValueError, IndexError):
+            # Alignment failed (e.g., empty sequences after processing)
+            return 0.0
 
     def extract_features(
         self, corpus: list[str]

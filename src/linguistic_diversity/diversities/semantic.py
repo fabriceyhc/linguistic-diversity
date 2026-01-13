@@ -73,9 +73,15 @@ def _get_cached_model(model_name: str, model_class: type) -> Any:
 @lru_cache(maxsize=None)
 def _get_stopwords() -> set[str]:
     """Get English stopwords (cached)."""
-    from nltk.corpus import stopwords
-
-    return set(stopwords.words("english"))
+    try:
+        from nltk.corpus import stopwords
+        return set(stopwords.words("english"))
+    except LookupError:
+        # Download stopwords if not available
+        import nltk
+        nltk.download('stopwords', quiet=True)
+        from nltk.corpus import stopwords
+        return set(stopwords.words("english"))
 
 
 class TokenSemantics(TextDiversity):
@@ -303,8 +309,14 @@ class DocumentSemantics(TextDiversity):
             "cuda" if self.config.use_cuda and torch.cuda.is_available() else "cpu"
         )
 
-        # Load sentence transformer model
-        self.model = SentenceTransformer(self.config.model_name, device=str(self.device))
+        # Load sentence transformer model with caching
+        cache_key = f"SentenceTransformer:{self.config.model_name}"
+        if cache_key not in _MODEL_CACHE:
+            _MODEL_CACHE[cache_key] = SentenceTransformer(
+                self.config.model_name,
+                device=str(self.device)
+            )
+        self.model = _MODEL_CACHE[cache_key]
 
     @classmethod
     def _config_class(cls) -> type[SemanticConfig]:

@@ -109,7 +109,7 @@ This is a complete modernization of the original [TextDiversity](https://github.
 
 ### Updated Dependencies
 
-- NumPy 2.0+ (modern array APIs)
+- NumPy 1.24+ (compatible with FAISS)
 - Pandas 2.0+ (performance improvements)
 - Latest transformers (4.35+)
 - Python 3.9+ (modern language features)
