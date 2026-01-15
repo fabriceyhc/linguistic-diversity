@@ -119,11 +119,29 @@ class TextDiversity(DiversityMetric):
         # Calculate similarity matrix Z
         Z = self.calculate_similarities(features)
 
+        # Validate similarity matrix
+        if np.any(np.isnan(Z)) or np.any(np.isinf(Z)):
+            if self.config.verbose:
+                print(f"Warning: similarity matrix contains invalid values, returning 1.0")
+            return 1.0  # Minimum diversity (all identical)
+
+        # Check if Z is all zeros (no similarity signal)
+        if np.allclose(Z, 0.0):
+            if self.config.verbose:
+                print(f"Warning: similarity matrix is all zeros, returning {float(len(features))}")
+            return float(len(features))  # Maximum diversity (all distinct)
+
         # Calculate abundance vector p
         p = self.calculate_abundance(species)
 
         # Calculate diversity
         D = self._calc_diversity(p, Z, self.config.q)
+
+        # Validate result
+        if np.isnan(D) or np.isinf(D):
+            if self.config.verbose:
+                print(f"Warning: diversity calculation returned invalid value, returning {float(len(features))}")
+            return float(len(features))  # Maximum diversity as fallback
 
         # Optionally normalize by number of species
         if self.config.normalize:

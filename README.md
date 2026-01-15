@@ -18,7 +18,8 @@ For example, if the **token semantic diversity** of a corpus is 9, this means th
   - **Semantic**: Token and document-level semantic diversity using transformers
   - **Syntactic**: Dependency and constituency parse tree diversity
   - **Morphological**: Part-of-speech sequence diversity
-  - **Phonological**: Rhythmic pattern diversity
+  - **Phonological**: Rhythmic and phonemic pattern diversity
+  - **Universal**: Unified metric combining all dimensions into a single score
 
 ## Quick Start
 
@@ -201,6 +202,38 @@ diversity = metric(corpus)
 ```
 
 *Note: Phonological metrics require additional dependencies. Install with: `pip install linguistic-diversity[phonological]`*
+
+### Universal Diversity
+
+**UniversalLinguisticDiversity**: Unified metric combining all dimensions
+
+```python
+from linguistic_diversity import UniversalLinguisticDiversity
+
+# Default balanced configuration
+metric = UniversalLinguisticDiversity()
+diversity = metric(corpus)
+
+# Get detailed breakdown
+detailed = metric.get_detailed_scores(corpus)
+print(f"Universal: {detailed['universal']:.2f}")
+print(f"By branch: {detailed['branches']}")
+```
+
+The universal metric intelligently combines all 7 metrics across 4 linguistic branches (semantic, syntactic, morphological, phonological) into a single comprehensive diversity score. It uses hierarchical aggregation: geometric mean within branches, weighted combination across branches.
+
+**Preset Configurations**:
+```python
+from linguistic_diversity import get_preset_config
+
+# Semantic-focused (for content analysis)
+config = get_preset_config("semantic_focus")
+metric = UniversalLinguisticDiversity(config)
+
+# Available presets: balanced, semantic_focus, structural_focus, minimal, conservative
+```
+
+See [UNIVERSAL_METRIC_GUIDE.md](UNIVERSAL_METRIC_GUIDE.md) for detailed documentation.
 
 ## System Requirements
 

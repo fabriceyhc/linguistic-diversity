@@ -1,0 +1,49 @@
+================================================================================
+IMPROVED AUTHORSHIP VERIFICATION - DETAILED REPORT
+================================================================================
+
+Baseline ROC-AUC: 0.5789
+
+================================================================================
+IMPROVEMENT RESULTS
+================================================================================
+
+filtered_outliers                       : 0.5831 (+0.7% over baseline)
+learned_weights                         : 0.5826 (+0.7% over baseline)
+weighted_lex_heavy                      : 0.5825 (+0.6% over baseline)
+combined_all                            : 0.5802 (+0.2% over baseline)
+normalized                              : 0.5761 (-0.5% over baseline)
+best_dimension_only                     : 0.5731 (-1.0% over baseline)
+
+================================================================================
+BEST APPROACH: filtered_outliers
+  ROC-AUC: 0.5831
+  Improvement: +0.7% over baseline
+================================================================================
+
+INDIVIDUAL DIMENSION PERFORMANCE:
+--------------------------------------------------------------------------------
+  delta_sem: 0.5731
+  delta_lex: 0.5699
+  delta_syn: 0.5606
+
+LEARNED OPTIMAL WEIGHTS:
+--------------------------------------------------------------------------------
+  Semantic:  -0.0001
+  Syntactic: -0.8574
+  Lexical:   -4.1605
+
+OUTLIER FILTERING IMPACT:
+--------------------------------------------------------------------------------
+  Original pairs: 25405
+  Filtered pairs: 24729
+  Removed: 676 (2.7%)
+
+================================================================================
+CONCLUSION
+================================================================================
+
+The best improvement achieved an ROC-AUC of 0.5831, which is
+0.7% better than the baseline of 0.5789.
+
+✗ LIMITED: Improvements are modest; may need more fundamental changes.

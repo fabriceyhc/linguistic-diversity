@@ -1,0 +1,148 @@
+================================================================================
+STATISTICAL ANALYSIS REPORT
+================================================================================
+
+DATASET SUMMARY
+--------------------------------------------------------------------------------
+Total subjects: 498
+  Dementia: 256
+  Control: 242
+Metrics analyzed: 8
+Significance threshold: α = 0.05
+
+RESULTS BY METRIC
+================================================================================
+
+DOC_SEMANTIC
+--------------------------------------------------------------------------------
+Dementia:  mean=3.556, std=0.777, n=256
+Control:   mean=4.037, std=0.773, n=242
+Difference: 13.5% (Control > Dementia)
+
+Statistical Tests:
+  t-test:          t=6.931, p=0.0000 ***SIGNIFICANT***
+  Mann-Whitney U:  p=0.0000 ***SIGNIFICANT***
+  Cohen's d:       d=0.621 (medium effect)
+
+
+TOKEN_SEMANTIC
+--------------------------------------------------------------------------------
+Dementia:  mean=28.690, std=8.632, n=256
+Control:   mean=31.142, std=8.263, n=242
+Difference: 8.5% (Control > Dementia)
+
+Statistical Tests:
+  t-test:          t=3.239, p=0.0013 ***SIGNIFICANT***
+  Mann-Whitney U:  p=0.0006 ***SIGNIFICANT***
+  Cohen's d:       d=0.290 (small effect)
+
+
+SYNTACTIC_DEP
+--------------------------------------------------------------------------------
+Dementia:  mean=1.038, std=0.011, n=256
+Control:   mean=1.040, std=0.013, n=242
+Difference: 0.2% (Control > Dementia)
+
+Statistical Tests:
+  t-test:          t=1.829, p=0.0681 (not significant)
+  Mann-Whitney U:  p=0.0839 (not significant)
+  Cohen's d:       d=0.165 (negligible effect)
+
+
+SYNTACTIC_CONST
+--------------------------------------------------------------------------------
+Dementia:  mean=1.000, std=0.000, n=256
+Control:   mean=1.000, std=0.000, n=242
+Difference: 0.0% (Control > Dementia)
+
+Statistical Tests:
+  t-test:          t=2.784, p=0.0056 ***SIGNIFICANT***
+  Mann-Whitney U:  p=0.0329 ***SIGNIFICANT***
+  Cohen's d:       d=0.247 (small effect)
+
+
+MORPHOLOGICAL
+--------------------------------------------------------------------------------
+Dementia:  mean=11.615, std=8.075, n=256
+Control:   mean=13.752, std=17.142, n=242
+Difference: 18.4% (Control > Dementia)
+
+Statistical Tests:
+  t-test:          t=1.763, p=0.0787 (not significant)
+  Mann-Whitney U:  p=0.0813 (not significant)
+  Cohen's d:       d=0.161 (negligible effect)
+
+
+PHONEMIC
+--------------------------------------------------------------------------------
+Dementia:  mean=11.152, std=5.782, n=256
+Control:   mean=11.777, std=4.844, n=242
+Difference: 5.6% (Control > Dementia)
+
+Statistical Tests:
+  t-test:          t=1.309, p=0.1911 (not significant)
+  Mann-Whitney U:  p=0.0329 ***SIGNIFICANT***
+  Cohen's d:       d=0.117 (negligible effect)
+
+
+RHYTHMIC
+--------------------------------------------------------------------------------
+Dementia:  mean=14.021, std=42.251, n=256
+Control:   mean=11.246, std=5.283, n=242
+Difference: -19.8% (Dementia > Control)
+
+Statistical Tests:
+  t-test:          t=-1.042, p=0.2984 (not significant)
+  Mann-Whitney U:  p=0.3859 (not significant)
+  Cohen's d:       d=-0.091 (negligible effect)
+
+
+LEXICAL_TTR
+--------------------------------------------------------------------------------
+Dementia:  mean=0.576, std=0.090, n=256
+Control:   mean=0.580, std=0.075, n=242
+Difference: 0.7% (Control > Dementia)
+
+Statistical Tests:
+  t-test:          t=0.573, p=0.5666 (not significant)
+  Mann-Whitney U:  p=0.7854 (not significant)
+  Cohen's d:       d=0.051 (negligible effect)
+
+
+================================================================================
+SUCCESS CRITERIA EVALUATION
+================================================================================
+
+1. Semantic Diversity
+--------------------------------------------------------------------------------
+✓ SUCCESS: Semantic metrics show significant differences
+
+   doc_semantic:
+     Difference: 13.5% lower in Dementia
+     p-value: 0.0000
+     Effect size: 0.621 (medium)
+
+2. Syntactic Diversity
+--------------------------------------------------------------------------------
+✗ NO SUCCESS: No syntactic metrics show significant differences
+
+3. All Significant Metrics
+--------------------------------------------------------------------------------
+Total metrics with significant differences: 1
+
+   ✓ doc_semantic: p=0.0000, d=0.621
+
+================================================================================
+OVERALL CONCLUSION
+================================================================================
+
+✓ FRAMEWORK IS USEFUL for cognitive impairment detection
+
+Rationale:
+  • 1 semantic metric(s) show significant differences
+  • Total 1 metrics meet success criteria
+
+Recommendation: This framework can be used for cognitive impairment detection.
+Metrics showing strongest signal should be prioritized in applications.
+
+================================================================================

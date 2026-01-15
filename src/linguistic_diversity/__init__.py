@@ -30,6 +30,9 @@ from .diversities import (
     # Phonological
     Rhythmic,
     Phonemic,
+    # Universal
+    UniversalLinguisticDiversity,
+    get_preset_config,
 )
 
 __all__ = [
@@ -51,4 +54,7 @@ __all__ = [
     # Phonological metrics
     "Rhythmic",
     "Phonemic",
+    # Universal metric
+    "UniversalLinguisticDiversity",
+    "get_preset_config",
 ]

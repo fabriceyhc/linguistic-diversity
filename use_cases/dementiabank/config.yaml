@@ -1,0 +1,74 @@
+# DementiaBank Evaluation Configuration
+
+dataset:
+  name: "MearaHe/dementiabank"
+  task_filter: "Cookie Theft"  # Adjust if dataset uses different naming
+  n_samples_per_class: null  # null = use all available data
+  min_sentences: 2  # Minimum sentences required for variance calculation
+  min_words: 10  # Minimum words per transcript
+
+preprocessing:
+  remove_brackets: true  # Remove [unintelligible], [laughter], etc.
+  remove_timestamps: true  # Remove 00:00 style timestamps
+  remove_speaker_labels: true  # Remove "INV:", "PAR:", etc.
+  lowercase: false  # Keep original case for better parsing
+
+metrics:
+  semantic_document:
+    enabled: true
+    model_name: "all-MiniLM-L6-v2"
+    use_cuda: true
+    verbose: false
+
+  semantic_token:
+    enabled: true
+    model_name: "bert-base-uncased"
+    use_cuda: true
+    remove_stopwords: true
+    verbose: false
+
+  syntactic_dependency:
+    enabled: true
+    similarity_type: "ldp"  # or "feather" (requires karateclub)
+    verbose: false
+
+  syntactic_constituency:
+    enabled: true
+    similarity_type: "ldp"  # Changed from "tree_edit" to "ldp" (fast, reliable)
+    verbose: false
+
+  morphological:
+    enabled: true
+    verbose: false
+
+  phonological_phonemic:
+    enabled: true
+    backend: "g2p_en"
+    verbose: false
+
+  phonological_rhythmic:
+    enabled: true
+    verbose: false
+
+  lexical_ttr:
+    enabled: true
+
+statistical:
+  alpha: 0.05  # Significance threshold
+  use_bonferroni: false  # Bonferroni correction for multiple comparisons
+  min_sample_size: 10  # Minimum subjects per group
+
+output:
+  plots_dpi: 300
+  figure_format: "png"
+  save_intermediate: true  # Save intermediate processing steps
+
+gpu:
+  # GPU is auto-detected in compute_metrics.py
+  # Will use first available GPU with <30% utilization and >10GB free
+  # Falls back to CPU if no GPU available
+  batch_size: 32  # For semantic embedding computation
+
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  save_logs: true

@@ -1,0 +1,9 @@
+COMPUTATION METADATA
+================================================================================
+
+n_subjects: 498
+n_dementia: 256
+n_control: 242
+n_metrics: 8
+computation_time_minutes: 5.137662994861603
+errors: 0

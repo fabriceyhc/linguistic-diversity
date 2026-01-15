@@ -1,0 +1,29 @@
+
+Authorship Verification Evaluation Report
+==========================================
+
+Dataset Statistics:
+- Total pairs processed: 25405
+- Same author pairs: 12873
+- Different author pairs: 12532
+
+Fingerprint Distance Statistics:
+Same Author Pairs:
+- Mean: 28.3184
+- Median: 0.8613
+- Std: 102.4288
+
+Different Author Pairs:
+- Mean: 26.8398
+- Median: 1.1765
+- Std: 86.0280
+
+Performance Metrics:
+- ROC-AUC Score: 0.5789
+- Benchmark (random guessing): 0.5000
+
+Interpretation:
+WEAK (0.50-0.65): Limited discriminative power
+
+Conclusion:
+The metric shows some signal but may need additional features or refinement.

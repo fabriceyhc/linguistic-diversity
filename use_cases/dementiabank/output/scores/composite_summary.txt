@@ -1,0 +1,20 @@
+COMPOSITE METRIC EVALUATION SUMMARY
+================================================================================
+
+Configuration: dementia_detector preset
+  - Semantic weight: 79.4%
+  - Syntactic weight: 20.6%
+  - Strategy: weighted_arithmetic
+
+Results:
+  Dementia: mean=15.206, std=3.210, n=256
+  Control: mean=16.226, std=2.849, n=242
+  Difference: 6.7% (Control > Dementia)
+
+Statistical Tests:
+  t-test: t=3.742, p=0.000204
+  Mann-Whitney U: p=0.000237
+  Cohen's d: 0.335 (small effect)
+
+Computation time: 0.3 minutes
+Errors: 0
