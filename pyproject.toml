@@ -85,8 +85,13 @@ phonological = [
     # "phonemizer>=3.2.0",
 ]
 
+pretraining = [
+    "apricot-select>=0.6.0",  # Submodular selection for data curation
+    "datasets>=2.0.0",  # Hugging Face datasets library
+]
+
 all = [
-    "linguistic-diversity[dev,viz,docs,syntactic,phonological]",
+    "linguistic-diversity[dev,viz,docs,syntactic,phonological,pretraining]",
 ]
 
 [project.urls]

@@ -17,7 +17,7 @@ Example:
 
 __version__ = "1.0.0"
 
-from .metric import DiversityMetric, Metric, SimilarityMetric, TextDiversity
+from .metric import DiversityMetric, Metric, ScaledEstimationResult, SimilarityMetric, TextDiversity
 from .diversities import (
     # Semantic
     TokenSemantics,
@@ -43,6 +43,7 @@ __all__ = [
     "DiversityMetric",
     "SimilarityMetric",
     "TextDiversity",
+    "ScaledEstimationResult",
     # Semantic metrics
     "TokenSemantics",
     "DocumentSemantics",

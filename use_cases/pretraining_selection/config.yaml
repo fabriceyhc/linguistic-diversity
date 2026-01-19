@@ -1,0 +1,150 @@
+# Configuration for Pretraining Selection Experiment
+# Evaluates whether linguistic diversity-based data selection improves language model performance
+
+# Experiment mode: quick (100k samples, 10k steps) or full (1M samples, 50k steps)
+mode: "quick"
+
+# Corpus settings
+corpus:
+  datasets:
+    - name: "HuggingFaceFW/fineweb-edu"
+      text_column: "text"
+      subset: "sample-10BT"  # Use 10B token sample
+
+  max_samples:
+    quick: 100000
+    full: 1000000
+
+  min_length: 50  # Minimum characters per document
+  max_length: 5000  # Maximum characters per document (for memory efficiency)
+  train_test_split: 0.9
+
+# Feature extraction settings
+features:
+  semantic:
+    model: "sentence-transformers/all-MiniLM-L6-v2"
+    batch_size: 64  # Larger batches for multi-GPU
+    max_seq_length: 256
+    use_gpu: true
+
+  syntactic:
+    spacy_model: "en_core_web_sm"
+    method: "dependency"  # dependency or constituency
+    # For graph embeddings (fast)
+    use_graph_embeddings: true
+    graph_dim: 128
+    # For POS n-grams (fallback)
+    ngram_range: [2, 3]  # Use POS bigrams and trigrams
+    max_features: 10000
+    min_df: 5
+
+  morphological:
+    spacy_model: "en_core_web_sm"
+    sequence_length: 50  # Maximum POS sequence length
+    ngram_range: [3, 4]  # POS trigrams and 4-grams
+    max_features: 5000
+    min_df: 3
+
+  phonological:
+    backend: "g2p_en"  # Pure Python, no system dependencies
+    feature_type: "phoneme"  # phoneme or rhythmic
+    ngram_range: [2, 3]  # Phoneme bigrams and trigrams
+    max_features: 5000
+    min_df: 3
+
+# Submodular selection settings
+selection:
+  shard_size: 10000  # Documents per shard for hierarchical selection
+  selection_ratio: 0.1  # Select 10% of corpus
+  hierarchical_rounds: 2  # Two-stage hierarchical selection
+
+  # Facility Location (for semantic diversity)
+  facility_location:
+    optimizer: "lazy"  # lazy, naive, or two-stage
+
+  # Feature-based (for syntactic, morphological, phonological)
+  feature_based:
+    concave: "sqrt"  # sqrt, log, or inverse
+
+  # Multi-branch composite selection
+  composite:
+    first_stage: "semantic"  # semantic, syntactic, morphological, or phonological
+    first_stage_ratio: 0.2  # Select 20% in first stage
+    second_stage: "syntactic"  # Different from first stage
+    second_stage_ratio: 0.5  # Then select 50% of that (= 10% total)
+
+  # Universal (all branches combined)
+  universal:
+    weights:
+      semantic: 0.3
+      syntactic: 0.3
+      morphological: 0.2
+      phonological: 0.2
+    combination_method: "weighted_sum"  # weighted_sum or concatenate
+
+# Model training settings
+training:
+  model_name: "gpt2"  # Use GPT2Config as base
+
+  model:
+    vocab_size: 50257  # GPT-2 vocab size
+    n_layers: 6
+    n_embed: 384
+    n_heads: 6
+    context_length: 512
+    dropout: 0.1
+
+  optimizer:
+    learning_rate: 0.0003  # 3e-4 written explicitly to avoid YAML parsing as string
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.95
+    warmup_steps: 500
+    lr_schedule: "cosine"  # cosine or linear
+
+  training:
+    batch_size: 4  # Smaller for large models (Llama 3.2, Flan-T5)
+    gradient_accumulation_steps: 8  # Effective batch size = 32
+    max_steps:
+      quick: 5000
+      full: 25000
+    save_interval: 1000
+    eval_interval: 500
+    log_interval: 50
+    gradient_clip: 1.0
+    early_stopping_patience: 300  # Stop if no improvement for this many steps
+    early_stopping_min_delta: 0.01  # Minimum loss improvement to count as progress
+
+  # Multi-GPU settings
+  multi_gpu:
+    enabled: true
+    backend: "DataParallel"  # DataParallel or DistributedDataParallel
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - "perplexity"
+    - "generation_quality"
+    - "repetition_rate"
+
+  generation:
+    prompts:
+      - "Once upon a time"
+      - "In a distant land"
+      - "There was a"
+      - "The little girl"
+      - "One sunny day"
+    max_length: 100
+    num_samples: 10
+    temperature: 1.0
+    top_k: 50
+
+  repetition:
+    ngram_size: 4  # Check 4-gram repetition rate
+
+# Output settings
+output:
+  save_checkpoints: true
+  save_logs: true
+  plot_format: "png"  # png or pdf
+  plot_dpi: 300
