@@ -112,8 +112,8 @@ training:
     eval_interval: 500
     log_interval: 50
     gradient_clip: 1.0
-    early_stopping_patience: 300  # Stop if no improvement for this many steps
-    early_stopping_min_delta: 0.01  # Minimum loss improvement to count as progress
+    early_stopping_patience: 2000  # Stop if no improvement for this many steps (relaxed)
+    early_stopping_min_delta: 0.001  # Minimum loss improvement to count as progress (more sensitive)
 
   # Multi-GPU settings
   multi_gpu:

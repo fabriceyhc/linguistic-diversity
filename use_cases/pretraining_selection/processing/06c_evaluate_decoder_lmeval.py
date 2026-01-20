@@ -79,6 +79,17 @@ def load_trained_decoder(model_dir: Path, device: str = 'cuda'):
     return tokenizer, model
 
 
+def load_pretrained_decoder(device: str = 'cuda'):
+    """Load the original pretrained decoder (no additional pretraining)."""
+    from model_loader import load_model
+
+    tokenizer, model, model_config = load_model('decoder')
+    model = model.to(device)
+    model.eval()
+
+    return tokenizer, model
+
+
 def score_completion(model, tokenizer, context: str, completion: str, device: str) -> float:
     """Score a completion given context using log probability."""
     full_text = context + completion
@@ -319,12 +330,13 @@ def evaluate_boolq(model, tokenizer, device: str, max_samples: Optional[int] = N
 
 
 def evaluate_decoder_on_benchmarks(
-    model_dir: Path,
+    model_dir: Optional[Path],
     regime: str,
     device: str = 'cuda',
     max_samples: Optional[int] = 500,  # Use subsets for multi-seed evaluation
     num_seeds: int = 3,
     seeds: List[int] = None,
+    use_pretrained: bool = False,
 ) -> Dict:
     """Evaluate a decoder model on all benchmarks with multiple seeds for statistical significance."""
 
@@ -337,8 +349,12 @@ def evaluate_decoder_on_benchmarks(
     print(f"   {'=' * 60}")
 
     try:
-        tokenizer, model = load_trained_decoder(model_dir, device)
-        print(f"   ✓ Loaded model from {model_dir}")
+        if use_pretrained:
+            tokenizer, model = load_pretrained_decoder(device)
+            print(f"   ✓ Loaded original pretrained model (no additional pretraining)")
+        else:
+            tokenizer, model = load_trained_decoder(model_dir, device)
+            print(f"   ✓ Loaded model from {model_dir}")
     except Exception as e:
         print(f"   ✗ Failed to load model: {e}")
         return {'regime': regime, 'error': str(e)}
@@ -419,6 +435,7 @@ def main():
     output_dir = base_dir / "output"
 
     regimes = [
+        'pretrained_baseline',  # Original pretrained model (no additional pretraining)
         'semantic_diversity',
         'syntactic_diversity',
         'morphological_diversity',
@@ -456,6 +473,20 @@ def main():
         for regime in regimes:
             if (dataset_name, regime) in completed_regimes:
                 print(f"\n   ✓ Skipping (already evaluated): {regime}")
+                continue
+
+            # Handle pretrained baseline specially
+            if regime == 'pretrained_baseline':
+                results = evaluate_decoder_on_benchmarks(
+                    model_dir=None,
+                    regime=regime,
+                    device=device,
+                    max_samples=500,
+                    num_seeds=3,
+                    use_pretrained=True,
+                )
+                results['dataset'] = dataset_name
+                all_results.append(results)
                 continue
 
             model_dir = models_dir / clean_name / regime / "decoder"

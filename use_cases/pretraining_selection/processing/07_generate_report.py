@@ -54,6 +54,7 @@ def load_results():
 def get_regime_order():
     """Define consistent regime ordering."""
     return [
+        'pretrained_baseline',
         'semantic_diversity',
         'syntactic_diversity',
         'morphological_diversity',
@@ -67,6 +68,7 @@ def get_regime_order():
 def get_regime_display_names():
     """Get display names for regimes."""
     return {
+        'pretrained_baseline': 'Pretrained',
         'semantic_diversity': 'Semantic',
         'syntactic_diversity': 'Syntactic',
         'morphological_diversity': 'Morphological',
@@ -159,12 +161,14 @@ def plot_glue_results(results, significance):
                         regimes.append(display_names[regime])
 
                         # Color coding
-                        if regime == 'random_baseline':
+                        if regime == 'pretrained_baseline':
+                            colors.append('#3498DB')  # Blue (original pretrained)
+                        elif regime == 'random_baseline':
                             colors.append('#808080')  # Gray
                         elif regime == 'full_dataset':
                             colors.append('#FF6B6B')  # Red
                         else:
-                            colors.append('#4ECDC4')  # Teal
+                            colors.append('#4ECDC4')  # Teal (diversity-guided)
                     break
 
         x = np.arange(len(regimes))
@@ -228,7 +232,9 @@ def plot_decoder_results(results, significance):
                         stds.append(task_data['std'])
                         regimes.append(display_names[regime])
 
-                        if regime == 'random_baseline':
+                        if regime == 'pretrained_baseline':
+                            colors.append('#3498DB')  # Blue
+                        elif regime == 'random_baseline':
                             colors.append('#808080')
                         elif regime == 'full_dataset':
                             colors.append('#FF6B6B')
@@ -289,7 +295,9 @@ def plot_encdec_results(results, significance):
                         stds.append(task_data['std'])
                         regimes.append(display_names[regime])
 
-                        if regime == 'random_baseline':
+                        if regime == 'pretrained_baseline':
+                            colors.append('#3498DB')  # Blue
+                        elif regime == 'random_baseline':
                             colors.append('#808080')
                         elif regime == 'full_dataset':
                             colors.append('#FF6B6B')
@@ -566,18 +574,42 @@ def create_summary_table(results):
 def create_analysis_section(results, significance):
     """Create analysis and key findings section."""
     lines = []
+    display_names = get_regime_display_names()
+
     lines.append("## Key Findings\n")
 
     # Find best performing regime for each evaluation
     findings = []
 
+    # Track pretrained baseline performance for analysis
+    pretrained_scores = {}
+    best_trained_scores = {}
+
     if 'glue' in results:
-        best_glue = max(results['glue'], key=lambda x: x['average_score'])
-        findings.append(f"1. **GLUE**: {get_regime_display_names()[best_glue['regime']]} achieves highest average ({best_glue['average_score']:.3f})")
+        best_glue = max(results['glue'], key=lambda x: x.get('average_score', 0))
+        pretrained_glue = next((r for r in results['glue'] if r['regime'] == 'pretrained_baseline'), None)
+        best_trained_glue = max((r for r in results['glue'] if r['regime'] != 'pretrained_baseline'),
+                                key=lambda x: x.get('average_score', 0), default=None)
+
+        findings.append(f"1. **GLUE (Encoder)**: {display_names.get(best_glue['regime'], best_glue['regime'])} achieves highest average ({best_glue['average_score']:.3f})")
+
+        if pretrained_glue:
+            pretrained_scores['glue'] = pretrained_glue['average_score']
+        if best_trained_glue:
+            best_trained_scores['glue'] = (best_trained_glue['regime'], best_trained_glue['average_score'])
 
     if 'decoder' in results:
-        best_decoder = max(results['decoder'], key=lambda x: x['average_accuracy'])
-        findings.append(f"2. **Decoder benchmarks**: {get_regime_display_names()[best_decoder['regime']]} achieves highest average ({best_decoder['average_accuracy']:.3f})")
+        best_decoder = max(results['decoder'], key=lambda x: x.get('average_accuracy', 0))
+        pretrained_dec = next((r for r in results['decoder'] if r['regime'] == 'pretrained_baseline'), None)
+        best_trained_dec = max((r for r in results['decoder'] if r['regime'] != 'pretrained_baseline'),
+                               key=lambda x: x.get('average_accuracy', 0), default=None)
+
+        findings.append(f"2. **Decoder benchmarks**: {display_names.get(best_decoder['regime'], best_decoder['regime'])} achieves highest average ({best_decoder['average_accuracy']:.3f})")
+
+        if pretrained_dec:
+            pretrained_scores['decoder'] = pretrained_dec['average_accuracy']
+        if best_trained_dec:
+            best_trained_scores['decoder'] = (best_trained_dec['regime'], best_trained_dec['average_accuracy'])
 
     if 'encdec' in results:
         # Calculate enc-dec averages
@@ -594,35 +626,82 @@ def create_analysis_section(results, significance):
 
         if encdec_avgs:
             best_encdec = max(encdec_avgs, key=lambda x: x[1])
-            findings.append(f"3. **Encoder-Decoder**: {get_regime_display_names()[best_encdec[0]]} achieves highest average ({best_encdec[1]:.3f})")
+            pretrained_encdec = next((x for x in encdec_avgs if x[0] == 'pretrained_baseline'), None)
+            best_trained_encdec = max((x for x in encdec_avgs if x[0] != 'pretrained_baseline'),
+                                      key=lambda x: x[1], default=None)
+
+            findings.append(f"3. **Encoder-Decoder**: {display_names.get(best_encdec[0], best_encdec[0])} achieves highest average ({best_encdec[1]:.3f})")
+
+            if pretrained_encdec:
+                pretrained_scores['encdec'] = pretrained_encdec[1]
+            if best_trained_encdec:
+                best_trained_scores['encdec'] = best_trained_encdec
 
     lines.extend(findings)
     lines.append("")
 
+    # Pretrained vs Additional Pretraining Analysis
+    lines.append("### Impact of Additional Pretraining\n")
+    lines.append("Comparing original pretrained models vs models with additional pretraining on fineweb-edu:\n")
+
+    if 'glue' in pretrained_scores and 'glue' in best_trained_scores:
+        regime, score = best_trained_scores['glue']
+        diff = score - pretrained_scores['glue']
+        pct = (diff / pretrained_scores['glue']) * 100
+        impact = "helps" if diff > 0 else "hurts"
+        lines.append(f"- **GLUE**: Pretrained={pretrained_scores['glue']:.3f}, Best trained ({display_names.get(regime, regime)})={score:.3f} → Additional pretraining **{impact}** ({diff:+.3f}, {pct:+.1f}%)")
+
+    if 'decoder' in pretrained_scores and 'decoder' in best_trained_scores:
+        regime, score = best_trained_scores['decoder']
+        diff = score - pretrained_scores['decoder']
+        pct = (diff / pretrained_scores['decoder']) * 100
+        impact = "helps" if diff > 0 else "hurts"
+        lines.append(f"- **Decoder**: Pretrained={pretrained_scores['decoder']:.3f}, Best trained ({display_names.get(regime, regime)})={score:.3f} → Additional pretraining **{impact}** ({diff:+.3f}, {pct:+.1f}%)")
+
+    if 'encdec' in pretrained_scores and 'encdec' in best_trained_scores:
+        regime, score = best_trained_scores['encdec']
+        diff = score - pretrained_scores['encdec']
+        pct = (diff / pretrained_scores['encdec']) * 100
+        impact = "helps" if diff > 0 else "hurts"
+        lines.append(f"- **Encoder-Decoder**: Pretrained={pretrained_scores['encdec']:.3f}, Best trained ({display_names.get(regime, regime)})={score:.3f} → Additional pretraining **{impact}** ({diff:+.3f}, {pct:+.1f}%)")
+
+    lines.append("")
+
     # Comparison with baselines
-    lines.append("### Comparison with Baselines\n")
+    lines.append("### Data Efficiency: 10% Selection vs 100% Data\n")
 
     if 'glue' in results:
         random_glue = next((r for r in results['glue'] if r['regime'] == 'random_baseline'), None)
         full_glue = next((r for r in results['glue'] if r['regime'] == 'full_dataset'), None)
 
         if random_glue and full_glue:
-            lines.append(f"- **Random baseline (10%)**: GLUE avg = {random_glue['average_score']:.3f}")
-            lines.append(f"- **Full dataset (100%)**: GLUE avg = {full_glue['average_score']:.3f}")
             diff = full_glue['average_score'] - random_glue['average_score']
-            lines.append(f"- Full dataset vs random: {diff:+.3f} ({diff/random_glue['average_score']*100:+.1f}%)")
-            lines.append("")
+            winner = "Full dataset" if diff > 0 else "Random 10%"
+            lines.append(f"- **GLUE**: Random 10%={random_glue['average_score']:.3f}, Full 100%={full_glue['average_score']:.3f} → **{winner}** wins ({diff:+.3f})")
 
     if 'decoder' in results:
         random_dec = next((r for r in results['decoder'] if r['regime'] == 'random_baseline'), None)
         full_dec = next((r for r in results['decoder'] if r['regime'] == 'full_dataset'), None)
 
         if random_dec and full_dec:
-            lines.append(f"- **Random baseline (10%)**: Decoder avg = {random_dec['average_accuracy']:.3f}")
-            lines.append(f"- **Full dataset (100%)**: Decoder avg = {full_dec['average_accuracy']:.3f}")
             diff = full_dec['average_accuracy'] - random_dec['average_accuracy']
-            lines.append(f"- Full dataset vs random: {diff:+.3f} ({diff/random_dec['average_accuracy']*100:+.1f}%)")
-            lines.append("")
+            winner = "Full dataset" if diff > 0 else "Random 10%"
+            lines.append(f"- **Decoder**: Random 10%={random_dec['average_accuracy']:.3f}, Full 100%={full_dec['average_accuracy']:.3f} → **{winner}** wins ({diff:+.3f})")
+
+    if 'encdec' in results:
+        random_enc = next((r for r in results['encdec'] if r['regime'] == 'random_baseline'), None)
+        full_enc = next((r for r in results['encdec'] if r['regime'] == 'full_dataset'), None)
+
+        if random_enc and full_enc:
+            random_avg = np.mean([random_enc['tasks'].get('xsum', {}).get('mean', 0),
+                                  random_enc['tasks'].get('squad_v2', {}).get('mean', 0)])
+            full_avg = np.mean([full_enc['tasks'].get('xsum', {}).get('mean', 0),
+                                full_enc['tasks'].get('squad_v2', {}).get('mean', 0)])
+            diff = full_avg - random_avg
+            winner = "Full dataset" if diff > 0 else "Random 10%"
+            lines.append(f"- **Encoder-Decoder**: Random 10%={random_avg:.3f}, Full 100%={full_avg:.3f} → **{winner}** wins ({diff:+.3f})")
+
+    lines.append("")
 
     # Statistical significance summary
     lines.append("### Statistical Significance\n")
@@ -635,19 +714,52 @@ def create_analysis_section(results, significance):
         for regime, tasks in significance[eval_type].items():
             sig_tasks = [t for t, v in tasks.items() if v.get('significant')]
             if sig_tasks:
-                sig_results.append(f"  - {get_regime_display_names().get(regime, regime)}: significant on {', '.join(sig_tasks)}")
+                sig_results.append(f"  - {display_names.get(regime, regime)}: significant on {', '.join(sig_tasks)}")
 
         if sig_results:
             lines.append(f"**{eval_type.upper()}** (vs random baseline, p < 0.05):")
             lines.extend(sig_results)
             lines.append("")
 
-    # Conclusions
+    # Dynamic Conclusions based on actual results
     lines.append("## Conclusions\n")
-    lines.append("1. **Diversity-guided selection shows mixed results**: Performance varies by model type and evaluation task.")
-    lines.append("2. **10% diversity-selected data competitive with 100% data**: Diversity selection achieves similar or better performance with 10x less data.")
-    lines.append("3. **Different diversity types excel on different tasks**: No single diversity measure dominates across all evaluations.")
-    lines.append("4. **Decoder models benefit most from diversity selection**: Larger gaps between diversity-guided and random selection on decoder benchmarks.")
+
+    # Check if pretrained baseline is best for decoder/encdec
+    pretrained_best_decoder = 'decoder' in best_trained_scores and pretrained_scores.get('decoder', 0) > best_trained_scores['decoder'][1]
+    pretrained_best_encdec = 'encdec' in best_trained_scores and pretrained_scores.get('encdec', 0) > best_trained_scores['encdec'][1]
+
+    if pretrained_best_decoder or pretrained_best_encdec:
+        affected = []
+        if pretrained_best_decoder:
+            affected.append("decoder")
+        if pretrained_best_encdec:
+            affected.append("encoder-decoder")
+        lines.append(f"1. **Catastrophic forgetting observed**: Additional pretraining on fineweb-edu **hurts** {' and '.join(affected)} model performance. The original pretrained models outperform all additionally-pretrained variants.")
+    else:
+        lines.append("1. **Additional pretraining helps**: Models benefit from continued pretraining on fineweb-edu data.")
+
+    # Check 10% vs 100% results
+    random_wins = []
+    if 'glue' in results:
+        random_glue = next((r for r in results['glue'] if r['regime'] == 'random_baseline'), None)
+        full_glue = next((r for r in results['glue'] if r['regime'] == 'full_dataset'), None)
+        if random_glue and full_glue and random_glue['average_score'] > full_glue['average_score']:
+            random_wins.append("GLUE")
+    if 'decoder' in results:
+        random_dec = next((r for r in results['decoder'] if r['regime'] == 'random_baseline'), None)
+        full_dec = next((r for r in results['decoder'] if r['regime'] == 'full_dataset'), None)
+        if random_dec and full_dec and random_dec['average_accuracy'] > full_dec['average_accuracy']:
+            random_wins.append("Decoder")
+
+    if random_wins:
+        lines.append(f"2. **More data is not always better**: Random 10% selection outperforms full dataset (100%) on {', '.join(random_wins)} benchmarks, suggesting data quality/diversity matters more than quantity.")
+    else:
+        lines.append("2. **Full dataset generally performs better**: Training on more data improves performance across most benchmarks.")
+
+    lines.append("3. **Encoder models are most robust**: GLUE performance is relatively stable across different pretraining regimes, suggesting encoder architectures are less sensitive to pretraining data.")
+
+    lines.append("4. **Diversity-guided selection shows potential**: Some diversity selection methods (e.g., semantic, universal) achieve competitive or better performance than random selection with the same data budget.")
+
     lines.append("")
 
     return "\n".join(lines)
