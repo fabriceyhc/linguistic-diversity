@@ -18,6 +18,7 @@
 | Morphological | 0.581 ± 0.007 | 0.948 ± 0.002 | 0.906 ± 0.009 | 0.560 ± 0.006 | **0.749** |
 | Phonological | 0.542 ± 0.019 | 0.946 ± 0.004 | 0.892 ± 0.012 | 0.596 ± 0.008 | **0.744** |
 | Universal | 0.544 ± 0.054 | 0.946 ± 0.003 | 0.901 ± 0.011 | 0.599 ± 0.028 | **0.748** |
+| Universal Embed | 0.603 ± 0.006 | 0.942 ± 0.002 | 0.899 ± 0.006 | 0.597 ± 0.027 | **0.760** |
 | Random | 0.569 ± 0.005 | 0.945 ± 0.003 | 0.878 ± 0.028 | 0.604 ± 0.027 | **0.749** |
 | Full Dataset | 0.553 ± 0.024 | 0.947 ± 0.002 | 0.904 ± 0.010 | 0.566 ± 0.012 | **0.742** |
 
@@ -31,6 +32,7 @@
 | Morphological | 0.341 ± 0.001 | 0.397 ± 0.009 | 0.627 ± 0.035 | **0.455** |
 | Phonological | 0.357 ± 0.032 | 0.448 ± 0.003 | 0.629 ± 0.036 | **0.478** |
 | Universal | 0.522 ± 0.003 | 0.527 ± 0.004 | 0.591 ± 0.028 | **0.547** |
+| Universal Embed | 0.486 ± 0.004 | 0.513 ± 0.008 | 0.433 ± 0.021 | **0.477** |
 | Random | 0.505 ± 0.007 | 0.501 ± 0.010 | 0.622 ± 0.040 | **0.543** |
 | Full Dataset | 0.395 ± 0.007 | 0.439 ± 0.007 | 0.595 ± 0.018 | **0.476** |
 
@@ -46,6 +48,7 @@
 | Morphological | 0.122 ± 0.004 | 0.692 ± 0.007 |
 | Phonological | 0.115 ± 0.002 | 0.171 ± 0.012 |
 | Universal | 0.177 ± 0.007 | 0.749 ± 0.021 |
+| Universal Embed | 0.118 ± 0.003 | 0.325 ± 0.013 |
 | Random | 0.111 ± 0.001 | 0.162 ± 0.010 |
 | Full Dataset | 0.114 ± 0.002 | 0.373 ± 0.006 |
 
@@ -56,7 +59,8 @@
 | Regime | Universal Diversity | Std |
 |--------|---------------------|-----|
 | Universal | 462.38 | ± 4.84 |
-| composite_diversity | 271.19 | ± 2.77 |
+| Full Dataset | 195.65 | ± 0.75 |
+| Universal Embed | 161.62 | ± 2.18 |
 | Phonological | 155.64 | ± 0.28 |
 | Morphological | 148.29 | ± 1.77 |
 | Semantic | 111.94 | ± 1.32 |
@@ -87,6 +91,7 @@ Comparing original pretrained models vs models with additional pretraining on fi
 
 **GLUE** (vs random baseline, p < 0.05):
   - Syntactic: significant on sst2
+  - Universal Embed: significant on cola
 
 **DECODER** (vs random baseline, p < 0.05):
   - Pretrained: significant on hellaswag, arc_easy
@@ -95,6 +100,7 @@ Comparing original pretrained models vs models with additional pretraining on fi
   - Phonological: significant on hellaswag, arc_easy
   - Universal: significant on hellaswag, arc_easy
   - Full Dataset: significant on hellaswag, arc_easy
+  - Universal Embed: significant on hellaswag, boolq
 
 **ENCDEC** (vs random baseline, p < 0.05):
   - Pretrained: significant on xsum, squad_v2
@@ -103,6 +109,7 @@ Comparing original pretrained models vs models with additional pretraining on fi
   - Morphological: significant on xsum, squad_v2
   - Universal: significant on xsum, squad_v2
   - Full Dataset: significant on squad_v2
+  - Universal Embed: significant on xsum, squad_v2
 
 ## Conclusions
 

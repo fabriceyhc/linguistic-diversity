@@ -12,8 +12,25 @@ from enum import Enum
 from typing import Any
 
 import numpy as np
+import numpy.typing as npt
 
 from ..metric import DiversityMetric, MetricConfig
+
+
+# Fixed ordering of metrics in diversity embeddings
+# This ensures consistent vector positions across all calls
+DIVERSITY_EMBEDDING_METRICS = [
+    "token_semantics",
+    "document_semantics",
+    "dependency_parse",
+    "constituency_parse",
+    "pos_sequence",
+    "rhythmic",
+    "phonemic",
+]
+
+# Mapping from metric name to vector index
+METRIC_TO_INDEX = {name: idx for idx, name in enumerate(DIVERSITY_EMBEDDING_METRICS)}
 
 
 class AggregationStrategy(Enum):
@@ -442,6 +459,508 @@ class UniversalLinguisticDiversity(DiversityMetric):
             "branches": branch_scores,
             "metrics": metric_scores,
         }
+
+    def compute_diversity_embedding(
+        self,
+        corpus: list[str] | None = None,
+        precomputed_scores: dict[str, float] | None = None,
+        normalize: bool = True,
+    ) -> npt.NDArray[np.float64]:
+        """Compute a diversity embedding vector for the corpus.
+
+        Unlike the aggregated universal diversity score, this returns a vector
+        where each dimension corresponds to a specific diversity metric in a
+        fixed order (see DIVERSITY_EMBEDDING_METRICS).
+
+        This embedding can be used for:
+        - Submodular optimization to select diverse text sets
+        - Clustering corpora by their diversity profiles
+        - Comparing diversity profiles across different corpora
+
+        Args:
+            corpus: List of text documents. Can be None if precomputed_scores
+                contains all needed metrics.
+            precomputed_scores: Optional dictionary mapping metric names to
+                pre-computed diversity scores. Any metrics not in this dict
+                will be computed from corpus. Keys should match metric names:
+                'token_semantics', 'document_semantics', 'dependency_parse',
+                'constituency_parse', 'pos_sequence', 'rhythmic', 'phonemic'.
+            normalize: If True (default), normalize scores to [0, 1] range
+                using log transformation and empirical scaling. This makes
+                metrics comparable across different scales.
+
+        Returns:
+            Numpy array of shape (7,) with diversity scores in fixed positions:
+                [0] token_semantics
+                [1] document_semantics
+                [2] dependency_parse
+                [3] constituency_parse
+                [4] pos_sequence
+                [5] rhythmic
+                [6] phonemic
+
+            Disabled or unavailable metrics will have a value of 0.0.
+
+        Example:
+            >>> metric = UniversalLinguisticDiversity()
+            >>> corpus = ['The quick brown fox.', 'A lazy dog sleeps.']
+            >>> # Compute fresh (normalized by default)
+            >>> embedding = metric.compute_diversity_embedding(corpus)
+            >>> # Or use precomputed scores
+            >>> scores = {'token_semantics': 0.85, 'document_semantics': 0.72}
+            >>> embedding = metric.compute_diversity_embedding(
+            ...     corpus, precomputed_scores=scores
+            ... )
+        """
+        embedding = np.zeros(len(DIVERSITY_EMBEDDING_METRICS), dtype=np.float64)
+        precomputed_scores = precomputed_scores or {}
+
+        # First, fill in any precomputed scores
+        for name, score in precomputed_scores.items():
+            if name in METRIC_TO_INDEX:
+                embedding[METRIC_TO_INDEX[name]] = score
+
+        # Check if we need to compute anything
+        metrics_to_compute = [
+            name
+            for name in self._metrics.keys()
+            if name in METRIC_TO_INDEX and name not in precomputed_scores
+        ]
+
+        # If no corpus and we need to compute, return what we have
+        if not metrics_to_compute:
+            if normalize:
+                embedding = self._normalize_embedding(embedding)
+            return embedding
+
+        if corpus is None or not corpus:
+            if self.config.verbose:
+                print(
+                    f"Warning: No corpus provided and missing metrics: {metrics_to_compute}"
+                )
+            if normalize:
+                embedding = self._normalize_embedding(embedding)
+            return embedding
+
+        if not all(isinstance(d, str) and d.strip() for d in corpus):
+            if self.config.verbose:
+                print("Warning: corpus contains invalid inputs")
+            if normalize:
+                embedding = self._normalize_embedding(embedding)
+            return embedding
+
+        # Compute missing metrics from corpus
+        for name in metrics_to_compute:
+            metric = self._metrics[name]
+            try:
+                score = metric(corpus)
+                embedding[METRIC_TO_INDEX[name]] = score
+            except Exception as e:
+                if self.config.verbose:
+                    print(f"Error computing {name}: {e}")
+                embedding[METRIC_TO_INDEX[name]] = 0.0
+
+        if normalize:
+            embedding = self._normalize_embedding(embedding)
+
+        return embedding
+
+    @staticmethod
+    def _normalize_embedding(
+        embedding: npt.NDArray[np.float64],
+    ) -> npt.NDArray[np.float64]:
+        """Normalize diversity embedding to [0, 1] range.
+
+        Uses log1p transformation followed by scaling based on empirical
+        ranges for each metric type. This handles the fact that different
+        diversity metrics have very different scales (e.g., token semantics
+        can be 1-100+, while syntactic diversity is typically 1-10).
+
+        Args:
+            embedding: Raw diversity embedding of shape (7,).
+
+        Returns:
+            Normalized embedding with values in [0, 1].
+        """
+        # Empirical max values for each metric (after log1p transform)
+        # These are approximate upper bounds based on typical corpora
+        # log1p(100) ≈ 4.6, log1p(50) ≈ 3.9, log1p(10) ≈ 2.4
+        log_max_values = np.array([
+            5.0,  # token_semantics: can be very high (Hill number)
+            4.0,  # document_semantics: typically lower
+            3.0,  # dependency_parse: structural diversity
+            3.0,  # constituency_parse: structural diversity
+            3.0,  # pos_sequence: morphological patterns
+            2.5,  # rhythmic: phonological
+            2.5,  # phonemic: phonological
+        ])
+
+        # Apply log1p to compress range, then scale to [0, 1]
+        normalized = np.log1p(np.maximum(embedding, 0)) / log_max_values
+
+        # Clip to [0, 1] in case values exceed expected range
+        return np.clip(normalized, 0.0, 1.0)
+
+    @staticmethod
+    def assemble_diversity_embedding(
+        scores: dict[str, float],
+        normalize: bool = True,
+    ) -> npt.NDArray[np.float64]:
+        """Assemble a diversity embedding from pre-computed scores.
+
+        This is a convenience method when you have all scores pre-computed
+        and just need to assemble them into the standard embedding format.
+
+        Args:
+            scores: Dictionary mapping metric names to diversity scores.
+            normalize: If True (default), normalize scores to [0, 1] range.
+
+        Returns:
+            Numpy array of shape (7,) with scores in standard positions.
+
+        Example:
+            >>> scores = {
+            ...     'token_semantics': 25.5,
+            ...     'document_semantics': 2.7,
+            ...     'dependency_parse': 1.5,
+            ...     'pos_sequence': 1.8,
+            ... }
+            >>> embedding = UniversalLinguisticDiversity.assemble_diversity_embedding(scores)
+            >>> # Returns normalized values in [0, 1]
+        """
+        embedding = np.zeros(len(DIVERSITY_EMBEDDING_METRICS), dtype=np.float64)
+        for name, score in scores.items():
+            if name in METRIC_TO_INDEX:
+                embedding[METRIC_TO_INDEX[name]] = score
+
+        if normalize:
+            embedding = UniversalLinguisticDiversity._normalize_embedding(embedding)
+
+        return embedding
+
+    def compute_corpus_diversity_embeddings(
+        self,
+        corpus: list[str] | None = None,
+        precomputed_scores: list[dict[str, float]] | npt.NDArray[np.float64] | None = None,
+        window_size: int = 1,
+        stride: int = 1,
+        normalize: bool = True,
+        verbose: bool = False,
+    ) -> npt.NDArray[np.float64]:
+        """Compute diversity embeddings for each document (or window) in corpus.
+
+        For submodular selection, we need per-document embeddings. This method
+        computes the diversity "contribution" of each document by measuring
+        diversity within a local window around each document.
+
+        Args:
+            corpus: List of text documents. Can be None if precomputed_scores
+                is provided as a complete matrix.
+            precomputed_scores: Optional pre-computed scores. Can be:
+                - list[dict]: List of dicts mapping metric names to scores,
+                  one dict per document. Missing metrics will be computed.
+                - ndarray: Array of shape (n_docs, 7) with scores in standard
+                  positions. If provided as ndarray, corpus is not needed.
+            window_size: Number of documents to include in each window.
+                - window_size=1: Each document's individual characteristics
+                - window_size>1: Context-aware diversity (how diverse each doc
+                  is relative to its neighbors)
+            stride: Step size between windows. Only used when window_size > 1.
+            normalize: If True (default), normalize scores to [0, 1] range.
+            verbose: Whether to print progress information.
+
+        Returns:
+            Numpy array of shape (n_docs, 7) where each row is a diversity
+            embedding for one document.
+
+        Example:
+            >>> metric = UniversalLinguisticDiversity()
+            >>> corpus = ['Text 1', 'Text 2', 'Text 3', 'Text 4']
+            >>> # Compute fresh (normalized by default)
+            >>> embeddings = metric.compute_corpus_diversity_embeddings(corpus)
+            >>> # Or use precomputed
+            >>> scores = [{'token_semantics': 25.5}, {'token_semantics': 18.2}, ...]
+            >>> embeddings = metric.compute_corpus_diversity_embeddings(
+            ...     corpus, precomputed_scores=scores
+            ... )
+        """
+        n_metrics = len(DIVERSITY_EMBEDDING_METRICS)
+
+        # Handle case where precomputed_scores is already a complete matrix
+        if isinstance(precomputed_scores, np.ndarray):
+            if precomputed_scores.ndim == 2 and precomputed_scores.shape[1] == n_metrics:
+                result = precomputed_scores.astype(np.float64)
+                if normalize:
+                    # Normalize each row
+                    for i in range(result.shape[0]):
+                        result[i] = self._normalize_embedding(result[i])
+                return result
+            else:
+                raise ValueError(
+                    f"precomputed_scores array must have shape (n_docs, {n_metrics}), "
+                    f"got {precomputed_scores.shape}"
+                )
+
+        # Need corpus for computing embeddings
+        if corpus is None or not corpus:
+            if precomputed_scores:
+                # Assemble from list of dicts
+                n_docs = len(precomputed_scores)
+                embeddings = np.zeros((n_docs, n_metrics), dtype=np.float64)
+                for i, scores in enumerate(precomputed_scores):
+                    embeddings[i] = self.assemble_diversity_embedding(
+                        scores, normalize=normalize
+                    )
+                return embeddings
+            return np.zeros((0, n_metrics), dtype=np.float64)
+
+        n_docs = len(corpus)
+        embeddings = np.zeros((n_docs, n_metrics), dtype=np.float64)
+
+        # Convert precomputed_scores list to easier format if provided
+        precomputed_list: list[dict[str, float]] = []
+        if precomputed_scores is not None:
+            if isinstance(precomputed_scores, list):
+                precomputed_list = precomputed_scores
+            else:
+                precomputed_list = [{} for _ in range(n_docs)]
+
+        # Pad precomputed_list if needed
+        while len(precomputed_list) < n_docs:
+            precomputed_list.append({})
+
+        if window_size == 1:
+            # Per-document embedding: compute features for each doc individually
+            if verbose:
+                print(f"Computing diversity embeddings for {n_docs} documents...")
+
+            for i, doc in enumerate(corpus):
+                if verbose and (i + 1) % 100 == 0:
+                    print(f"  Processed {i + 1}/{n_docs} documents")
+
+                if not doc or not doc.strip():
+                    continue
+
+                precomputed = precomputed_list[i] if i < len(precomputed_list) else {}
+
+                # If we have all scores precomputed, just assemble
+                if precomputed and all(
+                    name in precomputed for name in self._metrics.keys()
+                    if name in METRIC_TO_INDEX
+                ):
+                    embeddings[i] = self.assemble_diversity_embedding(
+                        precomputed, normalize=normalize
+                    )
+                else:
+                    # Compute with any available precomputed scores
+                    embeddings[i] = self._compute_single_doc_embedding(
+                        [doc], precomputed_scores=precomputed, normalize=normalize
+                    )
+        else:
+            # Windowed embedding: diversity within local context
+            if verbose:
+                print(f"Computing windowed embeddings (window={window_size}, stride={stride})...")
+
+            for i in range(0, n_docs, stride):
+                window_end = min(i + window_size, n_docs)
+                window = corpus[i:window_end]
+
+                if not window:
+                    continue
+
+                # For windowed mode, we don't use per-doc precomputed scores
+                # (would need to aggregate them meaningfully)
+                window_embedding = self.compute_diversity_embedding(
+                    window, normalize=normalize
+                )
+
+                # Assign embedding to all documents in window
+                for j in range(i, window_end):
+                    embeddings[j] = window_embedding
+
+                if verbose and (i + 1) % 100 == 0:
+                    print(f"  Processed {i + 1}/{n_docs} windows")
+
+        return embeddings
+
+    def _compute_single_doc_embedding(
+        self,
+        doc_as_list: list[str],
+        precomputed_scores: dict[str, float] | None = None,
+        normalize: bool = True,
+    ) -> npt.NDArray[np.float64]:
+        """Compute embedding for a single document.
+
+        For a single document, traditional diversity metrics (which measure
+        variation across multiple items) don't directly apply. Instead, we
+        extract features that characterize the document's linguistic properties.
+
+        This uses a feature-based approach: for each metric, we extract a scalar
+        that represents the document's "richness" in that dimension.
+
+        Args:
+            doc_as_list: Single document wrapped in a list.
+            precomputed_scores: Optional dict of precomputed metric scores.
+                Metrics present in this dict will not be recomputed.
+            normalize: If True (default), normalize the embedding to [0, 1].
+
+        Returns:
+            Feature vector of shape (7,).
+        """
+        embedding = np.zeros(len(DIVERSITY_EMBEDDING_METRICS), dtype=np.float64)
+        precomputed_scores = precomputed_scores or {}
+
+        # First fill in precomputed values
+        for name, score in precomputed_scores.items():
+            if name in METRIC_TO_INDEX:
+                embedding[METRIC_TO_INDEX[name]] = score
+
+        doc = doc_as_list[0]
+        if not doc or not doc.strip():
+            if normalize:
+                embedding = self._normalize_embedding(embedding)
+            return embedding
+
+        # For semantic metrics: use embedding norm or entropy as proxy
+        # For structural metrics: use feature counts normalized by length
+
+        for name, metric in self._metrics.items():
+            if name not in METRIC_TO_INDEX:
+                continue
+
+            # Skip if already precomputed
+            if name in precomputed_scores:
+                continue
+
+            idx = METRIC_TO_INDEX[name]
+
+            try:
+                if name in ["token_semantics", "document_semantics"]:
+                    # Semantic richness: compute embedding and use its properties
+                    # Higher diversity in a single doc = more diverse vocabulary/concepts
+                    embedding[idx] = self._compute_semantic_richness(metric, doc)
+
+                elif name in ["dependency_parse", "constituency_parse"]:
+                    # Syntactic complexity: use tree depth/breadth measures
+                    embedding[idx] = self._compute_syntactic_complexity(metric, doc)
+
+                elif name == "pos_sequence":
+                    # Morphological diversity: POS tag variety
+                    embedding[idx] = self._compute_pos_variety(metric, doc)
+
+                elif name in ["rhythmic", "phonemic"]:
+                    # Phonological properties
+                    embedding[idx] = self._compute_phonological_richness(metric, doc)
+
+            except Exception:
+                embedding[idx] = 0.0
+
+        if normalize:
+            embedding = self._normalize_embedding(embedding)
+
+        return embedding
+
+    def _compute_semantic_richness(self, metric: DiversityMetric, doc: str) -> float:
+        """Compute semantic richness for a single document."""
+        # Use a small corpus with just this doc repeated with slight variations
+        # or compute based on unique tokens
+        words = doc.split()
+        if len(words) < 2:
+            return 0.0
+
+        # Create pseudo-corpus by splitting doc into chunks
+        chunk_size = max(3, len(words) // 3)
+        chunks = []
+        for i in range(0, len(words), chunk_size):
+            chunk = " ".join(words[i : i + chunk_size])
+            if chunk.strip():
+                chunks.append(chunk)
+
+        if len(chunks) < 2:
+            # If we can't split, use vocabulary ratio as proxy
+            unique_ratio = len(set(words)) / len(words) if words else 0.0
+            return unique_ratio
+
+        try:
+            return metric(chunks)
+        except Exception:
+            return len(set(words)) / len(words) if words else 0.0
+
+    def _compute_syntactic_complexity(
+        self, metric: DiversityMetric, doc: str
+    ) -> float:
+        """Compute syntactic complexity for a single document."""
+        # Split into sentences and measure diversity across them
+        import re
+
+        sentences = re.split(r"[.!?]+", doc)
+        sentences = [s.strip() for s in sentences if s.strip()]
+
+        if len(sentences) < 2:
+            # For single sentence, return normalized complexity
+            words = doc.split()
+            return min(1.0, len(words) / 20.0)  # Normalize by typical sentence length
+
+        try:
+            return metric(sentences)
+        except Exception:
+            return 0.5  # Default middle value
+
+    def _compute_pos_variety(self, metric: DiversityMetric, doc: str) -> float:
+        """Compute POS variety for a single document."""
+        import re
+
+        sentences = re.split(r"[.!?]+", doc)
+        sentences = [s.strip() for s in sentences if s.strip()]
+
+        if len(sentences) < 2:
+            # For single sentence, estimate from word patterns
+            words = doc.split()
+            if not words:
+                return 0.0
+            # Use word shape diversity as proxy
+            shapes = set()
+            for w in words:
+                if w.isupper():
+                    shapes.add("UPPER")
+                elif w[0].isupper() if w else False:
+                    shapes.add("Title")
+                elif w.islower():
+                    shapes.add("lower")
+                else:
+                    shapes.add("mixed")
+            return len(shapes) / 4.0  # Normalize
+
+        try:
+            return metric(sentences)
+        except Exception:
+            return 0.5
+
+    def _compute_phonological_richness(
+        self, metric: DiversityMetric, doc: str
+    ) -> float:
+        """Compute phonological richness for a single document."""
+        import re
+
+        sentences = re.split(r"[.!?]+", doc)
+        sentences = [s.strip() for s in sentences if s.strip()]
+
+        if len(sentences) < 2:
+            # Use syllable variety as proxy
+            words = doc.split()
+            if not words:
+                return 0.0
+            # Simple syllable count heuristic
+            syllable_counts = set()
+            for w in words:
+                vowels = len(re.findall(r"[aeiouAEIOU]", w))
+                syllable_counts.add(min(vowels, 5))  # Cap at 5
+            return len(syllable_counts) / 5.0
+
+        try:
+            return metric(sentences)
+        except Exception:
+            return 0.5
 
 
 # Preset configurations for common use cases

@@ -4,7 +4,12 @@ from .semantic import DocumentSemantics, TokenSemantics
 from .syntactic import ConstituencyParse, DependencyParse
 from .morphological import PartOfSpeechSequence
 from .phonological import Phonemic, Rhythmic
-from .universal import UniversalLinguisticDiversity, get_preset_config
+from .universal import (
+    DIVERSITY_EMBEDDING_METRICS,
+    METRIC_TO_INDEX,
+    UniversalLinguisticDiversity,
+    get_preset_config,
+)
 
 __all__ = [
     # Semantic
@@ -21,4 +26,7 @@ __all__ = [
     # Universal
     "UniversalLinguisticDiversity",
     "get_preset_config",
+    # Embedding constants
+    "DIVERSITY_EMBEDDING_METRICS",
+    "METRIC_TO_INDEX",
 ]

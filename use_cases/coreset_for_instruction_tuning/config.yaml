@@ -1,0 +1,131 @@
+mode: pilot
+pilot:
+  dataset:
+    name: vicgalle/alpaca-gpt4
+    description: High-quality GPT-4 generated Alpaca dataset
+    split: train
+    text_field: instruction
+    input_field: input
+    response_field: output
+    expected_size: 52002
+  target_fraction: 0.1
+  models:
+  - name: mistralai/Mistral-7B-v0.3
+    description: Mistral 7B v0.3 - recommended pilot model
+  - name: meta-llama/Meta-Llama-3-8B
+    description: Llama 3 8B - alternative pilot model
+scaleup:
+  datasets:
+  - name: Open-Orca/OpenOrca
+    description: Large diverse instruction dataset
+    split: train
+    text_field: question
+    response_field: response
+    expected_size: 3500000
+    max_samples: 3500000
+    target_size: 350000
+  - name: HuggingFaceH4/ultrachat_200k
+    description: Multi-turn chat dataset
+    split: train_sft
+    text_field: messages
+    expected_size: 200000
+    max_samples: 200000
+    target_size: 20000
+selection:
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  embedding_batch_size: 256
+  methods:
+  - name: full
+    description: Full dataset baseline
+    enabled: true
+  - name: random
+    description: Random 10% baseline (fixed seed)
+    enabled: true
+    seed: 42
+  - name: diversity_greedy
+    description: Greedy diversity maximization (for pilot)
+    enabled: true
+  - name: diversity_clustering
+    description: K-means clustering + centroid selection (for scale-up)
+    enabled: true
+    n_clusters_factor: 1.0
+  length_normalization:
+    enabled: true
+    report_length_stats: true
+    max_length_ratio: 3.0
+finetuning:
+  use_unsloth: true
+  lora:
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.05
+    target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  training:
+    num_epochs: 1
+    batch_size: 4
+    gradient_accumulation_steps: 4
+    learning_rate: 0.0002
+    weight_decay: 0.01
+    warmup_ratio: 0.03
+    max_seq_length: 2048
+  quantization:
+    load_in_4bit: true
+    bnb_4bit_compute_dtype: bfloat16
+    bnb_4bit_quant_type: nf4
+    bnb_4bit_use_double_quant: true
+  seeds:
+  - 42
+  - 123
+  - 456
+evaluation:
+  llm_judge:
+    enabled: true
+    model: prometheus-eval/prometheus-7b-v2.0
+    fallback_model: meta-llama/Llama-3.1-8B-Instruct
+    batch_size: 4
+    max_new_tokens: 512
+  alpaca_eval:
+    enabled: false
+  mt_bench:
+    enabled: true
+    judge_model: local
+  local_benchmarks:
+    enabled: true
+    tasks:
+    - hellaswag
+    - arc_easy
+    - arc_challenge
+    - winogrande
+    - truthfulqa_mc1
+    - truthfulqa_mc2
+    - mmlu
+    - gsm8k
+    - ifeval
+    - bbh
+    - piqa
+wandb:
+  enabled: true
+  project: coreset-instruction-tuning
+  entity: null
+  tags:
+  - diversity-selection
+  - instruction-tuning
+  - data-efficiency
+output:
+  base_dir: output
+  save_adapters: true
+  save_selections: true
+  huggingface:
+    upload_enabled: false
+    organization: null
+    dataset_prefix: diverse-10pct
+compute:
+  track_gpu_hours: true
+  log_memory_usage: true

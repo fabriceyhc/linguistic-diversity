@@ -22,6 +22,7 @@ from pathlib import Path
 # Add parent directories to path for imports
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
 
 import os
 import json
@@ -31,6 +32,13 @@ import yaml
 from scipy.sparse import load_npz, vstack
 from apricot import FacilityLocationSelection, SaturatedCoverageSelection
 from tqdm import tqdm
+
+# Import our new diversity embedding selection
+from linguistic_diversity import (
+    UniversalLinguisticDiversity,
+    DIVERSITY_EMBEDDING_METRICS,
+    select_diverse_texts,
+)
 
 # Set environment variables
 os.environ['TMPDIR'] = '/data2/fabricehc/tmp'
@@ -467,6 +475,207 @@ def select_random_baseline(n_items, n_select):
     return selected
 
 
+def select_universal_embedding_diversity(
+    documents: list,
+    n_select: int,
+    shard_size: int,
+    config: dict,
+    selection_method: str = "facility_location",
+):
+    """Select documents using universal linguistic diversity embeddings.
+
+    This method uses the UniversalLinguisticDiversity class to compute
+    per-document diversity embeddings across all linguistic dimensions
+    (semantic, syntactic, morphological, phonological), then applies
+    submodular optimization to select a diverse subset.
+
+    Args:
+        documents: List of document strings
+        n_select: Number of documents to select
+        shard_size: Shard size for hierarchical selection
+        config: Configuration dict
+        selection_method: Selection algorithm ('facility_location', 'max_min', 'balanced')
+
+    Returns:
+        Array of selected indices
+    """
+    print(f"\n   Method: Universal Embedding Diversity Selection")
+    print(f"   Computing diversity embeddings for {len(documents)} documents...")
+
+    n_items = len(documents)
+
+    # Get config for which metrics to use
+    embedding_config = config.get('selection', {}).get('universal_embedding', {})
+    use_constituency = embedding_config.get('use_constituency_parse', False)
+    use_rhythmic = embedding_config.get('use_rhythmic', False)
+    use_phonemic = embedding_config.get('use_phonemic', False)
+
+    # Initialize the universal diversity metric
+    metric = UniversalLinguisticDiversity({
+        'use_constituency_parse': use_constituency,
+        'use_rhythmic': use_rhythmic,
+        'use_phonemic': use_phonemic,
+        'verbose': False,
+    })
+
+    # For large datasets, use hierarchical approach
+    if n_items > shard_size:
+        print(f"   Using hierarchical selection (n={n_items} > shard_size={shard_size})")
+        selected = _hierarchical_embedding_selection(
+            documents, n_select, shard_size, metric, selection_method
+        )
+    else:
+        # Compute embeddings for all documents
+        print(f"   Computing embeddings for all {n_items} documents...")
+        embeddings = _compute_diversity_embeddings_batched(documents, metric, batch_size=100)
+
+        print(f"   Embeddings shape: {embeddings.shape}")
+        print(f"   Running {selection_method} selection...")
+
+        # Use our submodular selection
+        result = select_diverse_texts(
+            embeddings,
+            n_select=n_select,
+            method=selection_method,
+            verbose=True,
+        )
+
+        selected = result.indices
+        print(f"   Coverage per metric: {result.coverage_per_metric}")
+
+    return selected
+
+
+def _compute_diversity_embeddings_batched(
+    documents: list,
+    metric: UniversalLinguisticDiversity,
+    batch_size: int = 100,
+) -> np.ndarray:
+    """Compute diversity embeddings in batches.
+
+    For single documents, we compute a pseudo-diversity by looking at
+    each document's linguistic richness characteristics.
+
+    Args:
+        documents: List of document strings
+        metric: UniversalLinguisticDiversity instance
+        batch_size: Documents per batch for progress tracking
+
+    Returns:
+        Embeddings array of shape (n_docs, n_metrics)
+    """
+    n_docs = len(documents)
+    n_metrics = len(DIVERSITY_EMBEDDING_METRICS)
+    embeddings = np.zeros((n_docs, n_metrics), dtype=np.float64)
+
+    # Process in batches for progress tracking
+    for i in tqdm(range(0, n_docs, batch_size), desc="   Computing embeddings"):
+        batch_end = min(i + batch_size, n_docs)
+        batch_docs = documents[i:batch_end]
+
+        # Compute embeddings for this batch
+        for j, doc in enumerate(batch_docs):
+            if doc and doc.strip():
+                try:
+                    # Use single-doc embedding (linguistic richness features)
+                    emb = metric._compute_single_doc_embedding([doc], normalize=True)
+                    embeddings[i + j] = emb
+                except Exception:
+                    # Skip problematic documents
+                    pass
+
+    return embeddings
+
+
+def _hierarchical_embedding_selection(
+    documents: list,
+    n_select: int,
+    shard_size: int,
+    metric: UniversalLinguisticDiversity,
+    selection_method: str,
+) -> np.ndarray:
+    """Hierarchical selection using diversity embeddings.
+
+    For large datasets:
+    1. Split into shards
+    2. Select top candidates from each shard
+    3. Merge and do final selection
+
+    Args:
+        documents: List of documents
+        n_select: Final number to select
+        shard_size: Size of each shard
+        metric: UniversalLinguisticDiversity instance
+        selection_method: Selection algorithm
+
+    Returns:
+        Array of selected global indices
+    """
+    n_items = len(documents)
+    n_shards = (n_items + shard_size - 1) // shard_size
+    per_shard_select = max(1, (n_select * 2) // n_shards)  # Over-select for merging
+
+    print(f"   Stage 1: Processing {n_shards} shards, selecting {per_shard_select} per shard...")
+
+    shard_winners = []
+    shard_winner_indices = []
+
+    for shard_idx in tqdm(range(n_shards), desc="   Shard selection"):
+        start_idx = shard_idx * shard_size
+        end_idx = min((shard_idx + 1) * shard_size, n_items)
+
+        shard_docs = documents[start_idx:end_idx]
+
+        # Compute embeddings for shard
+        shard_embeddings = _compute_diversity_embeddings_batched(
+            shard_docs, metric, batch_size=100
+        )
+
+        # Select from shard
+        try:
+            k = min(per_shard_select, len(shard_docs))
+            result = select_diverse_texts(
+                shard_embeddings,
+                n_select=k,
+                method=selection_method,
+                verbose=False,
+            )
+
+            # Convert to global indices
+            global_indices = start_idx + result.indices
+            shard_winner_indices.extend(global_indices.tolist())
+
+            # Store embeddings for winners
+            for local_idx in result.indices:
+                shard_winners.append(shard_embeddings[local_idx])
+
+        except Exception as e:
+            print(f"   Warning: Shard {shard_idx} failed: {e}")
+            continue
+
+    print(f"   Stage 1 complete: {len(shard_winner_indices)} candidates")
+
+    # Stage 2: Final selection from winners
+    print(f"   Stage 2: Final selection of {n_select} from {len(shard_winner_indices)} candidates...")
+
+    winner_embeddings = np.array(shard_winners)
+
+    result = select_diverse_texts(
+        winner_embeddings,
+        n_select=min(n_select, len(shard_winner_indices)),
+        method=selection_method,
+        verbose=True,
+    )
+
+    # Map back to global indices
+    final_selected = np.array([shard_winner_indices[i] for i in result.indices])
+
+    print(f"   Stage 2 complete: {len(final_selected)} final selections")
+    print(f"   Coverage per metric: {result.coverage_per_metric}")
+
+    return final_selected
+
+
 def save_subset(selected_indices, documents, regime_name, datasets_dir, dataset_name):
     """Save selected subset.
 
@@ -596,8 +805,21 @@ def main():
             random_selected = select_random_baseline(n_items, n_select)
             save_subset(random_selected, documents, "random_baseline", datasets_dir, dataset_name)
 
+            # Universal Embedding Diversity (NEW - using diversity embeddings)
+            print(f"\n11. Universal Embedding Diversity Selection")
+            print(f"   {'- ' * 39}")
+            try:
+                universal_embedding_selected = select_universal_embedding_diversity(
+                    documents, n_select, shard_size, config, selection_method="facility_location"
+                )
+                save_subset(universal_embedding_selected, documents, "universal_embedding_diversity", datasets_dir, dataset_name)
+            except Exception as e:
+                print(f"   Warning: Universal embedding selection failed: {e}")
+                import traceback
+                traceback.print_exc()
+
             # Full dataset (no subsampling - use all data)
-            print(f"\n11. Full Dataset (No Subsampling)")
+            print(f"\n12. Full Dataset (No Subsampling)")
             print(f"   {'- ' * 39}")
             print(f"   Saving ALL {n_items} documents (no selection)")
             full_indices = np.arange(n_items)

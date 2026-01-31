@@ -13,6 +13,13 @@ Example:
     >>> metric = TokenSemantics()
     >>> diversity = metric(corpus)
     >>> print(f"Token semantic diversity: {diversity:.2f}")
+
+For diversity-based text selection:
+    >>> from linguistic_diversity import UniversalLinguisticDiversity
+    >>> from linguistic_diversity.selection import select_diverse_texts
+    >>> metric = UniversalLinguisticDiversity()
+    >>> embeddings = metric.compute_corpus_diversity_embeddings(corpus)
+    >>> result = select_diverse_texts(embeddings, n_select=100)
 """
 
 __version__ = "1.0.0"
@@ -33,6 +40,17 @@ from .diversities import (
     # Universal
     UniversalLinguisticDiversity,
     get_preset_config,
+    # Embedding constants
+    DIVERSITY_EMBEDDING_METRICS,
+    METRIC_TO_INDEX,
+)
+from .selection import (
+    SelectionResult,
+    DiversitySelector,
+    FacilityLocationSelector,
+    MaxMinDiversitySelector,
+    BalancedCoverageSelector,
+    select_diverse_texts,
 )
 
 __all__ = [
@@ -58,4 +76,14 @@ __all__ = [
     # Universal metric
     "UniversalLinguisticDiversity",
     "get_preset_config",
+    # Embedding constants
+    "DIVERSITY_EMBEDDING_METRICS",
+    "METRIC_TO_INDEX",
+    # Selection
+    "SelectionResult",
+    "DiversitySelector",
+    "FacilityLocationSelector",
+    "MaxMinDiversitySelector",
+    "BalancedCoverageSelector",
+    "select_diverse_texts",
 ]

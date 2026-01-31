@@ -55,7 +55,7 @@ def plot_training_curves(models_dir: Path, output_dir: Path, config: dict):
     """
     print(f"\n1. Plotting training curves...")
 
-    regimes = ['semantic_diversity', 'syntactic_diversity', 'morphological_diversity', 'phonological_diversity', 'composite_diversity', 'universal_diversity', 'random_baseline']
+    regimes = ['semantic_diversity', 'syntactic_diversity', 'morphological_diversity', 'phonological_diversity', 'composite_diversity', 'universal_diversity', 'universal_embedding_diversity', 'random_baseline']
 
     for dataset_config in config['corpus']['datasets']:
         dataset_name = dataset_config['name']

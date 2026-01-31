@@ -1,0 +1,133 @@
+datasets:
+  coding:
+  - description: Code instruction dataset
+    max_samples: 50000
+    name: TokenBender/code_instructions_122k_alpaca_style
+    response_field: output
+    split: train
+    text_field: instruction
+  - description: Code with feedback
+    max_samples: 50000
+    name: m-a-p/CodeFeedback-Filtered-Instruction
+    split: train
+  instruction:
+  - description: Gold standard - 1k curated examples
+    max_samples: 1000
+    name: GAIR/lima
+    split: train
+    text_field: conversations
+  - description: Large synthetic dataset - good for selection experiments
+    max_samples: 50000
+    name: stingning/ultrachat
+    split: train
+    text_field: data
+  - description: Diverse instruction dataset
+    max_samples: 50000
+    name: Open-Orca/OpenOrca
+    response_field: response
+    split: train
+    text_field: question
+  reasoning:
+  - description: Math with step-by-step solutions
+    max_samples: 50000
+    name: nvidia/OpenMathInstruct-1
+    response_field: generated_solution
+    split: train
+    text_field: problem
+  - description: Mathematical reasoning
+    max_samples: 30000
+    name: camel-ai/math
+    split: train
+  safety:
+  - description: Safety-focused with harm labels
+    max_samples: 30000
+    name: PKU-Alignment/BeaverTails
+    split: 330k_train
+evaluation:
+  benchmarks:
+  - description: Multi-task knowledge
+    name: MMLU
+  - description: Grade school math
+    name: GSM8K
+  - description: Code generation
+    name: HumanEval
+  - description: Hallucination/truthfulness
+    name: TruthfulQA
+  - description: Multi-turn conversation quality
+    name: MT-Bench
+  llm_judge:
+    aspects:
+    - helpfulness
+    - harmlessness
+    - honesty
+    enabled: true
+    fallback_model: meta-llama/Llama-3.1-8B-Instruct
+    model: prometheus-eval/prometheus-2-7b
+features:
+  instruction_specific:
+    encode_pairs: true
+    model: sentence-transformers/all-mpnet-base-v2
+  semantic:
+    batch_size: 128
+    model: sentence-transformers/all-MiniLM-L6-v2
+finetuning:
+  batch_size: 4
+  gradient_accumulation_steps: 8
+  learning_rate: 2e-4
+  lora_config:
+    lora_alpha: 32
+    lora_dropout: 0.05
+    r: 16
+    target_modules:
+    - q_proj
+    - v_proj
+    - k_proj
+    - o_proj
+  max_seq_length: 2048
+  num_epochs: 3
+  seeds:
+  - 42
+  - 123
+  - 456
+  use_lora: true
+  warmup_ratio: 0.03
+  weight_decay: 0.01
+mode: quick
+models:
+  medium:
+  - description: 3B - Mistral's efficient model
+    name: mistralai/Ministral-3-3B-Instruct-2512
+    type: decoder
+  - description: 4B - Google's latest
+    name: google/gemma-3-4b-it
+    type: decoder
+  small:
+  - description: 1.7B - Qwen3 latest, best small model for fine-tuning
+    name: Qwen/Qwen3-1.7B
+    type: decoder
+output:
+  plot_format: png
+  save_models: false
+  save_selections: true
+selection:
+  methods:
+  - description: Random baseline
+    name: random
+  - description: Maximize semantic embedding diversity (facility location)
+    name: semantic_diversity
+  - description: Maximize syntactic structure diversity
+    name: syntactic_diversity
+  - description: Joint semantic + syntactic diversity
+    name: combined_diversity
+    weights:
+      semantic: 0.7
+      syntactic: 0.3
+  - description: Stratified by response length (baseline)
+    name: length_diversity
+  - description: Filter by perplexity/quality scores first, then diverse select
+    name: quality_filtered
+  target_sizes:
+  - 1000
+  - 2500
+  - 5000
+  - 10000

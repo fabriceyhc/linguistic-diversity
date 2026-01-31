@@ -400,6 +400,7 @@ def main():
         'phonological_diversity',
         # 'composite_diversity',  # Disabled - redundant with universal
         'universal_diversity',
+        'universal_embedding_diversity',  # NEW: diversity embeddings + submodular optimization
         'random_baseline',
         'full_dataset',  # No subsampling - train on all data
     ]

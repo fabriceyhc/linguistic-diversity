@@ -82,6 +82,15 @@ selection:
       phonological: 0.2
     combination_method: "weighted_sum"  # weighted_sum or concatenate
 
+  # Universal Embedding Diversity (NEW - uses diversity embeddings + submodular optimization)
+  universal_embedding:
+    selection_method: "facility_location"  # facility_location, max_min, or balanced
+    use_constituency_parse: false  # Requires benepar, slower
+    use_rhythmic: false  # Requires cadences
+    use_phonemic: false  # Requires g2p_en
+    # Metric weights for selection (optional, uniform if not specified)
+    metric_weights: null
+
 # Model training settings
 training:
   model_name: "gpt2"  # Use GPT2Config as base

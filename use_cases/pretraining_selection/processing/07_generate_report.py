@@ -60,6 +60,7 @@ def get_regime_order():
         'morphological_diversity',
         'phonological_diversity',
         'universal_diversity',
+        'universal_embedding_diversity',  # NEW: diversity embeddings + submodular optimization
         'random_baseline',
         'full_dataset'
     ]
@@ -74,6 +75,7 @@ def get_regime_display_names():
         'morphological_diversity': 'Morphological',
         'phonological_diversity': 'Phonological',
         'universal_diversity': 'Universal',
+        'universal_embedding_diversity': 'Universal Embed',  # NEW
         'random_baseline': 'Random',
         'full_dataset': 'Full Dataset'
     }
