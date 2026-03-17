@@ -1,5 +1,6 @@
 # Linguistic Diversity
 
+[![PyPI version](https://img.shields.io/pypi/v/linguistic-diversity.svg)](https://pypi.org/project/linguistic-diversity/)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -327,6 +328,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Links
 
 - **Documentation**: [linguistic-diversity.readthedocs.io](https://linguistic-diversity.readthedocs.io) *(coming soon)*
-- **PyPI**: [pypi.org/project/linguistic-diversity](https://pypi.org/project/linguistic-diversity) *(coming soon)*
+- **PyPI**: [pypi.org/project/linguistic-diversity](https://pypi.org/project/linguistic-diversity)
 - **Issues**: [GitHub Issues](https://github.com/fabriceyhc/linguistic-diversity/issues)
 - **Original Library**: [TextDiversity](https://github.com/fabriceyhc/TextDiversity)
