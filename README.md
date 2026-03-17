@@ -67,6 +67,32 @@ print(f"Corpus 1 document diversity: {doc_metric(corpus1):.2f}")
 print(f"Corpus 2 document diversity: {doc_metric(corpus2):.2f}")
 ```
 
+### Large Corpora: Scaled Estimation
+
+Computing exact diversity requires an O(n²) similarity matrix, which becomes expensive for large corpora. Every metric supports `estimate_diversity()` to handle this — it samples at increasing sizes, fits a growth curve (logarithmic, power-law, or asymptotic), and extrapolates to the full corpus size:
+
+```python
+from linguistic_diversity import TokenSemantics
+
+metric = TokenSemantics()
+
+# Instead of metric(large_corpus) — which builds an n×n similarity matrix
+result = metric.estimate_diversity(large_corpus, max_sample_size=200)
+
+print(f"Estimated diversity: {result.diversity:.3f} ± {result.std:.3f}")
+print(f"Method: {result.method}, Model: {result.model}")
+
+# Visualize the sampling curve and extrapolation
+result.plot()
+```
+
+`ScaledEstimationResult` includes:
+- `diversity` — extrapolated estimate for the full corpus
+- `std` — projected uncertainty scaled by extrapolation distance
+- `model` — best-fit growth model (`logarithmic`, `power_law`, or `asymptotic`)
+- `fit_rmse` — goodness of fit
+- `plot()` — visualize observed samples and the fitted curve
+
 ### Configuration
 
 All metrics accept configuration dictionaries:
