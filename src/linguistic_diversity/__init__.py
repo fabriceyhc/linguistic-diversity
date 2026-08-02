@@ -24,32 +24,36 @@ For diversity-based text selection:
 
 __version__ = "1.0.0"
 
-from .metric import DiversityMetric, Metric, ScaledEstimationResult, SimilarityMetric, TextDiversity
 from .diversities import (
-    # Semantic
-    TokenSemantics,
-    DocumentSemantics,
-    # Syntactic
-    DependencyParse,
-    ConstituencyParse,
-    # Morphological
-    PartOfSpeechSequence,
-    # Phonological
-    Rhythmic,
-    Phonemic,
-    # Universal
-    UniversalLinguisticDiversity,
-    get_preset_config,
     # Embedding constants
     DIVERSITY_EMBEDDING_METRICS,
     METRIC_TO_INDEX,
+    ConstituencyParse,
+    # Syntactic
+    DependencyParse,
+    DistinctN,
+    DocumentSemantics,
+    # Morphological
+    PartOfSpeechSequence,
+    Phonemic,
+    # Phonological
+    Rhythmic,
+    SelfBLEU,
+    # Semantic
+    TokenSemantics,
+    TypeTokenRatio,
+    # Universal
+    UniversalLinguisticDiversity,
+    clear_model_cache,
+    get_preset_config,
 )
+from .metric import DiversityMetric, Metric, ScaledEstimationResult, SimilarityMetric, TextDiversity
 from .selection import (
-    SelectionResult,
+    BalancedCoverageSelector,
     DiversitySelector,
     FacilityLocationSelector,
     MaxMinDiversitySelector,
-    BalancedCoverageSelector,
+    SelectionResult,
     select_diverse_texts,
 )
 
@@ -64,6 +68,10 @@ __all__ = [
     "ScaledEstimationResult",
     # Semantic metrics
     "TokenSemantics",
+    "TypeTokenRatio",
+    "DistinctN",
+    "SelfBLEU",
+    "clear_model_cache",
     "DocumentSemantics",
     # Syntactic metrics
     "DependencyParse",
