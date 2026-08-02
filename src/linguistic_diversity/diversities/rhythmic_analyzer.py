@@ -11,8 +11,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
-import pyphen
 import pronouncing
+import pyphen
 
 
 class RhythmicAnalyzer:
@@ -30,9 +30,10 @@ class RhythmicAnalyzer:
         self.dic = pyphen.Pyphen(lang=lang)
         # Preload pronouncing data
         try:
-            # Force download of CMU dictionary if needed
+            # Warm the CMU dictionary cache; failure here only costs a lazy load
+            # later, so it is deliberately non-fatal.
             _ = pronouncing.phones_for_word("test")
-        except Exception:
+        except Exception:  # noqa: S110 - warm-up only, never load-bearing
             pass
 
     def analyze_word(self, word: str) -> list[dict[str, Any]]:
@@ -64,11 +65,13 @@ class RhythmicAnalyzer:
             # Heavy syllables: contain long vowel, diphthong, or end in consonant
             weight = self._calculate_syllable_weight(syll)
 
-            results.append({
-                "syllable": syll,
-                "stress": stress,
-                "weight": weight,
-            })
+            results.append(
+                {
+                    "syllable": syll,
+                    "stress": stress,
+                    "weight": weight,
+                }
+            )
 
         return results
 
@@ -182,10 +185,12 @@ class RhythmicAnalyzer:
         for word in words:
             syllables = self.analyze_word(word)
             if syllables:
-                results.append({
-                    "word": word,
-                    "syllables": syllables,
-                })
+                results.append(
+                    {
+                        "word": word,
+                        "syllables": syllables,
+                    }
+                )
 
         return results
 

@@ -101,7 +101,7 @@ class TestPhonemic:
         assert diversity >= 0
         assert diversity <= 4
         # Verify backend
-        assert metric.backend == 'g2p_en'
+        assert metric.backend == "g2p_en"
 
     @pytest.mark.slow
     def test_basic_diversity_phonemizer(self, sample_corpus):
@@ -112,14 +112,14 @@ class TestPhonemic:
             pytest.skip("phonemizer library not installed")
 
         try:
-            metric = Phonemic({'backend': 'phonemizer'})
+            metric = Phonemic({"backend": "phonemizer"})
             diversity = metric(sample_corpus)
 
             # Should return a positive diversity score
             assert diversity >= 0
             assert diversity <= 4
             # Verify backend
-            assert metric.backend == 'phonemizer'
+            assert metric.backend == "phonemizer"
         except Exception as e:
             # espeak-ng might not be installed
             if "espeak" in str(e).lower():

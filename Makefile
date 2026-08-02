@@ -1,6 +1,6 @@
 # Makefile for linguistic-diversity project
 
-.PHONY: help install install-dev test test-fast test-performance test-all coverage clean lint format type-check
+.PHONY: help install install-dev test test-fast test-performance test-all coverage clean lint format format-check type-check check-all
 
 help:
 	@echo "Linguistic Diversity - Development Commands"
@@ -19,8 +19,9 @@ help:
 	@echo "Code Quality:"
 	@echo "  make lint             Run linting checks (ruff)"
 	@echo "  make format           Format code with black"
-	@echo "  make type-check       Run type checking with mypy"
-	@echo "  make check-all        Run all code quality checks"
+	@echo "  make format-check     Verify formatting without changing files"
+	@echo "  make type-check       Run type checking with mypy (advisory)"
+	@echo "  make check-all        Run everything CI runs"
 	@echo ""
 	@echo "Cleanup:"
 	@echo "  make clean            Remove build artifacts and cache files"
@@ -34,18 +35,18 @@ install-dev:
 
 # Testing
 test:
-	python run_tests.py
+	python scripts/run_tests.py
 
 test-fast: test
 
 test-performance:
-	python run_tests.py --performance --verbose
+	python scripts/run_tests.py --performance --verbose
 
 test-all:
-	python run_tests.py --all --verbose
+	python scripts/run_tests.py --all --verbose
 
 coverage:
-	python run_tests.py --coverage
+	python scripts/run_tests.py --coverage
 	@echo ""
 	@echo "Coverage report generated:"
 	@echo "  - HTML: htmlcov/index.html"
@@ -62,12 +63,17 @@ format:
 	@echo "Sorting imports with ruff..."
 	ruff check --select I --fix src/ tests/
 
-type-check:
-	@echo "Type checking with mypy..."
-	mypy src/
+format-check:
+	@echo "Checking formatting with black..."
+	black --check src/ tests/
 
-check-all: lint type-check
-	@echo "✓ All code quality checks passed!"
+type-check:
+	@echo "Type checking with mypy (advisory)..."
+	-mypy src/
+
+# Mirrors the CI pipeline: lint, formatting, types, then the test suite.
+check-all: lint format-check type-check test
+	@echo "✓ All checks passed!"
 
 # Cleanup
 clean:

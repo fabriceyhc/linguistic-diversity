@@ -76,6 +76,9 @@ class Rhythmic(TextDiversity):
         Requires pyphen and pronouncing libraries (pure Python, no system dependencies).
     """
 
+    # Narrow the base annotation so attribute access type-checks
+    config: PhonologicalConfig
+
     def __init__(self, config: dict[str, Any] | None = None) -> None:
         """Initialize rhythmic diversity metric.
 
@@ -95,7 +98,7 @@ class Rhythmic(TextDiversity):
             raise ImportError(
                 f"Rhythmic analysis dependencies not installed: {e}. "
                 "Install with: pip install pyphen pronouncing"
-            )
+            ) from e
 
     @classmethod
     def _config_class(cls) -> type[PhonologicalConfig]:
@@ -129,9 +132,7 @@ class Rhythmic(TextDiversity):
             # Alignment failed (e.g., empty sequences after processing)
             return 0.0
 
-    def extract_features(
-        self, corpus: list[str]
-    ) -> tuple[list[list[str]], list[str]]:
+    def extract_features(self, corpus: list[str]) -> tuple[list[list[str]], list[str]]:
         """Extract rhythmic patterns from corpus.
 
         Args:
@@ -149,8 +150,7 @@ class Rhythmic(TextDiversity):
 
         # Strip punctuation for rhythmic analysis
         corpus_no_punct = [
-            text.translate(str.maketrans("", "", string.punctuation))
-            for text in corpus
+            text.translate(str.maketrans("", "", string.punctuation)) for text in corpus
         ]
 
         # Extract rhythmic patterns using custom analyzer
@@ -174,16 +174,11 @@ class Rhythmic(TextDiversity):
 
         # Optionally pad to max length
         if self.config.pad_to_max_len:
-            rhythms = [
-                seq + ["N"] * (self.max_len - len(seq))
-                for seq in rhythms
-            ]
+            rhythms = [seq + ["N"] * (self.max_len - len(seq)) for seq in rhythms]
 
         return rhythms, corpus
 
-    def calculate_similarities(
-        self, features: list[list[str]]
-    ) -> npt.NDArray[np.float64]:
+    def calculate_similarities(self, features: list[list[str]]) -> npt.NDArray[np.float64]:
         """Calculate pairwise similarities using sequence alignment.
 
         Args:
@@ -285,6 +280,9 @@ class Phonemic(TextDiversity):
           - Windows: See https://github.com/espeak-ng/espeak-ng/releases
     """
 
+    # Narrow the base annotation so attribute access type-checks
+    config: PhonologicalConfig
+
     def __init__(self, config: dict[str, Any] | None = None) -> None:
         """Initialize phonemic diversity metric.
 
@@ -300,14 +298,15 @@ class Phonemic(TextDiversity):
         backend = self.config.backend
 
         # Try g2p_en first (pure Python, no system deps)
-        if backend == 'g2p_en':
+        if backend == "g2p_en":
             try:
                 from g2p_en import G2p
+
                 self.g2p = G2p()
-                self.backend = 'g2p_en'
+                self.backend = "g2p_en"
                 return
             except ImportError:
-                if self.config.verbose if hasattr(self.config, 'verbose') else False:
+                if self.config.verbose if hasattr(self.config, "verbose") else False:
                     print("g2p_en not found, trying phonemizer...")
 
         # Fall back to phonemizer
@@ -321,13 +320,13 @@ class Phonemic(TextDiversity):
             self.EspeakBackend = EspeakBackend
             self.Punctuation = Punctuation
             self.Separator = Separator
-            self.backend = 'phonemizer'
-        except ImportError:
+            self.backend = "phonemizer"
+        except ImportError as e:
             raise ImportError(
                 "No phoneme conversion library found. Install one of:\n"
                 "  1. g2p_en (pure Python, recommended): pip install g2p-en\n"
                 "  2. phonemizer (requires espeak-ng): pip install phonemizer"
-            )
+            ) from e
 
     @classmethod
     def _config_class(cls) -> type[PhonologicalConfig]:
@@ -361,9 +360,7 @@ class Phonemic(TextDiversity):
             # Alignment failed (e.g., empty sequences after processing)
             return 0.0
 
-    def extract_features(
-        self, corpus: list[str]
-    ) -> tuple[list[str], list[str]]:
+    def extract_features(self, corpus: list[str]) -> tuple[list[str], list[str]]:
         """Extract phoneme sequences from corpus.
 
         Args:
@@ -381,7 +378,7 @@ class Phonemic(TextDiversity):
 
         # Convert to phonemes based on backend
         try:
-            if self.backend == 'g2p_en':
+            if self.backend == "g2p_en":
                 # Use g2p_en (pure Python)
                 phonemes = []
                 for text in corpus:
@@ -418,16 +415,11 @@ class Phonemic(TextDiversity):
 
         # Optionally pad
         if self.config.pad_to_max_len:
-            phonemes = [
-                p + " " * (self.max_len - len(p))
-                for p in phonemes
-            ]
+            phonemes = [p + " " * (self.max_len - len(p)) for p in phonemes]
 
         return phonemes, corpus
 
-    def calculate_similarities(
-        self, features: list[str]
-    ) -> npt.NDArray[np.float64]:
+    def calculate_similarities(self, features: list[str]) -> npt.NDArray[np.float64]:
         """Calculate pairwise similarities using sequence alignment.
 
         Args:

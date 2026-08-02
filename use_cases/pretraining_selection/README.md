@@ -71,7 +71,7 @@ python processing/01_download_data.py
 python processing/02_extract_features.py
 python processing/03_select_subsets.py
 python processing/04_train_models.py
-python processing/05_evaluate_models.py
+python processing/05_evaluate_models_and_diversity.py
 python processing/06_generate_report.py
 ```
 
@@ -155,7 +155,7 @@ pretraining_selection/
 │   ├── 03_select_subsets.py
 │   ├── model_utils.py
 │   ├── 04_train_models.py
-│   ├── 05_evaluate_models.py
+│   ├── 05_evaluate_models_and_diversity.py
 │   └── 06_generate_report.py
 ├── config.yaml                     # Configuration
 ├── run_pipeline.py                 # Master pipeline

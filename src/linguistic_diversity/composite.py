@@ -9,7 +9,6 @@ from __future__ import annotations
 from typing import Any, Literal
 
 import numpy as np
-import numpy.typing as npt
 
 from .diversities import (
     ConstituencyParse,
@@ -53,19 +52,21 @@ class CompositeDiversity:
     # Empirical evidence from DementiaBank evaluation (498 subjects)
     # Format: metric_name -> (cohen's_d, p_value, direction)
     DEMENTIA_EVIDENCE = {
-        'doc_semantic': (0.621, 1.31e-11, 'Control > Dementia'),
-        'token_semantic': (0.290, 0.0013, 'Control > Dementia'),
-        'syntactic_const': (0.247, 0.0056, 'Control > Dementia'),
-        'syntactic_dep': (0.165, 0.0681, 'Control > Dementia'),
-        'morphological': (0.161, 0.0787, 'Control > Dementia'),
-        'phonemic': (0.117, 0.1911, 'Control > Dementia'),
-        'rhythmic': (-0.091, 0.2984, 'Dementia > Control'),  # Inverted
-        'lexical_ttr': (0.051, 0.5666, 'Control > Dementia'),
+        "doc_semantic": (0.621, 1.31e-11, "Control > Dementia"),
+        "token_semantic": (0.290, 0.0013, "Control > Dementia"),
+        "syntactic_const": (0.247, 0.0056, "Control > Dementia"),
+        "syntactic_dep": (0.165, 0.0681, "Control > Dementia"),
+        "morphological": (0.161, 0.0787, "Control > Dementia"),
+        "phonemic": (0.117, 0.1911, "Control > Dementia"),
+        "rhythmic": (-0.091, 0.2984, "Dementia > Control"),  # Inverted
+        "lexical_ttr": (0.051, 0.5666, "Control > Dementia"),
     }
 
     def __init__(
         self,
-        strategy: Literal['effect_size', 'significance', 'hybrid', 'equal', 'custom'] = 'effect_size',
+        strategy: Literal[
+            "effect_size", "significance", "hybrid", "equal", "custom"
+        ] = "effect_size",
         custom_weights: dict[str, float] | None = None,
         significance_threshold: float = 0.05,
         min_effect_size: float = 0.2,
@@ -105,41 +106,43 @@ class CompositeDiversity:
         Returns:
             Dictionary of metric_name -> weight.
         """
-        if self.strategy == 'custom':
+        if self.strategy == "custom":
             return self.custom_weights.copy()
 
-        elif self.strategy == 'equal':
+        elif self.strategy == "equal":
             # Equal weights for all metrics
-            return {name: 1.0 for name in self.DEMENTIA_EVIDENCE.keys()}
+            return dict.fromkeys(self.DEMENTIA_EVIDENCE.keys(), 1.0)
 
-        elif self.strategy == 'effect_size':
+        elif self.strategy == "effect_size":
             # Weight by Cohen's d (only positive effects above threshold)
             weights = {}
-            for name, (d, p, direction) in self.DEMENTIA_EVIDENCE.items():
+            for name, (d, _p, direction) in self.DEMENTIA_EVIDENCE.items():
                 # Only include metrics with:
                 # 1. Positive effect (higher diversity in controls)
                 # 2. At least small effect size (|d| >= min_effect_size)
-                if d >= self.min_effect_size and 'Control > Dementia' in direction:
+                if d >= self.min_effect_size and "Control > Dementia" in direction:
                     weights[name] = d
             return weights
 
-        elif self.strategy == 'significance':
+        elif self.strategy == "significance":
             # Weight by inverse p-value (only significant metrics)
             weights = {}
-            for name, (d, p, direction) in self.DEMENTIA_EVIDENCE.items():
-                if p < self.significance_threshold and 'Control > Dementia' in direction:
+            for name, (_d, p, direction) in self.DEMENTIA_EVIDENCE.items():
+                if p < self.significance_threshold and "Control > Dementia" in direction:
                     # Use -log10(p) as weight (so p=0.001 -> weight=3, p=0.05 -> weight=1.3)
                     weights[name] = -np.log10(p)
             return weights
 
-        elif self.strategy == 'hybrid':
+        elif self.strategy == "hybrid":
             # Combine effect size and significance
             # Weight = d * -log10(p) for significant metrics with small+ effect
             weights = {}
             for name, (d, p, direction) in self.DEMENTIA_EVIDENCE.items():
-                if (p < self.significance_threshold and
-                    d >= self.min_effect_size and
-                    'Control > Dementia' in direction):
+                if (
+                    p < self.significance_threshold
+                    and d >= self.min_effect_size
+                    and "Control > Dementia" in direction
+                ):
                     # Multiplicative: both effect size and significance matter
                     weights[name] = d * (-np.log10(p))
             return weights
@@ -150,13 +153,13 @@ class CompositeDiversity:
     def _initialize_metrics(self) -> None:
         """Initialize only the metrics that have non-zero weights."""
         metric_classes = {
-            'doc_semantic': DocumentSemantics,
-            'token_semantic': TokenSemantics,
-            'syntactic_dep': DependencyParse,
-            'syntactic_const': ConstituencyParse,
-            'morphological': PartOfSpeechSequence,
-            'phonemic': Phonemic,
-            'rhythmic': Rhythmic,
+            "doc_semantic": DocumentSemantics,
+            "token_semantic": TokenSemantics,
+            "syntactic_dep": DependencyParse,
+            "syntactic_const": ConstituencyParse,
+            "morphological": PartOfSpeechSequence,
+            "phonemic": Phonemic,
+            "rhythmic": Rhythmic,
         }
 
         for name, weight in self.weights.items():
@@ -202,10 +205,9 @@ class CompositeDiversity:
         if total_weight == 0:
             return 0.0
 
-        composite_score = sum(
-            scores[name] * self.weights[name]
-            for name in scores.keys()
-        ) / total_weight
+        composite_score = (
+            sum(scores[name] * self.weights[name] for name in scores.keys()) / total_weight
+        )
 
         return float(composite_score)
 
@@ -220,14 +222,14 @@ class CompositeDiversity:
         """
         # Expected ranges from DementiaBank data (mean ± 3*std covers ~99.7%)
         expected_ranges = {
-            'doc_semantic': (1.556, 7.028),      # Observed range
-            'token_semantic': (8.266, 63.446),   # Observed range
-            'syntactic_dep': (1.009, 1.083),     # Observed range
-            'syntactic_const': (1.000, 1.000),   # Constant
-            'morphological': (1.600, 166.504),   # Observed range (with outliers)
-            'phonemic': (2.000, 49.000),         # Observed range
-            'rhythmic': (1.385, 674.630),        # Observed range (with outliers)
-            'lexical_ttr': (0.302, 0.814),       # Observed range
+            "doc_semantic": (1.556, 7.028),  # Observed range
+            "token_semantic": (8.266, 63.446),  # Observed range
+            "syntactic_dep": (1.009, 1.083),  # Observed range
+            "syntactic_const": (1.000, 1.000),  # Constant
+            "morphological": (1.600, 166.504),  # Observed range (with outliers)
+            "phonemic": (2.000, 49.000),  # Observed range
+            "rhythmic": (1.385, 674.630),  # Observed range (with outliers)
+            "lexical_ttr": (0.302, 0.814),  # Observed range
         }
 
         normalized = {}
@@ -275,9 +277,7 @@ class CompositeDiversity:
         return scores
 
 
-def get_dementia_detector(
-    config: dict[str, Any] | None = None
-) -> CompositeDiversity:
+def get_dementia_detector(config: dict[str, Any] | None = None) -> CompositeDiversity:
     """Get a pre-configured composite metric optimized for dementia detection.
 
     This uses the 'effect_size' strategy based on DementiaBank empirical evidence,
@@ -294,8 +294,8 @@ def get_dementia_detector(
         >>> diversity = detector(['The boy is getting a cookie.', 'The woman is washing dishes.'])
     """
     return CompositeDiversity(
-        strategy='effect_size',
+        strategy="effect_size",
         min_effect_size=0.2,  # Include small+ effects
         normalize_scores=True,
-        config=config or {}
+        config=config or {},
     )

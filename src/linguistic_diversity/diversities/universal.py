@@ -16,7 +16,6 @@ import numpy.typing as npt
 
 from ..metric import DiversityMetric, MetricConfig
 
-
 # Fixed ordering of metrics in diversity embeddings
 # This ensures consistent vector positions across all calls
 DIVERSITY_EMBEDDING_METRICS = [
@@ -116,9 +115,7 @@ class UniversalLinguisticDiversity(DiversityMetric):
         config: Configuration dictionary or UniversalDiversityConfig object
     """
 
-    def __init__(
-        self, config: UniversalDiversityConfig | dict[str, Any] | None = None
-    ) -> None:
+    def __init__(self, config: UniversalDiversityConfig | dict[str, Any] | None = None) -> None:
         """Initialize universal diversity metric."""
         super().__init__(config)
         self._metrics: dict[str, DiversityMetric] = {}
@@ -267,7 +264,9 @@ class UniversalLinguisticDiversity(DiversityMetric):
             if "document_semantics" in scores:
                 sem_scores.append(scores["document_semantics"])
             if sem_scores:
-                branch_scores["semantic"] = float(np.power(np.prod(sem_scores), 1 / len(sem_scores)))
+                branch_scores["semantic"] = float(
+                    np.power(np.prod(sem_scores), 1 / len(sem_scores))
+                )
                 branch_weights["semantic"] = cfg.semantic_weight
 
         # Syntactic branch
@@ -278,7 +277,9 @@ class UniversalLinguisticDiversity(DiversityMetric):
             if "constituency_parse" in scores:
                 syn_scores.append(scores["constituency_parse"])
             if syn_scores:
-                branch_scores["syntactic"] = float(np.power(np.prod(syn_scores), 1 / len(syn_scores)))
+                branch_scores["syntactic"] = float(
+                    np.power(np.prod(syn_scores), 1 / len(syn_scores))
+                )
                 branch_weights["syntactic"] = cfg.syntactic_weight
 
         # Morphological branch
@@ -294,7 +295,9 @@ class UniversalLinguisticDiversity(DiversityMetric):
             if "phonemic" in scores:
                 pho_scores.append(scores["phonemic"])
             if pho_scores:
-                branch_scores["phonological"] = float(np.power(np.prod(pho_scores), 1 / len(pho_scores)))
+                branch_scores["phonological"] = float(
+                    np.power(np.prod(pho_scores), 1 / len(pho_scores))
+                )
                 branch_weights["phonological"] = cfg.phonological_weight
 
         if not branch_scores:
@@ -427,7 +430,9 @@ class UniversalLinguisticDiversity(DiversityMetric):
                 if k in ["token_semantics", "document_semantics"]
             ]
             if sem_scores:
-                branch_scores["semantic"] = float(np.power(np.prod(sem_scores), 1 / len(sem_scores)))
+                branch_scores["semantic"] = float(
+                    np.power(np.prod(sem_scores), 1 / len(sem_scores))
+                )
 
         # Syntactic
         if cfg.use_syntactic:
@@ -437,7 +442,9 @@ class UniversalLinguisticDiversity(DiversityMetric):
                 if k in ["dependency_parse", "constituency_parse"]
             ]
             if syn_scores:
-                branch_scores["syntactic"] = float(np.power(np.prod(syn_scores), 1 / len(syn_scores)))
+                branch_scores["syntactic"] = float(
+                    np.power(np.prod(syn_scores), 1 / len(syn_scores))
+                )
 
         # Morphological
         if cfg.use_morphological and "pos_sequence" in metric_scores:
@@ -445,11 +452,11 @@ class UniversalLinguisticDiversity(DiversityMetric):
 
         # Phonological
         if cfg.use_phonological:
-            pho_scores = [
-                s for k, s in metric_scores.items() if k in ["rhythmic", "phonemic"]
-            ]
+            pho_scores = [s for k, s in metric_scores.items() if k in ["rhythmic", "phonemic"]]
             if pho_scores:
-                branch_scores["phonological"] = float(np.power(np.prod(pho_scores), 1 / len(pho_scores)))
+                branch_scores["phonological"] = float(
+                    np.power(np.prod(pho_scores), 1 / len(pho_scores))
+                )
 
         # Compute universal score
         universal_score = self(corpus)
@@ -535,9 +542,7 @@ class UniversalLinguisticDiversity(DiversityMetric):
 
         if corpus is None or not corpus:
             if self.config.verbose:
-                print(
-                    f"Warning: No corpus provided and missing metrics: {metrics_to_compute}"
-                )
+                print(f"Warning: No corpus provided and missing metrics: {metrics_to_compute}")
             if normalize:
                 embedding = self._normalize_embedding(embedding)
             return embedding
@@ -585,15 +590,17 @@ class UniversalLinguisticDiversity(DiversityMetric):
         # Empirical max values for each metric (after log1p transform)
         # These are approximate upper bounds based on typical corpora
         # log1p(100) ≈ 4.6, log1p(50) ≈ 3.9, log1p(10) ≈ 2.4
-        log_max_values = np.array([
-            5.0,  # token_semantics: can be very high (Hill number)
-            4.0,  # document_semantics: typically lower
-            3.0,  # dependency_parse: structural diversity
-            3.0,  # constituency_parse: structural diversity
-            3.0,  # pos_sequence: morphological patterns
-            2.5,  # rhythmic: phonological
-            2.5,  # phonemic: phonological
-        ])
+        log_max_values = np.array(
+            [
+                5.0,  # token_semantics: can be very high (Hill number)
+                4.0,  # document_semantics: typically lower
+                3.0,  # dependency_parse: structural diversity
+                3.0,  # constituency_parse: structural diversity
+                3.0,  # pos_sequence: morphological patterns
+                2.5,  # rhythmic: phonological
+                2.5,  # phonemic: phonological
+            ]
+        )
 
         # Apply log1p to compress range, then scale to [0, 1]
         normalized = np.log1p(np.maximum(embedding, 0)) / log_max_values
@@ -708,9 +715,7 @@ class UniversalLinguisticDiversity(DiversityMetric):
                 n_docs = len(precomputed_scores)
                 embeddings = np.zeros((n_docs, n_metrics), dtype=np.float64)
                 for i, scores in enumerate(precomputed_scores):
-                    embeddings[i] = self.assemble_diversity_embedding(
-                        scores, normalize=normalize
-                    )
+                    embeddings[i] = self.assemble_diversity_embedding(scores, normalize=normalize)
                 return embeddings
             return np.zeros((0, n_metrics), dtype=np.float64)
 
@@ -745,8 +750,7 @@ class UniversalLinguisticDiversity(DiversityMetric):
 
                 # If we have all scores precomputed, just assemble
                 if precomputed and all(
-                    name in precomputed for name in self._metrics.keys()
-                    if name in METRIC_TO_INDEX
+                    name in precomputed for name in self._metrics.keys() if name in METRIC_TO_INDEX
                 ):
                     embeddings[i] = self.assemble_diversity_embedding(
                         precomputed, normalize=normalize
@@ -770,9 +774,7 @@ class UniversalLinguisticDiversity(DiversityMetric):
 
                 # For windowed mode, we don't use per-doc precomputed scores
                 # (would need to aggregate them meaningfully)
-                window_embedding = self.compute_diversity_embedding(
-                    window, normalize=normalize
-                )
+                window_embedding = self.compute_diversity_embedding(window, normalize=normalize)
 
                 # Assign embedding to all documents in window
                 for j in range(i, window_end):
@@ -886,9 +888,7 @@ class UniversalLinguisticDiversity(DiversityMetric):
         except Exception:
             return len(set(words)) / len(words) if words else 0.0
 
-    def _compute_syntactic_complexity(
-        self, metric: DiversityMetric, doc: str
-    ) -> float:
+    def _compute_syntactic_complexity(self, metric: DiversityMetric, doc: str) -> float:
         """Compute syntactic complexity for a single document."""
         # Split into sentences and measure diversity across them
         import re
@@ -936,9 +936,7 @@ class UniversalLinguisticDiversity(DiversityMetric):
         except Exception:
             return 0.5
 
-    def _compute_phonological_richness(
-        self, metric: DiversityMetric, doc: str
-    ) -> float:
+    def _compute_phonological_richness(self, metric: DiversityMetric, doc: str) -> float:
         """Compute phonological richness for a single document."""
         import re
 
@@ -1088,7 +1086,5 @@ def get_preset_config(preset: str) -> dict[str, Any]:
         ValueError: If preset name is unknown.
     """
     if preset not in PRESET_CONFIGS:
-        raise ValueError(
-            f"Unknown preset '{preset}'. Available: {list(PRESET_CONFIGS.keys())}"
-        )
+        raise ValueError(f"Unknown preset '{preset}'. Available: {list(PRESET_CONFIGS.keys())}")
     return PRESET_CONFIGS[preset].copy()

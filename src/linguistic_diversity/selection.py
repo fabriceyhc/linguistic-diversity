@@ -85,7 +85,7 @@ class FacilityLocationSelector(DiversitySelector):
         self,
         metric_weights: npt.NDArray[np.float64] | None = None,
         similarity_fn: str = "cosine",
-    ):
+    ) -> None:
         """Initialize the facility location selector.
 
         Args:
@@ -128,8 +128,7 @@ class FacilityLocationSelector(DiversitySelector):
             weights = np.asarray(self.metric_weights)
             if weights.shape[0] != n_metrics:
                 raise ValueError(
-                    f"metric_weights has {weights.shape[0]} elements, "
-                    f"expected {n_metrics}"
+                    f"metric_weights has {weights.shape[0]} elements, " f"expected {n_metrics}"
                 )
             embeddings = embeddings * np.sqrt(weights)
 
@@ -185,16 +184,13 @@ class FacilityLocationSelector(DiversitySelector):
 
             # Update max similarities and marginal gains
             new_sims = similarity[best_idx]
-            improvement = np.maximum(new_sims - max_sim_to_selected, 0)
             max_sim_to_selected = np.maximum(max_sim_to_selected, new_sims)
 
             # Marginal gain of adding item j is now:
             # sum_i max(sim(i,j), max_sim_to_selected[i]) - sum_i max_sim_to_selected[i]
             # = sum_i max(sim(i,j) - max_sim_to_selected[i], 0)
             for j in remaining:
-                marginal_gains[j] = np.sum(
-                    np.maximum(similarity[j] - max_sim_to_selected, 0)
-                )
+                marginal_gains[j] = np.sum(np.maximum(similarity[j] - max_sim_to_selected, 0))
 
             if verbose and (step + 1) % max(1, n_select // 10) == 0:
                 print(f"  Selected {step + 1}/{n_select} items")
@@ -243,7 +239,7 @@ class MaxMinDiversitySelector(DiversitySelector):
     def __init__(
         self,
         metric_weights: npt.NDArray[np.float64] | None = None,
-    ):
+    ) -> None:
         """Initialize the max-min diversity selector.
 
         Args:
@@ -367,7 +363,7 @@ class BalancedCoverageSelector(DiversitySelector):
     def __init__(
         self,
         min_coverage_per_metric: float = 0.5,
-    ):
+    ) -> None:
         """Initialize the balanced coverage selector.
 
         Args:
@@ -426,9 +422,7 @@ class BalancedCoverageSelector(DiversitySelector):
             below_threshold = current_coverage < self.min_coverage_per_metric
             if below_threshold.any():
                 # Focus on least covered metric
-                target_metric = np.argmin(
-                    np.where(below_threshold, current_coverage, np.inf)
-                )
+                target_metric = np.argmin(np.where(below_threshold, current_coverage, np.inf))
             else:
                 # All metrics above threshold, optimize overall
                 target_metric = None
@@ -439,15 +433,11 @@ class BalancedCoverageSelector(DiversitySelector):
 
             for idx in remaining_list:
                 # Compute improvement in coverage if we add this item
-                candidate_sims = (
-                    embeddings_norm @ embeddings_norm[idx : idx + 1].T
-                ).flatten()
+                candidate_sims = (embeddings_norm @ embeddings_norm[idx : idx + 1].T).flatten()
 
                 if target_metric is not None:
                     # Score = improvement in target metric
-                    new_coverage = np.maximum(
-                        per_metric_max_sim[:, target_metric], candidate_sims
-                    )
+                    new_coverage = np.maximum(per_metric_max_sim[:, target_metric], candidate_sims)
                     score = new_coverage.mean() - current_coverage[target_metric]
                 else:
                     # Score = improvement in min coverage across all metrics
@@ -471,9 +461,7 @@ class BalancedCoverageSelector(DiversitySelector):
             remaining.remove(best_idx)
 
             # Update per-metric similarities
-            new_sims = (
-                embeddings_norm @ embeddings_norm[best_idx : best_idx + 1].T
-            ).flatten()
+            new_sims = (embeddings_norm @ embeddings_norm[best_idx : best_idx + 1].T).flatten()
             for m in range(n_metrics):
                 per_metric_max_sim[:, m] = np.maximum(
                     per_metric_max_sim[:, m],
@@ -553,9 +541,7 @@ def select_diverse_texts(
     }
 
     if method not in selectors:
-        raise ValueError(
-            f"Unknown method '{method}'. Available: {list(selectors.keys())}"
-        )
+        raise ValueError(f"Unknown method '{method}'. Available: {list(selectors.keys())}")
 
     selector = selectors[method]()
     return selector.select(embeddings, n_select, seed=seed, verbose=verbose)

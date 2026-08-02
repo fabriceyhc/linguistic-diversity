@@ -30,10 +30,11 @@ python full_dataset_evaluation.py
 
 # 2. Calibration + cross-validation (30-45 minutes)
 python confidence_and_cv_evaluation.py
-
-# 3. Failure analysis (15-20 minutes)
-python failure_analysis.py
 ```
+
+The intermediate experiments that led here are kept in
+[`experiments/`](experiments/) for provenance; they are superseded by the two scripts
+above.
 
 ### Use Production Model
 
@@ -177,39 +178,22 @@ print(f"{decision} - {action} (confidence: {confidence:.2f})")
 
 **Key Achievement**: Competitive with deep learning using only interpretable, shallow features!
 
-## Files & Documentation
+## Files
 
-### Core Scripts
+| path | purpose |
+|---|---|
+| `authorship_verification.py` | Zero-shot baseline using the diversity delta alone |
+| `full_dataset_evaluation.py` | Traditional vs. inter-text vs. hybrid, on all 30,772 pairs |
+| `confidence_and_cv_evaluation.py` | Calibration and cross-validation |
+| `experiments/` | Superseded development iterations, kept for provenance |
+| `output/verification/` | Committed run reports |
 
-1. **`full_dataset_evaluation.py`** - Complete validation on 30,772 pairs
-2. **`confidence_and_cv_evaluation.py`** - Calibration + cross-validation
-3. **`failure_analysis.py`** - Error pattern analysis (no data leakage)
+### Regenerating artifacts
 
-### Documentation
-
-- **`PROJECT_SUMMARY.md`** - Complete project overview
-- **`DEFINITIVE_RESULTS.md`** - Full dataset results analysis
-- **`CONFIDENCE_CV_GUIDE.md`** - Calibration & CV methodology
-- **`FAILURE_ANALYSIS_GUIDE.md`** - Error analysis interpretation
-- **`SUBSET_BIAS_INVESTIGATION.md`** - Methodological lessons learned
-
-### Output Artifacts
-
-**Models** (in `output/verification/`):
-- `calibrated_model_hybrid_combined_randomforest.pkl` - **Production model**
-- `calibrated_model_traditional_stylometry_randomforest.pkl` - Baseline
-- `calibrated_model_inter-text_similarity_randomforest.pkl` - Our contribution
-
-**Visualizations**:
-- `confidence_cv_summary.png` - Performance dashboard
-- `calibration_curves.png` - Calibration quality
-- `cv_distributions.png` - Cross-validation stability
-- `failure_analysis_corrected.png` - Error patterns
-- `full_dataset_final_results.png` - Complete comparison
-
-**Data**:
-- `full_dataset_all_features.csv` - All 30,772 pairs with computed features
-- `failure_cases_corrected.csv` - 2,744 failure cases for analysis
+Only the text reports in `output/verification/` are committed. The trained models
+(`.pkl`), figures (`.png`), and per-pair feature tables (`.csv`) are **not** — they are
+large and reproducible. Running `full_dataset_evaluation.py` followed by
+`confidence_and_cv_evaluation.py` regenerates them into `output/verification/`.
 
 ## Requirements
 

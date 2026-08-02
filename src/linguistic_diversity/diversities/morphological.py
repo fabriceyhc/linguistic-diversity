@@ -69,6 +69,9 @@ class PartOfSpeechSequence(TextDiversity):
         >>> diversity = metric(corpus)
     """
 
+    # Narrow the base annotation so attribute access type-checks
+    config: MorphologicalConfig
+
     def __init__(self, config: dict[str, Any] | None = None) -> None:
         """Initialize POS sequence diversity metric.
 
@@ -112,9 +115,7 @@ class PartOfSpeechSequence(TextDiversity):
             # Alignment failed (e.g., empty sequences after processing)
             return 0.0
 
-    def extract_features(
-        self, corpus: list[str]
-    ) -> tuple[list[list[str]], list[str]]:
+    def extract_features(self, corpus: list[str]) -> tuple[list[list[str]], list[str]]:
         """Extract POS tag sequences from corpus.
 
         Args:
@@ -142,16 +143,11 @@ class PartOfSpeechSequence(TextDiversity):
 
         # Optionally pad to max length
         if self.config.pad_to_max_len:
-            pos_sequences = [
-                seq + ["NULL"] * (self.max_len - len(seq))
-                for seq in pos_sequences
-            ]
+            pos_sequences = [seq + ["NULL"] * (self.max_len - len(seq)) for seq in pos_sequences]
 
         return pos_sequences, corpus
 
-    def calculate_similarities(
-        self, features: list[list[str]]
-    ) -> npt.NDArray[np.float64]:
+    def calculate_similarities(self, features: list[list[str]]) -> npt.NDArray[np.float64]:
         """Calculate pairwise similarities using sequence alignment.
 
         Args:

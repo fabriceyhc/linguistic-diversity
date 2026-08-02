@@ -137,23 +137,21 @@ models/
 .cache/
 transformers_cache/
 
-# Data
-data/
-*.csv
-*.tsv
-*.json
-!examples/**/*.json
-!tests/**/*.json
-
-# Test outputs
-*.png
-*.jpg
-*.jpeg
-*.svg
+# Generated artifacts.
+# Deliberately narrow. Blanket *.json / *.csv / data/ rules silently swallow
+# source files (benchmark seed data, fixtures) and the omission is invisible
+# until someone clones the repo. use_cases/*/output/ holds committed research
+# results by convention, so it is NOT ignored -- only run logs and caches are.
+*.log
+models/
+.cache/
+transformers_cache/
 
 # Temporary scripts
 fix_*.sh
 test_*.py
+# ...but the real test suite is not a temporary script
+!tests/test_*.py
 debug_*.py
 verify_*.sh
 setup_*.sh
