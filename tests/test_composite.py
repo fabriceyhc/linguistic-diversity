@@ -159,8 +159,11 @@ class TestDegradesWithoutOptionalExtras:
             metric = CompositeDiversity(strategy="equal")
 
         assert metric.metrics, "every metric was dropped"
-        assert set(metric.unavailable) == {"phonemic", "rhythmic"}
+        # A superset check, not equality: other metrics may also be unavailable
+        # depending on which extras the environment has (benepar, for instance).
+        assert {"phonemic", "rhythmic"} <= set(metric.unavailable)
         assert "rhythmic" not in metric.metrics
+        assert set(metric.unavailable).isdisjoint(metric.metrics)
 
     def test_weights_are_renormalized_after_exclusions(self, phonological_unavailable):
         with pytest.warns(RuntimeWarning):
