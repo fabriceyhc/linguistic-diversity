@@ -269,7 +269,7 @@ class TokenSemantics(TextDiversity[npt.NDArray[np.float64]]):
         # sharpens the similarity contrast without distorting the ordering, which
         # roughly doubles the separation between a paraphrase corpus and a genuinely
         # varied one relative to the Chebyshev/exp alternative, at no measurable cost
-        # to rank agreement with ground truth. See use_cases/embedder_selection/.
+        # to rank agreement with ground truth. See benchmarks/embedder_selection/.
         return {
             "model_name": "bert-base-uncased",
             "batch_size": 16,

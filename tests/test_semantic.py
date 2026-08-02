@@ -105,7 +105,7 @@ class TestSemanticDefaults:
 
     These defaults were selected by sweeping the distance/scaling options and
     validating on 68 corpora with known ground-truth diversity plus 600
-    human-scored McDiv sets (see use_cases/embedder_selection/). A silent change
+    human-scored McDiv sets (see benchmarks/embedder_selection/). A silent change
     here would move every documented score, so assert them explicitly.
     """
 

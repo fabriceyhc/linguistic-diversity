@@ -118,6 +118,11 @@ opt-in via `use_constituency_parse: True`. Presets: `balanced`, `semantic_focus`
 [docs/universal-metric.md](docs/universal-metric.md). Reproduce the table with
 [`examples/all_metrics.py`](examples/all_metrics.py).
 
+Each metric's default distance and similarity settings were chosen by measurement, not
+assumption — see [`benchmarks/embedder_selection/`](benchmarks/embedder_selection/),
+which scores embedders against corpora with known ground-truth diversity and 600
+human-judged response sets.
+
 ## Large corpora
 
 Exact diversity needs an O(n²) similarity matrix. Every metric offers
@@ -182,5 +187,6 @@ hints throughout, and a pytest suite.
 - **PyPI**: [pypi.org/project/linguistic-diversity](https://pypi.org/project/linguistic-diversity)
 - **Issues**: [GitHub Issues](https://github.com/fabriceyhc/linguistic-diversity/issues)
 - **Docs**: [universal metric](docs/universal-metric.md) · [troubleshooting](docs/troubleshooting.md)
+- **Experiments**: [linguistic-diversity-experiments](https://github.com/fabriceyhc/linguistic-diversity-experiments) — authorship verification, dementia detection, diversity-based data selection
 - **License**: MIT, see [LICENSE](LICENSE)
 - Ecological diversity theory from Chao et al. (2014)

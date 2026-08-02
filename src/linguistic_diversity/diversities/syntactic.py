@@ -47,7 +47,7 @@ class SyntacticConfig(MetricConfig):
     # Default is tree_edit_distance: it needs no optional dependency and actually
     # discriminates. The "ldp"/"feather" graph embeddings require karateclub (which
     # pins numpy<1.23) and, because their histograms are compared by raw cosine,
-    # return ~1.0 even for wildly different parses -- see use_cases/ for measurements.
+    # return ~1.0 even for wildly different parses -- see benchmarks/ for measurements.
     similarity_type: str = "tree_edit_distance"
     n_components: int | str | None = None  # PCA dimensions ("auto" or int)
 
