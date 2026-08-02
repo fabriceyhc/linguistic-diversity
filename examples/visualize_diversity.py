@@ -6,10 +6,17 @@ This script demonstrates all diversity metrics with visualizations of:
 - Internal representations (embeddings, parse trees, etc.)
 """
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
+
+try:
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+except ImportError as e:  # pragma: no cover - guidance path
+    raise SystemExit(
+        f"This example needs the plotting extras ({e.name} is missing).\n"
+        "Install them with:  pip install 'linguistic-diversity[viz]'"
+    ) from e
 from pathlib import Path
 
 from linguistic_diversity import (

@@ -34,3 +34,11 @@ pip install -e "..[all]"
 - Set `use_cuda=True` in the config if you have a GPU for faster processing
 - For large corpora, consider using `batch_size=64` or higher
 - Models are cached after first load, so subsequent runs are faster
+
+## Requirements
+
+`visualize_diversity.py` needs the plotting extras:
+
+```bash
+pip install 'linguistic-diversity[viz]'
+```
