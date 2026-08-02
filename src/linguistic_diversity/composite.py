@@ -6,6 +6,7 @@ using evidence-based weighting strategies.
 
 from __future__ import annotations
 
+import warnings
 from typing import Any, Literal
 
 import numpy as np
@@ -95,6 +96,8 @@ class CompositeDiversity:
 
         # Initialize metrics that have non-zero weights
         self.metrics: dict[str, Any] = {}
+        # Metrics skipped because an optional dependency is missing
+        self.unavailable: dict[str, str] = {}
         self._initialize_metrics()
 
         # Normalization statistics (computed on first call)
@@ -164,8 +167,24 @@ class CompositeDiversity:
 
         for name, weight in self.weights.items():
             if weight > 0 and name in metric_classes:
-                # Initialize with user config
-                self.metrics[name] = metric_classes[name](self.config.get(name, {}))
+                try:
+                    self.metrics[name] = metric_classes[name](self.config.get(name, {}))
+                except ImportError as exc:
+                    # Phonological and constituency metrics need optional extras.
+                    # Drop the metric and renormalize rather than making the whole
+                    # composite unconstructable because one dependency is absent.
+                    self.unavailable[name] = str(exc).splitlines()[0]
+                    warnings.warn(
+                        f"Excluding '{name}' from the composite: {self.unavailable[name]}",
+                        RuntimeWarning,
+                        stacklevel=3,
+                    )
+
+        if self.unavailable:
+            self.weights = {k: v for k, v in self.weights.items() if k in self.metrics}
+            total = sum(self.weights.values())
+            if total > 0:
+                self.weights = {k: v / total for k, v in self.weights.items()}
 
     def __call__(self, corpus: list[str]) -> float:
         """Compute composite diversity for a corpus.

@@ -7,6 +7,7 @@ that do need real metrics are marked slow.
 
 import pytest
 
+from linguistic_diversity import composite as composite_module
 from linguistic_diversity.composite import CompositeDiversity
 
 
@@ -130,3 +131,48 @@ class TestCompositeScoring:
             strategy="custom", custom_weights={"doc_semantic": 1.0}, normalize_scores=False
         )
         assert composite(corpus) == pytest.approx(DocumentSemantics()(corpus), rel=0.01)
+
+
+class TestDegradesWithoutOptionalExtras:
+    """The composite must be constructable without the optional extras.
+
+    Rhythmic and Phonemic need pyphen/pronouncing/g2p_en, which live behind the
+    [phonological] extra. Constructing them eagerly made CompositeDiversity
+    unusable on a plain install -- caught by CI, which installs only [dev].
+
+    The unavailable dependency is simulated by making those two constructors
+    raise, rather than by hiding the modules: once another test has imported
+    pyphen, the module object is already bound in the analyser's globals and
+    patching sys.modules no longer has any effect.
+    """
+
+    @pytest.fixture
+    def phonological_unavailable(self, monkeypatch):
+        def raise_missing(*args, **kwargs):
+            raise ImportError("pyphen is not installed")
+
+        for name in ("Rhythmic", "Phonemic"):
+            monkeypatch.setattr(composite_module, name, raise_missing)
+
+    def test_constructs_and_drops_the_unavailable_metrics(self, phonological_unavailable):
+        with pytest.warns(RuntimeWarning, match="Excluding"):
+            metric = CompositeDiversity(strategy="equal")
+
+        assert metric.metrics, "every metric was dropped"
+        assert set(metric.unavailable) == {"phonemic", "rhythmic"}
+        assert "rhythmic" not in metric.metrics
+
+    def test_weights_are_renormalized_after_exclusions(self, phonological_unavailable):
+        with pytest.warns(RuntimeWarning):
+            metric = CompositeDiversity(strategy="equal")
+
+        assert sum(metric.get_weights().values()) == pytest.approx(1.0)
+        assert set(metric.get_weights()) == set(metric.metrics)
+
+    def test_scoring_still_works_without_them(self, phonological_unavailable, corpus):
+        with pytest.warns(RuntimeWarning):
+            metric = CompositeDiversity(
+                strategy="custom", custom_weights={"doc_semantic": 0.5, "rhythmic": 0.5}
+            )
+
+        assert metric(corpus) > 0
