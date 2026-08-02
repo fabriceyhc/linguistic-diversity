@@ -46,9 +46,11 @@ dependencies = [
     "networkx>=3.0",
     "zss>=1.2.0",
     "tqdm>=4.65.0",
-    # Note: Install faiss via conda for GPU support:
-    #   conda install -c pytorch -c nvidia faiss-gpu=1.8.0
-    # Or for CPU only: pip install faiss-cpu
+    # faiss is imported at module scope by semantic.py, syntactic.py and utils.py,
+    # so the package cannot be imported without it. The CPU build is the dependency
+    # because it installs from PyPI everywhere; for GPU, replace it with
+    #   conda install -c pytorch -c nvidia faiss-gpu
+    "faiss-cpu>=1.7.4",
 ]
 
 [project.optional-dependencies]
@@ -86,8 +88,8 @@ phonological = [
     "pronouncing>=0.2.0",  # Pure Python, pronunciation dictionary with stress
     # Note: cadences is broken on PyPI (has metadata but no code)
     # "cadences>=0.3.4",
-    # Optional: phonemizer (requires espeak-ng system library)
-    # "phonemizer>=3.2.0",
+    # phonemizer is imported lazily behind a try/except and additionally needs the
+    # espeak-ng system library, so it stays opt-in:  pip install phonemizer
 ]
 
 pretraining = [
