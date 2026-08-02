@@ -11,8 +11,9 @@ submodular optimization to find texts that collectively cover all dimensions.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt

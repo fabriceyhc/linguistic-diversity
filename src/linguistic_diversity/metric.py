@@ -5,8 +5,9 @@ from __future__ import annotations
 import gc
 import warnings
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -368,7 +369,7 @@ class DiversityMetric(Metric):
 
         if verbose:
             print("      Summary by sample size:")
-            for size, mean, std in zip(valid_sizes, size_means, size_stds):
+            for size, mean, std in zip(valid_sizes, size_means, size_stds, strict=True):
                 print(f"         n={size}: {mean:.4f} ± {std:.4f}")
 
         if len(valid_sizes) < 2:

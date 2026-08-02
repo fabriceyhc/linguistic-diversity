@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from functools import lru_cache
-from typing import Any, Callable
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -94,7 +94,7 @@ def merge_bpe(
 
     n = len(tokens)
     # Process in reverse so a continuation piece can attach to the token before it
-    for offset, (token, emb) in enumerate(zip(reversed(tokens), reversed(embeddings))):
+    for offset, (token, emb) in enumerate(zip(reversed(tokens), reversed(embeddings), strict=True)):
         index = n - 1 - offset
         token_str = str(token)
         current_emb.append(emb)

@@ -398,6 +398,7 @@ class TokenSemantics(TextDiversity):
         batches = zip(
             chunker(inputs.input_ids, self.config.batch_size),
             chunker(inputs.attention_mask, self.config.batch_size),
+            strict=True,
         )
 
         embeddings_list = []
