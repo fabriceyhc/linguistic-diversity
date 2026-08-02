@@ -166,9 +166,10 @@ ignore = [
 "tests/**/*.py" = ["S101", "ANN"]
 
 [tool.mypy]
-# Deliberately not pinning python_version: mypy then type-checks against the
-# interpreter actually running it, and third-party stubs (numpy's in particular)
-# use syntax newer than the minimum supported version.
+# python_version is intentionally unset so mypy checks against the interpreter
+# running it. Results still depend on which numpy is installed -- its stubs became
+# shape-aware in 2.5, which needs Python 3.12+ -- so CI runs mypy in a single
+# pinned 3.12 job rather than across the test matrix.
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
