@@ -75,7 +75,8 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-*.ipynb
+# Scratch notebooks at the repo root only. Notebooks under examples/ are source.
+/*.ipynb
 
 # IPython
 profile_default/

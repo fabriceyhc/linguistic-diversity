@@ -1,8 +1,9 @@
 # Linguistic Diversity
 
 [![PyPI version](https://img.shields.io/pypi/v/linguistic-diversity.svg)](https://pypi.org/project/linguistic-diversity/)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabriceyhc/linguistic-diversity/blob/main/examples/demo.ipynb)
 
 **Linguistic diversity metrics using similarity-sensitive Hill numbers.**
 
@@ -116,7 +117,8 @@ across branches. It enables six of the seven metrics by default; `ConstituencyPa
 opt-in via `use_constituency_parse: True`. Presets: `balanced`, `semantic_focus`,
 `structural_focus`, `minimal`, `conservative` via `get_preset_config(name)` — see
 [docs/universal-metric.md](docs/universal-metric.md). Reproduce the table with
-[`examples/all_metrics.py`](examples/all_metrics.py).
+[`examples/all_metrics.py`](examples/all_metrics.py), or work through it interactively in
+[`examples/demo.ipynb`](examples/demo.ipynb) ([open in Colab](https://colab.research.google.com/github/fabriceyhc/linguistic-diversity/blob/main/examples/demo.ipynb)).
 
 Each metric's default distance and similarity settings were chosen by measurement, not
 assumption — see [`benchmarks/embedder_selection/`](benchmarks/embedder_selection/),

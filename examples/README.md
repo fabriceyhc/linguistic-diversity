@@ -1,5 +1,7 @@
 # Examples
 
+**Start here:** [`demo.ipynb`](demo.ipynb) is a guided tour ([open in Colab](https://colab.research.google.com/github/fabriceyhc/linguistic-diversity/blob/main/examples/demo.ipynb)). The scripts below cover the same ground non-interactively.
+
 This directory contains example scripts demonstrating the usage of linguistic diversity metrics.
 
 ## Basic Usage
