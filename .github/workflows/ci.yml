@@ -7,6 +7,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Only the newest commit on a branch is worth testing. Without this, pushes stack
+# up behind each other -- macOS runners in particular queue for a long time, so a
+# superseded run can still be waiting when two more have been pushed on top of it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Lint, formatting and type checking are properties of the source, not of the
   # interpreter, so they run once rather than 12 times inside the test matrix.
