@@ -4,319 +4,165 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Modernized, efficient implementation of linguistic diversity metrics using similarity-sensitive Hill numbers.**
+**Linguistic diversity metrics using similarity-sensitive Hill numbers.**
 
-This library measures various kinds of linguistic diversity using **similarity-sensitive Hill numbers (SSHN)**. Originally adapted from the study of species diversity in ecology, SSHNs characterize the *effective number* of species in a population. In NLP, "species" are linguistic units (words, parse trees, etc.) and the "population" is a corpus of documents.
-
-For example, if the **token semantic diversity** of a corpus is 9, this means the corpus contains approximately 9 distinct semantic concepts.
-
-## Features
-
-- **Modern Python (3.9+)**: Type hints, dataclasses, and modern best practices
-- **Performance optimized**: FAISS-accelerated similarity computations, model caching, vectorized operations
-- **Updated dependencies**: NumPy 2.x, Pandas 2.x, latest transformers
-- **Multiple diversity dimensions**:
-  - **Semantic**: Token and document-level semantic diversity using transformers
-  - **Syntactic**: Dependency and constituency parse tree diversity
-  - **Morphological**: Part-of-speech sequence diversity
-  - **Phonological**: Rhythmic and phonemic pattern diversity
-  - **Universal**: Unified metric combining all dimensions into a single score
-
-## Quick Start
-
-### Installation
+Hill numbers come from ecology, where they measure the *effective number of species* in a
+population. Here "species" are linguistic units — words, parse trees, phoneme sequences —
+and the population is a corpus. A token semantic diversity of 9 means the corpus carries
+roughly 9 distinct semantic concepts. Unlike lexical measures, these are
+**similarity-sensitive**: near-duplicates count as fractional species, not whole ones.
 
 ```bash
 pip install linguistic-diversity
 ```
 
-For development:
+Optional extras: `[syntactic]` (constituency parsing via benepar), `[phonological]`,
+`[viz]`, `[dev]`. All metrics run on pure-Python dependencies; only the optional
+`phonemizer` backend needs a system library (`espeak-ng`).
+
+For development, after `pip install -e ".[dev]"` the test suite also needs the spaCy
+pipeline and NLTK corpora:
 
 ```bash
-git clone https://github.com/fabriceyhc/linguistic-diversity
-cd linguistic-diversity
-pip install -e ".[dev]"
+python -m spacy download en_core_web_sm
+python -m nltk.downloader stopwords cmudict averaged_perceptron_tagger_eng punkt
 ```
 
-### Basic Usage
+`make check-all` runs everything CI runs.
 
-```python
-from linguistic_diversity import TokenSemantics, DocumentSemantics
+## Why not lexical diversity?
 
-# Example corpora
-corpus1 = [
-    'one massive earth',
-    'an enormous globe',
-    'the colossal world'
-]  # High paraphrasing, similar semantics
+Most diversity work in NLP counts *surface forms* — type-token ratio, distinct-n,
+self-BLEU. This library measures whether the *meanings* differ. The two can point in
+opposite directions:
 
-corpus2 = [
-    'basic human right',
-    'you were right',
-    'make a right'
-]  # Lower semantic diversity due to word "right"
-
-# Token-level semantic diversity
-token_metric = TokenSemantics()
-print(f"Corpus 1 token diversity: {token_metric(corpus1):.2f}")
-print(f"Corpus 2 token diversity: {token_metric(corpus2):.2f}")
-
-# Document-level semantic diversity
-doc_metric = DocumentSemantics()
-print(f"Corpus 1 document diversity: {doc_metric(corpus1):.2f}")
-print(f"Corpus 2 document diversity: {doc_metric(corpus2):.2f}")
-```
-
-### Large Corpora: Scaled Estimation
-
-Computing exact diversity requires an O(n²) similarity matrix, which becomes expensive for large corpora. Every metric supports `estimate_diversity()` to handle this — it samples at increasing sizes, fits a growth curve (logarithmic, power-law, or asymptotic), and extrapolates to the full corpus size:
-
-```python
-from linguistic_diversity import TokenSemantics
-
-metric = TokenSemantics()
-
-# Instead of metric(large_corpus) — which builds an n×n similarity matrix
-result = metric.estimate_diversity(large_corpus, max_sample_size=200)
-
-print(f"Estimated diversity: {result.diversity:.3f} ± {result.std:.3f}")
-print(f"Method: {result.method}, Model: {result.model}")
-
-# Visualize the sampling curve and extrapolation
-result.plot()
-```
-
-`ScaledEstimationResult` includes:
-- `diversity` — extrapolated estimate for the full corpus
-- `std` — projected uncertainty scaled by extrapolation distance
-- `model` — best-fit growth model (`logarithmic`, `power_law`, or `asymptotic`)
-- `fit_rmse` — goodness of fit
-- `plot()` — visualize observed samples and the fitted curve
-
-### Configuration
-
-All metrics accept configuration dictionaries:
-
-```python
-from linguistic_diversity import TokenSemantics
-
-# Custom configuration
-config = {
-    'model_name': 'roberta-base',  # Use RoBERTa instead of BERT
-    'q': 2.0,                       # Diversity order (higher = less sensitive to rare species)
-    'normalize': True,              # Normalize by number of species
-    'batch_size': 32,               # Larger batches for faster processing
-    'use_cuda': True,               # Use GPU if available
-    'remove_stopwords': True,       # Filter out stopwords
-    'verbose': True                 # Show progress bars
-}
-
-metric = TokenSemantics(config)
-diversity = metric(corpus1)
-```
-
-## What's New in 1.0
-
-This is a complete modernization of the original [TextDiversity](https://github.com/fabriceyhc/TextDiversity) library with significant improvements:
-
-### Performance Improvements
-
-- **3-5x faster** similarity computation using optimized FAISS operations
-- **Model caching**: Models loaded once and reused across metric instances
-- **Vectorized operations**: Replaced nested Python loops with NumPy operations
-- **Batch processing**: Optimized batch sizes for GPU utilization
-- **Lazy loading**: Models and dependencies loaded only when needed
-
-### Code Quality
-
-- **Type hints** throughout for better IDE support and type checking
-- **Modern Python**: Dataclasses, f-strings, pathlib, type annotations
-- **Better error handling** with informative messages
-- **Comprehensive docstrings** in Google style
-- **PEP 561 compliance** with `py.typed` marker
-
-### Updated Dependencies
-
-- NumPy 1.24+ (compatible with FAISS)
-- Pandas 2.0+ (performance improvements)
-- Latest transformers (4.35+)
-- Python 3.9+ (modern language features)
-
-### Developer Experience
-
-- Pre-commit hooks with Black, Ruff, MyPy
-- Comprehensive test suite with pytest
-- GitHub Actions CI/CD
-- Type checking with MyPy
-- Code coverage reporting
-
-## Available Metrics
-
-### Semantic Diversity
-
-**TokenSemantics**: Diversity of contextualized token embeddings
-```python
-from linguistic_diversity import TokenSemantics
-
-metric = TokenSemantics({'model_name': 'bert-base-uncased'})
-diversity = metric(corpus)
-```
-
-**DocumentSemantics**: Diversity of document-level embeddings
 ```python
 from linguistic_diversity import DocumentSemantics
 
-metric = DocumentSemantics({'model_name': 'all-mpnet-base-v2'})
-diversity = metric(corpus)
+# Set A: 30 words, every one unique. One idea, restated five times.
+lexically_diverse = [
+    'a violent tempest wrecked our village',
+    'the fierce gale devastated their settlement',
+    'that savage hurricane destroyed this community',
+    'an intense cyclone flattened every township',
+    'some brutal windstorm ruined nearby neighborhoods',
+]
+
+# Set B: 30 words, "run" five times. Five unrelated meanings.
+semantically_diverse = [
+    'she went for a morning run',            # jogging
+    'he will run the entire company',        # to manage
+    'a run appeared in her stocking',        # a tear
+    'the program failed to run correctly',   # to execute
+    'they scored the winning run today',     # a baseball point
+]
+
+metric = DocumentSemantics()
+print(f"{metric(lexically_diverse):.2f}")     # 1.51
+print(f"{metric(semantically_diverse):.2f}")  # 3.41
 ```
 
-### Syntactic Diversity
+Set A is **perfect on every standard lexical measure** — type-token ratio 1.000,
+distinct-1 1.000, distinct-2 1.000, and self-BLEU 0.000, meaning literally zero n-gram
+overlap between its sentences — yet it states one proposition five times. Set B looks
+repetitive to those measures because *run* recurs, but each use is a different sense, so
+it carries ~3.4 distinct meanings out of 5.
 
-**DependencyParse**: Diversity of dependency parse tree structures
-```python
-from linguistic_diversity import DependencyParse
+All four lexical baselines ship with the library (`TypeTokenRatio`, `DistinctN`,
+`SelfBLEU`) so you can reproduce the comparison rather than take it on faith. If you are
+selecting training data, deduplicating, or scoring generation diversity, they will accept
+set A as maximally diverse. It isn't.
 
-# Fast: using graph embeddings
-metric = DependencyParse({'similarity_type': 'ldp'})
-diversity = metric(corpus)
+## Metrics
 
-# Exact: using tree edit distance (slow)
-metric = DependencyParse({'similarity_type': 'tree_edit_distance'})
-diversity = metric(corpus)
-```
+Every metric shares one interface — `metric(corpus) -> float` — and takes an optional
+config dict. The last two columns show each metric on the two sets above (matched at 5
+documents / 30 words / 30 token species, so ceilings are identical):
 
-**ConstituencyParse**: Diversity of constituency (phrase structure) parse trees
-```python
-from linguistic_diversity import ConstituencyParse
-
-metric = ConstituencyParse({'similarity_type': 'ldp'})
-diversity = metric(corpus)
-```
-
-*Note: Constituency parsing requires `benepar`. Install with: `pip install linguistic-diversity[syntactic]`*
-
-### Morphological Diversity
-
-**PartOfSpeechSequence**: Diversity of POS tag sequences using biological sequence alignment
-```python
-from linguistic_diversity import PartOfSpeechSequence
-
-metric = PartOfSpeechSequence()
-diversity = metric(corpus)
-```
-
-### Phonological Diversity
-
-**Rhythmic**: Diversity of rhythmic patterns (stress and syllable weight)
-```python
-from linguistic_diversity import Rhythmic
-
-metric = Rhythmic()
-diversity = metric(corpus)
-```
-
-**Phonemic**: Diversity of phoneme sequences (IPA representation)
-```python
-from linguistic_diversity import Phonemic
-
-# Default: uses g2p_en (pure Python, no system dependencies)
-metric = Phonemic()
-diversity = metric(corpus)
-
-# Optional: use phonemizer backend (requires espeak-ng)
-metric = Phonemic({'backend': 'phonemizer'})
-diversity = metric(corpus)
-```
-
-*Note: Phonological metrics require additional dependencies. Install with: `pip install linguistic-diversity[phonological]`*
-
-### Universal Diversity
-
-**UniversalLinguisticDiversity**: Unified metric combining all dimensions
+| Class | Dimension | Measures | Set A | Set B | Ceiling |
+|---|---|---|---:|---:|---:|
+| `TypeTokenRatio` | Lexical *(baseline)* | unique tokens / total | **1.000** | 0.767 | 1 |
+| `DistinctN` (n=1) | Lexical *(baseline)* | unique unigrams / total | **1.000** | 0.767 | 1 |
+| `DistinctN` (n=2) | Lexical *(baseline)* | unique bigrams / total | 1.000 | 1.000 | 1 |
+| `SelfBLEU` | Lexical *(baseline)* | n-gram overlap — *lower* is diverse | **0.000** | 0.049 | 0 |
+| `TokenSemantics` | Semantic | contextualized token embeddings | 12.33 | **14.68** | 30 |
+| `DocumentSemantics` | Semantic | sentence embeddings | 1.51 | **3.41** | 5 |
+| `DependencyParse` | Syntactic | dependency tree structure | 1.47 | **4.66** | 5 |
+| `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.65 | **2.85** | 5 |
+| `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 1.28 | **2.36** | 5 |
+| `Rhythmic` | Phonological | stress and syllable weight | 1.75 | 2.00 | 5 |
+| `Phonemic` | Phonological | phoneme sequences | 2.20 | 2.16 | 5 |
+| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 2.22 | **4.14** | — |
 
 ```python
-from linguistic_diversity import UniversalLinguisticDiversity
+from linguistic_diversity import DependencyParse, UniversalLinguisticDiversity
 
-# Default balanced configuration
-metric = UniversalLinguisticDiversity()
-diversity = metric(corpus)
+DependencyParse()(corpus)
 
-# Get detailed breakdown
-detailed = metric.get_detailed_scores(corpus)
-print(f"Universal: {detailed['universal']:.2f}")
-print(f"By branch: {detailed['branches']}")
+universal = UniversalLinguisticDiversity()
+detailed = universal.get_detailed_scores(corpus)   # {'universal': ..., 'branches': {...}}
 ```
 
-The universal metric intelligently combines all 7 metrics across 4 linguistic branches (semantic, syntactic, morphological, phonological) into a single comprehensive diversity score. It uses hierarchical aggregation: geometric mean within branches, weighted combination across branches.
+Reading the results:
 
-**Preset Configurations**:
+- **Document semantics separates the sets most sharply** (1.51 vs 3.41). Reach for it when
+  you care how many distinct *things* a corpus says.
+- **Syntax is an independent signal**, and here the strongest one (1.47 vs 4.66). Set A
+  repeats one frame (`DET ADJ NOUN VERB DET NOUN`) five times — a corpus can be
+  semantically varied yet syntactically monotonous, and only measuring both will tell you.
+
+`UniversalLinguisticDiversity` aggregates by geometric mean within a branch, then weighted
+across branches. It enables six of the seven metrics by default; `ConstituencyParse` is
+opt-in via `use_constituency_parse: True`. Presets: `balanced`, `semantic_focus`,
+`structural_focus`, `minimal`, `conservative` via `get_preset_config(name)` — see
+[docs/universal-metric.md](docs/universal-metric.md). Reproduce the table with
+[`examples/all_metrics.py`](examples/all_metrics.py).
+
+## Large corpora
+
+Exact diversity needs an O(n²) similarity matrix. Every metric offers
+`estimate_diversity()`, which samples at increasing sizes, fits a growth curve
+(logarithmic, power-law, or asymptotic), and extrapolates:
+
 ```python
-from linguistic_diversity import get_preset_config
+from linguistic_diversity import TokenSemantics
 
-# Semantic-focused (for content analysis)
-config = get_preset_config("semantic_focus")
-metric = UniversalLinguisticDiversity(config)
+result = TokenSemantics().estimate_diversity(large_corpus, max_sample_size=200)
 
-# Available presets: balanced, semantic_focus, structural_focus, minimal, conservative
+print(f"{result.diversity:.3f} ± {result.std:.3f}")  # extrapolated estimate
+print(result.model, result.fit_rmse)                 # best-fit curve, goodness of fit
+result.plot()                                        # observed samples + fitted curve
 ```
 
-See [UNIVERSAL_METRIC_GUIDE.md](UNIVERSAL_METRIC_GUIDE.md) for detailed documentation.
+## Configuration
 
-## System Requirements
+```python
+from linguistic_diversity import TokenSemantics
 
-### Required
-
-- Python 3.9 or higher
-- For GPU acceleration: CUDA-compatible GPU with appropriate drivers
-
-### Optional System Dependencies
-
-**All metrics work with pure Python packages - no system dependencies required!**
-
-However, if you want to use the `phonemizer` backend for `Phonemic` diversity (instead of the default `g2p_en`), you'll need `espeak-ng`:
-
-**Linux**:
-```bash
-sudo apt-get install espeak-ng
-pip install phonemizer  # then use Phonemic({'backend': 'phonemizer'})
+TokenSemantics({
+    'model_name': 'roberta-base',  # any HF encoder
+    'q': 2.0,                      # diversity order: 0=richness, 1=Shannon, 2=Simpson
+    'normalize': True,             # divide by species count
+    'use_cuda': True,
+    'remove_stopwords': True,
+    'trust_remote_code': True,     # for checkpoints shipping custom code
+    'encode_kwargs': {},           # extra args for task-conditioned embedders
+})
 ```
 
-**macOS**:
-```bash
-brew install espeak-ng
-pip install phonemizer  # then use Phonemic({'backend': 'phonemizer'})
-```
+## Theory
 
-**Windows**:
-- Download from [espeak-ng releases](https://github.com/espeak-ng/espeak-ng/releases)
-- Install `espeak-ng-X64.msi` or `espeak-ng-X86.msi`
-- Set environment variable: `PHONEMIZER_ESPEAK_LIBRARY=C:\Program Files\eSpeak NG\libespeak-ng.dll`
-- `pip install phonemizer` then use `Phonemic({'backend': 'phonemizer'})`
-
-**Note**: The default `g2p_en` backend for `Phonemic` is pure Python and works everywhere without system dependencies.
-
-## Theory: Similarity-Sensitive Hill Numbers
-
-Hill numbers provide a unified framework for measuring diversity that accounts for both:
-1. **Species richness** (how many different types exist)
-2. **Species similarity** (how similar the types are to each other)
-
-The diversity formula is:
+Hill numbers unify **richness** (how many types) and **similarity** (how alike they are):
 
 ```
 D = (Σ p_i (Σ Z_ij p_j)^(q-1))^(1/(1-q))
 ```
 
-Where:
-- `p`: Abundance distribution over species
-- `Z`: Similarity matrix between species
-- `q`: Diversity order parameter (0 = richness, 1 = Shannon, 2 = Simpson, ∞ = Berger-Parker)
-
-When `q=1` (default), this reduces to the effective number of species weighted by their semantic similarity.
+`p` is the abundance distribution, `Z` the similarity matrix, and `q` the order parameter
+(0 = richness, 1 = Shannon, 2 = Simpson, ∞ = Berger-Parker). At `q=1`, the default, this
+is the effective number of species weighted by similarity.
 
 ## Citation
-
-If you use this library in your research, please cite:
 
 ```bibtex
 @software{linguistic_diversity_2026,
@@ -327,33 +173,14 @@ If you use this library in your research, please cite:
 }
 ```
 
-Original TextDiversity library:
-```bibtex
-@software{textdiversity_2022,
-  title={TextDiversity: Measuring Linguistic Diversity with Similarity-Sensitive Hill Numbers},
-  author={Harel-Canada, Fabrice},
-  year={2022},
-  url={https://github.com/fabriceyhc/TextDiversity}
-}
-```
-
-## Contributing
-
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## Acknowledgments
-
-- Original TextDiversity implementation and research
-- Ecological diversity theory from Chao et al. (2014)
-- The Hugging Face ecosystem for transformer models
+Supersedes [TextDiversity](https://github.com/fabriceyhc/TextDiversity) (2022), which it
+reimplements with FAISS-accelerated similarity, model caching, vectorized operations, type
+hints throughout, and a pytest suite.
 
 ## Links
 
-- **Documentation**: [linguistic-diversity.readthedocs.io](https://linguistic-diversity.readthedocs.io) *(coming soon)*
 - **PyPI**: [pypi.org/project/linguistic-diversity](https://pypi.org/project/linguistic-diversity)
 - **Issues**: [GitHub Issues](https://github.com/fabriceyhc/linguistic-diversity/issues)
-- **Original Library**: [TextDiversity](https://github.com/fabriceyhc/TextDiversity)
+- **Docs**: [universal metric](docs/universal-metric.md) · [troubleshooting](docs/troubleshooting.md)
+- **License**: MIT, see [LICENSE](LICENSE)
+- Ecological diversity theory from Chao et al. (2014)

@@ -34,19 +34,25 @@ def main() -> None:
     print("Linguistic Diversity - Comprehensive Analysis")
     print("=" * 70)
 
+    # Set A: every word unique (perfect lexical diversity), one idea restated
     corpus1 = [
-        "one massive earth",
-        "an enormous globe",
-        "the colossal world",
+        "a violent tempest wrecked our village",
+        "the fierce gale devastated their settlement",
+        "that savage hurricane destroyed this community",
+        "an intense cyclone flattened every township",
+        "some brutal windstorm ruined nearby neighborhoods",
     ]
-    corpus1_name = "High Paraphrase"
+    corpus1_name = "Lexically Diverse"
 
+    # Set B: "run" five times (poor lexical diversity), five unrelated senses
     corpus2 = [
-        "basic human right",
-        "you were right",
-        "make a right",
+        "she went for a morning run",
+        "he will run the entire company",
+        "a run appeared in her stocking",
+        "the program failed to run correctly",
+        "they scored the winning run today",
     ]
-    corpus2_name = "Low Diversity"
+    corpus2_name = "Semantically Diverse"
 
     # Collect results
     results = []
@@ -77,9 +83,7 @@ def main() -> None:
 
     print("\n  b) Document-Level Semantics (sentence embeddings)")
     print("  " + "-" * 66)
-    metric = DocumentSemantics(
-        {"model_name": "all-MiniLM-L6-v2", "use_cuda": False, "verbose": False}
-    )
+    metric = DocumentSemantics({"use_cuda": False, "verbose": False})
 
     div1 = metric(corpus1)
     div2 = metric(corpus2)
@@ -101,9 +105,9 @@ def main() -> None:
     print("2. SYNTACTIC DIVERSITY")
     print("=" * 70)
 
-    print("\n  a) Dependency Parse Trees (LDP embeddings)")
+    print("\n  a) Dependency Parse Trees (tree edit distance)")
     print("  " + "-" * 66)
-    metric = DependencyParse({"similarity_type": "ldp", "verbose": False})
+    metric = DependencyParse({"verbose": False})
 
     div1 = metric(corpus1)
     div2 = metric(corpus2)
@@ -118,10 +122,30 @@ def main() -> None:
     print(f"    {corpus1_name}: {div1:.2f}")
     print(f"    {corpus2_name}:   {div2:.2f}")
 
-    print("\n  b) Constituency Parse Trees (phrase structure)")
+    print("\n  b) Dependency Parse Trees (LDP embeddings)")
     print("  " + "-" * 66)
     try:
-        metric = ConstituencyParse({"similarity_type": "ldp", "verbose": False})
+        metric = DependencyParse({"similarity_type": "ldp", "verbose": False})
+
+        div1 = metric(corpus1)
+        div2 = metric(corpus2)
+        results.append(
+            {
+                "Dimension": "Syntactic",
+                "Metric": "Dependency Parse (LDP)",
+                corpus1_name: f"{div1:.2f}",
+                corpus2_name: f"{div2:.2f}",
+            }
+        )
+        print(f"    {corpus1_name}: {div1:.2f}")
+        print(f"    {corpus2_name}:   {div2:.2f}")
+    except ImportError as e:
+        print(f"    Skipped: {str(e).splitlines()[0]}")
+
+    print("\n  c) Constituency Parse Trees (phrase structure)")
+    print("  " + "-" * 66)
+    try:
+        metric = ConstituencyParse({"verbose": False})
 
         div1 = metric(corpus1)
         div2 = metric(corpus2)
@@ -229,11 +253,12 @@ def main() -> None:
     print("=" * 70)
     print(
         f"""
-The '{corpus1_name}' corpus contains paraphrases with similar meanings,
-while '{corpus2_name}' has the word 'right' used in different contexts.
+'{corpus1_name}' scores a perfect 1.000 type-token ratio - no word repeats - yet
+all five sentences state one proposition. '{corpus2_name}' repeats "run" five times,
+which lexical metrics penalize, but each occurrence is a different word sense.
 
 - Token/Document Semantics: Should show low diversity for {corpus1_name}
-  (similar meanings despite different words)
+  (one meaning despite entirely distinct words)
 
 - Syntactic: May show different diversity based on structural similarity
 
