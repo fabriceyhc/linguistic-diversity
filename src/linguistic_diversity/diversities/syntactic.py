@@ -6,6 +6,7 @@ using dependency and constituency parse trees.
 
 from __future__ import annotations
 
+import itertools
 from dataclasses import dataclass
 from functools import lru_cache, partial
 from typing import Any
@@ -17,10 +18,12 @@ import numpy.typing as npt
 import spacy
 import zss  # type: ignore
 from sklearn.decomposition import PCA
+from spacy.tokens import Span
 
 # Karateclub is optional - only needed for ldp/feather similarity types
 try:
-    from karateclub import FeatherGraph, LDP  # type: ignore
+    from karateclub import LDP, FeatherGraph  # type: ignore
+
     KARATECLUB_AVAILABLE = True
 except ImportError:
     KARATECLUB_AVAILABLE = False
@@ -40,8 +43,12 @@ from ..utils import (
 class SyntacticConfig(MetricConfig):
     """Configuration for syntactic diversity metrics."""
 
-    # Similarity computation
-    similarity_type: str = "ldp"  # "ldp", "feather", "tree_edit_distance", "graph_edit_distance"
+    # Similarity computation.
+    # Default is tree_edit_distance: it needs no optional dependency and actually
+    # discriminates. The "ldp"/"feather" graph embeddings require karateclub (which
+    # pins numpy<1.23) and, because their histograms are compared by raw cosine,
+    # return ~1.0 even for wildly different parses -- see use_cases/ for measurements.
+    similarity_type: str = "tree_edit_distance"
     n_components: int | str | None = None  # PCA dimensions ("auto" or int)
 
     # Sentence processing
@@ -93,6 +100,11 @@ def _get_tree_nodes_dict(tree: nx.DiGraph) -> dict[Any, zss.Node]:
         if child not in nodes_dict:
             nodes_dict[child] = zss.Node(child)
         nodes_dict[parent].addkid(nodes_dict[child])
+    # A tree with no edges (a lone root) yields no entries above, which would make
+    # the caller's nodes_dict[root] lookup raise KeyError instead of comparing.
+    for node in tree.nodes():
+        if node not in nodes_dict:
+            nodes_dict[node] = zss.Node(node)
     return nodes_dict
 
 
@@ -138,6 +150,9 @@ class DependencyParse(TextDiversity):
         >>> diversity = metric(corpus)
     """
 
+    # Narrow the base annotation so attribute access type-checks
+    config: SyntacticConfig
+
     def __init__(self, config: dict[str, Any] | None = None) -> None:
         """Initialize dependency parse diversity metric.
 
@@ -154,7 +169,7 @@ class DependencyParse(TextDiversity):
     @classmethod
     def _default_config(cls) -> dict[str, Any]:
         return {
-            "similarity_type": "ldp",
+            "similarity_type": "tree_edit_distance",
             "split_sentences": False,
         }
 
@@ -172,10 +187,7 @@ class DependencyParse(TextDiversity):
         graph = nx.DiGraph()
 
         # Add nodes with attributes
-        nodes = [
-            (str(token.i), {"text": token.text, "pos": token.pos_})
-            for token in doc
-        ]
+        nodes = [(str(token.i), {"text": token.text, "pos": token.pos_}) for token in doc]
         graph.add_nodes_from(nodes)
 
         # Add edges with dependency labels
@@ -216,10 +228,7 @@ class DependencyParse(TextDiversity):
 
         # For embedding methods, convert to embeddings
         # Convert node labels to integers (required by karateclub)
-        graphs_int = [
-            nx.convert_node_labels_to_integers(g, first_label=0)
-            for g in graphs
-        ]
+        graphs_int = [nx.convert_node_labels_to_integers(g, first_label=0) for g in graphs]
 
         # Compute graph embeddings
         if self.config.similarity_type == "ldp":
@@ -340,6 +349,9 @@ class ConstituencyParse(TextDiversity):
         >>> diversity = metric(corpus)
     """
 
+    # Narrow the base annotation so attribute access type-checks
+    config: SyntacticConfig
+
     def __init__(self, config: dict[str, Any] | None = None) -> None:
         """Initialize constituency parse diversity metric.
 
@@ -368,7 +380,7 @@ class ConstituencyParse(TextDiversity):
     @classmethod
     def _default_config(cls) -> dict[str, Any]:
         return {
-            "similarity_type": "ldp",
+            "similarity_type": "tree_edit_distance",
             "split_sentences": False,
         }
 
@@ -389,36 +401,38 @@ class ConstituencyParse(TextDiversity):
         # Convert parse tree to networkx graph
         graph = nx.DiGraph()
 
-        def add_tree_to_graph(node: Any, parent_id: int | None = None, node_id: int = 0) -> int:
-            """Recursively add parse tree nodes to graph."""
-            current_id = node_id
+        # benepar exposes the parse through spaCy extensions on Span: ``labels``
+        # gives a node's constituent labels and ``children`` its sub-constituents.
+        # Note hasattr(span, "_.labels") is always False -- the attribute is named
+        # "_", not "_.labels" -- so extension presence must be checked on the class.
+        if not Span.has_extension("labels"):
+            raise RuntimeError(
+                "benepar did not register its spaCy extensions, so no constituency "
+                "parse is available. Install it with: pip install benepar"
+            )
 
-            if hasattr(node, "_.labels"):
-                label = node._.labels[0] if node._.labels else "ROOT"
+        counter = itertools.count()
+
+        def add_span(span: Any, parent_id: int | None = None) -> None:
+            """Recursively add a constituent and its children to the graph."""
+            node_id = next(counter)
+
+            labels = tuple(span._.labels)
+            if labels:
+                label = labels[0]
+            elif len(span) == 1:
+                label = span[0].tag_  # leaf: use the POS tag
             else:
-                label = node.label_() if hasattr(node, "label_") else str(node)
+                label = "X"
 
-            graph.add_node(current_id, label=label)
-
+            graph.add_node(node_id, label=label)
             if parent_id is not None:
-                graph.add_edge(parent_id, current_id)
+                graph.add_edge(parent_id, node_id)
 
-            node_id += 1
+            for child in span._.children:
+                add_span(child, node_id)
 
-            # Recursively add children
-            if hasattr(node, "__iter__") and not isinstance(node, str):
-                for child in node:
-                    node_id = add_tree_to_graph(child, current_id, node_id)
-
-            return node_id
-
-        # Build graph from parse tree
-        if hasattr(sent, "_.parse_string"):
-            # Use benepar parse
-            add_tree_to_graph(sent._.parse_tree)
-        else:
-            # Fallback: single node
-            graph.add_node(0, label="S")
+        add_span(sent)
 
         return graph
 
@@ -448,10 +462,7 @@ class ConstituencyParse(TextDiversity):
             return graphs, corpus  # type: ignore
 
         # For embeddings, convert to integer labels and embed
-        graphs_int = [
-            nx.convert_node_labels_to_integers(g, first_label=0)
-            for g in graphs
-        ]
+        graphs_int = [nx.convert_node_labels_to_integers(g, first_label=0) for g in graphs]
 
         if self.config.similarity_type == "ldp":
             if not KARATECLUB_AVAILABLE:

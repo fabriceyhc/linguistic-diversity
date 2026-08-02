@@ -57,10 +57,7 @@ class TestDocumentSemantics:
     @pytest.mark.slow
     def test_basic_diversity(self, sample_corpus):
         """Test basic document semantic diversity."""
-        metric = DocumentSemantics({
-            "use_cuda": False,
-            "model_name": "all-MiniLM-L6-v2"
-        })
+        metric = DocumentSemantics({"use_cuda": False, "model_name": "all-MiniLM-L6-v2"})
         diversity = metric(sample_corpus)
 
         # Should return a positive diversity score
@@ -71,10 +68,7 @@ class TestDocumentSemantics:
     @pytest.mark.slow
     def test_ranking(self, sample_corpus):
         """Test document ranking."""
-        metric = DocumentSemantics({
-            "use_cuda": False,
-            "model_name": "all-MiniLM-L6-v2"
-        })
+        metric = DocumentSemantics({"use_cuda": False, "model_name": "all-MiniLM-L6-v2"})
         query = ["A fox jumping"]
 
         ranking, scores = metric.rank_similarity(query, sample_corpus, top_n=2)
@@ -92,10 +86,7 @@ class TestDocumentSemantics:
     @pytest.mark.slow
     def test_similarity(self, sample_corpus):
         """Test similarity calculation."""
-        metric = DocumentSemantics({
-            "use_cuda": False,
-            "model_name": "all-MiniLM-L6-v2"
-        })
+        metric = DocumentSemantics({"use_cuda": False, "model_name": "all-MiniLM-L6-v2"})
 
         # High similarity corpus (paraphrases)
         high_sim = sample_corpus[:2]
@@ -107,3 +98,32 @@ class TestDocumentSemantics:
 
         # Paraphrases should have higher average similarity
         assert sim_high > sim_mixed
+
+
+class TestSemanticDefaults:
+    """Pin the default similarity configuration for the semantic metrics.
+
+    These defaults were selected by sweeping the distance/scaling options and
+    validating on 68 corpora with known ground-truth diversity plus 600
+    human-scored McDiv sets (see use_cases/embedder_selection/). A silent change
+    here would move every documented score, so assert them explicitly.
+    """
+
+    def test_token_semantics_uses_squared_cosine(self):
+        """TokenSemantics defaults to cosine + power_reg + mean_adj."""
+        import faiss
+
+        config = TokenSemantics._default_config()
+        assert config["distance_fn"] == faiss.METRIC_INNER_PRODUCT
+        assert config["scale_dist"] is None
+        assert config["power_reg"] is True
+        assert config["mean_adj"] is True
+
+    def test_document_semantics_uses_plain_cosine(self):
+        """DocumentSemantics defaults to cosine with no squaring or adjustment."""
+        import faiss
+
+        config = DocumentSemantics._default_config()
+        assert config["distance_fn"] == faiss.METRIC_INNER_PRODUCT
+        assert config["scale_dist"] is None
+        assert config["mean_adj"] is False

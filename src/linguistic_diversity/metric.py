@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 import gc
+import warnings
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable
 
 import numpy as np
 import numpy.typing as npt
 
 try:
     from scipy import optimize
+
     SCIPY_AVAILABLE = True
 except ImportError:
     SCIPY_AVAILABLE = False
@@ -49,35 +51,36 @@ class ScaledEstimationResult:
         corpus_size: Total size of the corpus
         fit_rmse: RMSE of the curve fit (if extrapolated)
     """
+
     diversity: float
     std: float = 0.0
-    projected_uncertainty_95: Tuple[float, float] = (0.0, 0.0)
+    projected_uncertainty_95: tuple[float, float] = (0.0, 0.0)
     method: str = "direct"
-    model: Optional[str] = None
-    model_params: Optional[List[float]] = None
-    sample_sizes: List[int] = field(default_factory=list)
-    sample_means: List[float] = field(default_factory=list)
-    sample_stds: List[float] = field(default_factory=list)
+    model: str | None = None
+    model_params: list[float] | None = None
+    sample_sizes: list[int] = field(default_factory=list)
+    sample_means: list[float] = field(default_factory=list)
+    sample_stds: list[float] = field(default_factory=list)
     corpus_size: int = 0
     fit_rmse: float = 0.0
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
-            'diversity': self.diversity,
-            'std': self.std,
-            'projected_uncertainty_95': list(self.projected_uncertainty_95),
-            'method': self.method,
-            'model': self.model,
-            'model_params': self.model_params,
-            'sample_sizes': self.sample_sizes,
-            'sample_means': self.sample_means,
-            'sample_stds': self.sample_stds,
-            'corpus_size': self.corpus_size,
-            'fit_rmse': self.fit_rmse,
+            "diversity": self.diversity,
+            "std": self.std,
+            "projected_uncertainty_95": list(self.projected_uncertainty_95),
+            "method": self.method,
+            "model": self.model,
+            "model_params": self.model_params,
+            "sample_sizes": self.sample_sizes,
+            "sample_means": self.sample_means,
+            "sample_stds": self.sample_stds,
+            "corpus_size": self.corpus_size,
+            "fit_rmse": self.fit_rmse,
         }
 
-    def plot(self, save_path: Optional[str] = None, show: bool = True) -> None:
+    def plot(self, save_path: str | None = None, show: bool = True) -> None:
         """Visualize the sampling points and fitted curve.
 
         Plots observed diversity at each sample size with error bars,
@@ -98,57 +101,72 @@ class ScaledEstimationResult:
         # Plot observed samples with error bars
         if self.sample_sizes and self.sample_means:
             ax.errorbar(
-                self.sample_sizes, self.sample_means,
+                self.sample_sizes,
+                self.sample_means,
                 yerr=self.sample_stds if self.sample_stds else None,
-                fmt='o', markersize=8, capsize=5,
-                label='Observed samples', color='blue'
+                fmt="o",
+                markersize=8,
+                capsize=5,
+                label="Observed samples",
+                color="blue",
             )
 
         # Plot fitted curve if we have model params
         if self.model and self.model_params and self.sample_sizes:
-            x_curve = np.linspace(
-                min(self.sample_sizes) * 0.8,
-                self.corpus_size * 1.1,
-                200
-            )
+            x_curve = np.linspace(min(self.sample_sizes) * 0.8, self.corpus_size * 1.1, 200)
 
             # Reconstruct the fitted curve
             a, b, c = self.model_params
-            if self.model == 'logarithmic':
+            if self.model == "logarithmic":
                 y_curve = a * np.log(x_curve + b) + c
-            elif self.model == 'power_law':
+            elif self.model == "power_law":
                 y_curve = a * np.power(x_curve, b) + c
-            elif self.model == 'asymptotic':
+            elif self.model == "asymptotic":
                 y_curve = a * (1 - np.exp(-x_curve / b)) + c
             else:  # linear fallback
                 y_curve = a * x_curve + b
 
-            ax.plot(x_curve, y_curve, '--', color='orange',
-                    label=f'Fitted curve ({self.model})', linewidth=2)
+            ax.plot(
+                x_curve,
+                y_curve,
+                "--",
+                color="orange",
+                label=f"Fitted curve ({self.model})",
+                linewidth=2,
+            )
 
         # Plot extrapolated point with uncertainty
         if self.corpus_size and self.diversity:
             ax.errorbar(
-                [self.corpus_size], [self.diversity],
-                yerr=[[self.diversity - self.projected_uncertainty_95[0]],
-                      [self.projected_uncertainty_95[1] - self.diversity]],
-                fmt='s', markersize=10, capsize=5,
-                label=f'Extrapolated (n={self.corpus_size})', color='red'
+                [self.corpus_size],
+                [self.diversity],
+                yerr=[
+                    [self.diversity - self.projected_uncertainty_95[0]],
+                    [self.projected_uncertainty_95[1] - self.diversity],
+                ],
+                fmt="s",
+                markersize=10,
+                capsize=5,
+                label=f"Extrapolated (n={self.corpus_size})",
+                color="red",
             )
 
-        ax.set_xscale('log')
-        ax.set_xlabel('Sample Size (log scale)', fontsize=12)
-        ax.set_ylabel('Diversity', fontsize=12)
-        ax.set_title(f'Diversity Scaling Analysis\n'
-                     f'Method: {self.method}, Model: {self.model or "N/A"}, '
-                     f'RMSE: {self.fit_rmse:.4f}', fontsize=11)
-        ax.legend(loc='lower right')
+        ax.set_xscale("log")
+        ax.set_xlabel("Sample Size (log scale)", fontsize=12)
+        ax.set_ylabel("Diversity", fontsize=12)
+        ax.set_title(
+            f"Diversity Scaling Analysis\n"
+            f'Method: {self.method}, Model: {self.model or "N/A"}, '
+            f"RMSE: {self.fit_rmse:.4f}",
+            fontsize=11,
+        )
+        ax.legend(loc="lower right")
         ax.grid(True, alpha=0.3)
 
         plt.tight_layout()
 
         if save_path:
-            plt.savefig(save_path, dpi=150, bbox_inches='tight')
+            plt.savefig(save_path, dpi=150, bbox_inches="tight")
 
         if show:
             plt.show()
@@ -310,8 +328,12 @@ class DiversityMetric(Metric):
             for size in sample_sizes:
                 measurement_count += 1
                 if verbose:
-                    print(f"      [{measurement_count}/{total_measurements}] "
-                          f"Trial {trial+1}, n={size}...", end=" ", flush=True)
+                    print(
+                        f"      [{measurement_count}/{total_measurements}] "
+                        f"Trial {trial+1}, n={size}...",
+                        end=" ",
+                        flush=True,
+                    )
 
                 sample_indices = indices[:size]
                 sample = [corpus[i] for i in sample_indices]
@@ -324,7 +346,7 @@ class DiversityMetric(Metric):
                             print(f"✓ {diversity:.4f}")
                     else:
                         if verbose:
-                            print(f"✗ invalid result")
+                            print("✗ invalid result")
                 except Exception as e:
                     if verbose:
                         print(f"✗ {str(e)[:30]}")
@@ -345,14 +367,14 @@ class DiversityMetric(Metric):
                 size_stds.append(np.std(measurements[size]) if len(measurements[size]) > 1 else 0.0)
 
         if verbose:
-            print(f"      Summary by sample size:")
+            print("      Summary by sample size:")
             for size, mean, std in zip(valid_sizes, size_means, size_stds):
                 print(f"         n={size}: {mean:.4f} ± {std:.4f}")
 
         if len(valid_sizes) < 2:
             # Not enough data for extrapolation, return last measurement
             if verbose:
-                print(f"      ⚠ Not enough valid measurements for curve fitting")
+                print("      ⚠ Not enough valid measurements for curve fitting")
             if valid_sizes and size_means:
                 return ScaledEstimationResult(
                     diversity=size_means[-1],
@@ -367,11 +389,11 @@ class DiversityMetric(Metric):
 
         # Check if metric is normalized (intensive) - prefer asymptotic model
         # Normalized metrics converge rather than grow with sample size
-        prefer_asymptotic = getattr(self.config, 'normalize', False)
+        prefer_asymptotic = getattr(self.config, "normalize", False)
 
         # Fit growth curve and extrapolate
         if verbose:
-            print(f"      Fitting growth curves...")
+            print("      Fitting growth curves...")
         model_name, predict_func, fit_rmse, model_params = self._fit_growth_curve(
             valid_sizes, size_means, prefer_asymptotic=prefer_asymptotic
         )
@@ -388,7 +410,9 @@ class DiversityMetric(Metric):
 
         if verbose:
             print(f"      Best model: {model_name} (RMSE={fit_rmse:.6f})")
-            print(f"      Extrapolated to n={corpus_size}: {estimated_diversity:.4f} ± {estimated_std:.4f}")
+            print(
+                f"      Extrapolated to n={corpus_size}: {estimated_diversity:.4f} ± {estimated_std:.4f}"
+            )
 
         return ScaledEstimationResult(
             diversity=float(estimated_diversity),
@@ -412,7 +436,7 @@ class DiversityMetric(Metric):
         sizes: list[int],
         diversities: list[float],
         prefer_asymptotic: bool = False,
-    ) -> tuple[str, Callable[[float], float], float, Optional[List[float]]]:
+    ) -> tuple[str, Callable[[float], float], float, list[float] | None]:
         """Fit a growth curve to diversity measurements.
 
         Tries multiple models and returns the best fit:
@@ -433,26 +457,26 @@ class DiversityMetric(Metric):
         div_arr = np.array(diversities, dtype=float)
 
         # Define growth curve models
-        def logarithmic(n, a, b, c):
+        def logarithmic(n: Any, a: float, b: float, c: float) -> Any:
             return a * np.log(n + b) + c
 
-        def power_law(n, a, b, c):
+        def power_law(n: Any, a: float, b: float, c: float) -> Any:
             return a * np.power(n, b) + c
 
-        def asymptotic(n, a, b, c):
+        def asymptotic(n: Any, a: float, b: float, c: float) -> Any:
             return a * (1 - np.exp(-n / b)) + c
 
         # Model definitions: (function, initial_params, bounds)
         # Power law exponent bounds relaxed to [0.01, 1.0] to accommodate
         # Heaps' Law range (typically 0.4-0.8) and rich-get-richer distributions
         models = {
-            'logarithmic': (logarithmic, [0.1, 1.0, 0.5], ([0, 0.1, -10], [1, 1000, 10])),
-            'power_law': (power_law, [0.5, 0.5, 0.3], ([0, 0.01, -10], [10, 1.0, 10])),
-            'asymptotic': (asymptotic, [0.8, 500, 0.2], ([0, 10, -10], [10, 10000, 10])),
+            "logarithmic": (logarithmic, [0.1, 1.0, 0.5], ([0, 0.1, -10], [1, 1000, 10])),
+            "power_law": (power_law, [0.5, 0.5, 0.3], ([0, 0.01, -10], [10, 1.0, 10])),
+            "asymptotic": (asymptotic, [0.8, 500, 0.2], ([0, 10, -10], [10, 10000, 10])),
         }
 
         best_model = None
-        best_rmse = float('inf')
+        best_rmse = float("inf")
         best_func = None
         best_params = None
 
@@ -460,9 +484,7 @@ class DiversityMetric(Metric):
             for name, (func, p0, bounds) in models.items():
                 try:
                     params, _ = optimize.curve_fit(
-                        func, sizes_arr, div_arr,
-                        p0=p0, bounds=bounds,
-                        maxfev=5000
+                        func, sizes_arr, div_arr, p0=p0, bounds=bounds, maxfev=5000
                     )
 
                     predicted = func(sizes_arr, *params)
@@ -471,24 +493,27 @@ class DiversityMetric(Metric):
                     # Apply preference for asymptotic model when requested
                     # (useful for normalized/intensive metrics that converge)
                     adjusted_rmse = rmse
-                    if prefer_asymptotic and name == 'asymptotic':
+                    if prefer_asymptotic and name == "asymptotic":
                         adjusted_rmse *= 0.9  # 10% bonus for asymptotic
 
                     if adjusted_rmse < best_rmse:
                         best_rmse = rmse  # Store actual RMSE, not adjusted
                         best_model = name
                         best_params = params.tolist()
-                        # Capture params in closure
-                        best_func = lambda n, f=func, p=params: f(n, *p)
 
-                except Exception:
+                        # Capture params so the closure keeps this fit, not the last
+                        def best_func(n: Any, f: Callable[..., Any] = func, p: Any = params) -> Any:
+                            return f(n, *p)
+
+                except Exception:  # noqa: S112 - a model that will not converge is
+                    # expected; the best of the remaining fits is used instead.
                     continue
 
         # Fallback to simple linear extrapolation if scipy unavailable or all fits fail
         if best_func is None:
             slope = (div_arr[-1] - div_arr[0]) / (sizes_arr[-1] - sizes_arr[0])
             intercept = div_arr[0] - slope * sizes_arr[0]
-            return 'linear', lambda n: slope * n + intercept, 0.0, [slope, intercept]
+            return "linear", lambda n: slope * n + intercept, 0.0, [slope, intercept]
 
         return best_model, best_func, best_rmse, best_params
 
@@ -530,10 +555,15 @@ class TextDiversity(DiversityMetric):
         Returns:
             Diversity score (effective number of species).
         """
+        # An empty corpus has no species at all. all([]) is True, so this must be
+        # checked before the validation below or it reaches the tokenizer and raises.
+        if len(corpus) == 0:
+            return 0.0
+
         # Validate inputs
         if not all(isinstance(d, str) and d.strip() for d in corpus):
             if self.config.verbose:
-                print(f"Warning: corpus contains invalid inputs, returning 0")
+                print("Warning: corpus contains invalid inputs, returning 0")
             return 0.0
 
         # Extract features and species
@@ -549,7 +579,7 @@ class TextDiversity(DiversityMetric):
         # Validate similarity matrix
         if np.any(np.isnan(Z)) or np.any(np.isinf(Z)):
             if self.config.verbose:
-                print(f"Warning: similarity matrix contains invalid values, returning 1.0")
+                print("Warning: similarity matrix contains invalid values, returning 1.0")
             return 1.0  # Minimum diversity (all identical)
 
         # Check if Z is all zeros (no similarity signal)
@@ -557,6 +587,24 @@ class TextDiversity(DiversityMetric):
             if self.config.verbose:
                 print(f"Warning: similarity matrix is all zeros, returning {float(len(features))}")
             return float(len(features))  # Maximum diversity (all distinct)
+
+        # A matrix that is identity apart from numerical noise carries no similarity
+        # signal either, and yields exactly the species count. That is indistinguishable
+        # from a genuine "everything is distinct" result, so say so rather than
+        # returning the ceiling silently. Usually it means the distance scale and the
+        # distance-to-similarity transform are mismatched (e.g. exp(-d) underflowing
+        # on large-magnitude embeddings).
+        if len(Z) > 1:
+            off_diagonal = Z[~np.eye(len(Z), dtype=bool)]
+            if np.allclose(off_diagonal, 0.0):
+                warnings.warn(
+                    f"{type(self).__name__}: all off-diagonal similarities are ~0, so "
+                    f"diversity saturates at the species count ({len(features)}). Check "
+                    f"that the distance metric and scale_dist transform suit this "
+                    f"model's embedding scale.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
 
         # Calculate abundance vector p
         p = self.calculate_abundance(species)
@@ -567,7 +615,9 @@ class TextDiversity(DiversityMetric):
         # Validate result
         if np.isnan(D) or np.isinf(D):
             if self.config.verbose:
-                print(f"Warning: diversity calculation returned invalid value, returning {float(len(features))}")
+                print(
+                    f"Warning: diversity calculation returned invalid value, returning {float(len(features))}"
+                )
             return float(len(features))  # Maximum diversity as fallback
 
         # Optionally normalize by number of species
@@ -587,7 +637,7 @@ class TextDiversity(DiversityMetric):
         """
         if not all(isinstance(d, str) and d.strip() for d in corpus):
             if self.config.verbose:
-                print(f"Warning: corpus contains invalid inputs, returning 0")
+                print("Warning: corpus contains invalid inputs, returning 0")
             return 0.0
 
         # Extract features
@@ -623,7 +673,7 @@ class TextDiversity(DiversityMetric):
 
         # Extract features for query and corpus
         all_feats, all_docs = self.extract_features(query + corpus)
-        q_feats, q_corpus = all_feats[0], all_docs[0]
+        q_feats = all_feats[0]
         c_feats, c_corpus = all_feats[1:], all_docs[1:]
 
         # Handle empty features
@@ -642,9 +692,7 @@ class TextDiversity(DiversityMetric):
         return ranking[:top_n], scores[:top_n]
 
     @abstractmethod
-    def extract_features(
-        self, corpus: list[str]
-    ) -> tuple[npt.NDArray[Any], list[Any]]:
+    def extract_features(self, corpus: list[str]) -> tuple[npt.NDArray[Any], list[Any]]:
         """Extract features and species from corpus.
 
         Args:
@@ -656,9 +704,7 @@ class TextDiversity(DiversityMetric):
         ...
 
     @abstractmethod
-    def calculate_similarities(
-        self, features: npt.NDArray[Any]
-    ) -> npt.NDArray[np.float64]:
+    def calculate_similarities(self, features: npt.NDArray[Any]) -> npt.NDArray[np.float64]:
         """Calculate pairwise similarities between features.
 
         Args:
@@ -696,8 +742,7 @@ class TextDiversity(DiversityMetric):
             Similarity vector.
         """
         raise NotImplementedError(
-            "Ranking requires document-level metrics. "
-            "Override this method to support ranking."
+            "Ranking requires document-level metrics. " "Override this method to support ranking."
         )
 
     @staticmethod

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from functools import lru_cache
-from typing import Any, Callable, Iterator
+from typing import Any, Callable
 
 import numpy as np
 import numpy.typing as npt
@@ -26,42 +27,101 @@ def chunker(seq: Any, size: int) -> Iterator[Any]:
         yield seq[pos : pos + size]
 
 
+# Marker used by byte-level BPE tokenizers (GPT-2, RoBERTa, Qwen) to denote a
+# token that begins a new word. SentencePiece models use "▁" for the same role.
+WORD_START_MARKERS = ("Ġ", "▁")
+
+
+def detect_subword_scheme(tokens: npt.NDArray[Any]) -> str | None:
+    """Infer which subword convention a token sequence uses.
+
+    Args:
+        tokens: Array of tokenizer tokens.
+
+    Returns:
+        "wordpiece" if continuation subwords are marked with "##" (BERT-style),
+        "word_start" if word beginnings are marked (GPT-2/RoBERTa/Qwen/SentencePiece),
+        or None if neither convention is detected.
+    """
+    token_strs = [str(t) for t in tokens]
+    if any(t.startswith("##") for t in token_strs):
+        return "wordpiece"
+    if any(t.startswith(WORD_START_MARKERS) for t in token_strs):
+        return "word_start"
+    return None
+
+
 def merge_bpe(
     tokens: npt.NDArray[Any],
     embeddings: npt.NDArray[np.float64],
     prefix: str = "##",
+    scheme: str = "wordpiece",
+    group_ids: npt.NDArray[Any] | None = None,
 ) -> tuple[npt.NDArray[Any], npt.NDArray[np.float64]]:
-    """Merge BPE subword tokens and their embeddings.
+    """Merge subword tokens and their embeddings back into whole words.
+
+    Two conventions are supported, since they mark opposite things:
+
+    - ``wordpiece`` (BERT): continuation pieces carry ``prefix`` ("##"), so a token
+      *with* the prefix attaches to the token before it.
+    - ``word_start`` (GPT-2/RoBERTa/Qwen/SentencePiece): word beginnings carry a
+      marker, so a token *without* one attaches to the token before it.
+
+    Merged embeddings are the mean of their constituent subword embeddings, which
+    keeps one species per word regardless of how the tokenizer split it.
 
     Args:
-        tokens: Array of tokens (may include BPE subwords).
+        tokens: Array of tokens (may include subwords).
         embeddings: Corresponding embeddings.
-        prefix: BPE prefix marker (default: "##" for BERT).
+        prefix: Continuation marker, used when ``scheme="wordpiece"``.
+        scheme: Either "wordpiece" or "word_start".
+        group_ids: Optional per-token document ids. Merging never crosses a change
+            in group id, which matters for ``word_start``: the first token of a
+            document carries no marker and would otherwise be glued onto the last
+            token of the document before it.
 
     Returns:
         Tuple of (merged_tokens, merged_embeddings).
     """
+    if scheme not in ("wordpiece", "word_start"):
+        raise ValueError(f"Unknown subword scheme: {scheme!r}")
+
     merged_tokens = []
     merged_embeddings = []
 
-    current_emb = []
+    current_emb: list[Any] = []
     current_token = ""
 
-    # Process in reverse to handle BPE prefix
-    for token, emb in zip(reversed(tokens), reversed(embeddings)):
+    n = len(tokens)
+    # Process in reverse so a continuation piece can attach to the token before it
+    for offset, (token, emb) in enumerate(zip(reversed(tokens), reversed(embeddings))):
+        index = n - 1 - offset
         token_str = str(token)
         current_emb.append(emb)
 
-        if token_str.startswith(prefix):
-            # This is a subword continuation
-            current_token = token_str.replace(prefix, "") + current_token
+        if scheme == "wordpiece":
+            is_continuation = token_str.startswith(prefix)
+            piece = token_str.replace(prefix, "")
         else:
-            # This is a full word or start of word
-            current_token = token_str + current_token
+            is_continuation = not token_str.startswith(WORD_START_MARKERS)
+            piece = token_str.lstrip("".join(WORD_START_MARKERS))
+
+        # A token opening a new document always starts a word
+        if index == 0 or (group_ids is not None and group_ids[index] != group_ids[index - 1]):
+            is_continuation = False
+
+        current_token = piece + current_token
+
+        if not is_continuation:
             merged_tokens.append(current_token)
             merged_embeddings.append(np.stack(current_emb).mean(axis=0))
             current_emb = []
             current_token = ""
+
+    # A trailing continuation run (no word start seen) still forms one word
+    if current_emb:
+        merged_tokens.append(current_token)
+        merged_embeddings.append(np.stack(current_emb).mean(axis=0))
 
     # Reverse back to original order
     return (
@@ -121,9 +181,6 @@ def compute_similarity_matrix_pairwise(
     """
     n = len(inputs)
     Z = np.zeros((n, n), dtype=np.float64)
-
-    # Get upper triangular indices
-    iu = np.triu_indices(n, k=1)
 
     # Compute upper triangle
     iterator = range(n)
@@ -333,7 +390,7 @@ def tag_to_alpha(tags: list[list[str]]) -> list[list[str]]:
         List of alphabetic tag sequences.
     """
     # Build unique tag mapping
-    unique_tags = sorted(set(tag for seq in tags for tag in seq))
+    unique_tags = sorted({tag for seq in tags for tag in seq})
     tag_map = {tag: chr(65 + i) for i, tag in enumerate(unique_tags)}
 
     # Apply mapping
