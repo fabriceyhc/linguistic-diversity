@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "linguistic-diversity"
-version = "1.0.0"
+version = "1.0.1"
 description = "Linguistic diversity metrics using similarity-sensitive Hill numbers"
 authors = [
     {name = "Fabrice Harel-Canada", email = "fabriceyhc@gmail.com"}

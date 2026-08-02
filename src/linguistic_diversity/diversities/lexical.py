@@ -12,12 +12,18 @@ idea scores perfectly on all three while carrying a single meaning.
 
 from __future__ import annotations
 
+import math
 import re
+from collections import Counter
 from dataclasses import dataclass
 
 from ..metric import DiversityMetric, MetricConfig
 
 _TOKEN_RE = re.compile(r"\w+")
+
+# Stands in for a zero match count so one missing n-gram order does not zero out
+# the whole geometric mean (Chen & Cherry 2014, smoothing method 1).
+_SMOOTH_EPSILON = 0.1
 
 
 @dataclass
@@ -118,6 +124,84 @@ class DistinctN(DiversityMetric):
         return len(set(grams)) / len(grams)
 
 
+def _modified_precision(
+    references: list[list[str]], hypothesis: list[str], n: int
+) -> tuple[int, int]:
+    """Clipped n-gram overlap between a hypothesis and its references.
+
+    Each hypothesis n-gram counts at most as many times as it appears in the
+    reference that contains it most often, which is what stops a sentence from
+    scoring well by repeating one common phrase.
+
+    Args:
+        references: Tokenized reference documents.
+        hypothesis: Tokenized hypothesis document.
+        n: n-gram order.
+
+    Returns:
+        Tuple of (clipped matches, total hypothesis n-grams).
+    """
+    hyp_counts = Counter(_ngrams(hypothesis, n))
+    if not hyp_counts:
+        return 0, 0
+
+    max_ref_counts: Counter[tuple[str, ...]] = Counter()
+    for reference in references:
+        ref_counts = Counter(_ngrams(reference, n))
+        for gram, count in ref_counts.items():
+            if count > max_ref_counts[gram]:
+                max_ref_counts[gram] = count
+
+    clipped = sum(min(count, max_ref_counts[gram]) for gram, count in hyp_counts.items())
+    return clipped, sum(hyp_counts.values())
+
+
+def _sentence_bleu(references: list[list[str]], hypothesis: list[str], max_n: int) -> float:
+    """Sentence-level BLEU with uniform weights and add-epsilon smoothing.
+
+    Implemented here rather than via nltk: importing ``nltk.translate`` pulls in
+    ``nltk.corpus`` and wordnet, which is both heavy for an n-gram count and
+    fragile (nltk's import guard rejects defusedxml in some environments).
+
+    Args:
+        references: Tokenized reference documents.
+        hypothesis: Tokenized hypothesis document.
+        max_n: Maximum n-gram order.
+
+    Returns:
+        BLEU score in [0, 1].
+    """
+    if not hypothesis or not references:
+        return 0.0
+
+    # No shared words at all means no overlap to measure. Smoothing exists to
+    # rescue missing higher-order n-grams, not a total absence of agreement, so
+    # this short-circuits rather than reporting a small smoothed value.
+    unigram_matches, _ = _modified_precision(references, hypothesis, 1)
+    if unigram_matches == 0:
+        return 0.0
+
+    log_precision = 0.0
+    for n in range(1, max_n + 1):
+        clipped, total = _modified_precision(references, hypothesis, n)
+        # A hypothesis shorter than n has no n-grams at all. Clamping the
+        # denominator to 1 lets smoothing handle it, instead of zeroing a score
+        # that lower orders already supported -- documents shorter than max_n
+        # would otherwise always score 0.
+        denominator = max(1, total)
+        # Smoothing: a zero numerator would send the geometric mean to 0 and hide
+        # all lower-order agreement, so treat it as a small non-zero count.
+        precision = (clipped if clipped > 0 else _SMOOTH_EPSILON) / denominator
+        log_precision += math.log(precision) / max_n
+
+    # Brevity penalty against the reference length closest to the hypothesis
+    hyp_len = len(hypothesis)
+    ref_len = min((len(r) for r in references), key=lambda rl: (abs(rl - hyp_len), rl))
+    brevity = 1.0 if hyp_len > ref_len else math.exp(1 - ref_len / hyp_len)
+
+    return brevity * math.exp(log_precision)
+
+
 class SelfBLEU(DiversityMetric):
     """Mean BLEU of each document scored against all the others (Zhu et al., 2018).
 
@@ -128,10 +212,6 @@ class SelfBLEU(DiversityMetric):
     Example:
         >>> round(SelfBLEU()(['the cat sat', 'a dog ran', 'birds fly']), 3)
         0.0
-
-    Note:
-        Requires ``nltk`` (already a dependency). Uses smoothing so that short
-        documents with no higher-order n-gram matches do not collapse to exactly 0.
     """
 
     # Narrow the base annotation so attribute access type-checks
@@ -151,20 +231,13 @@ class SelfBLEU(DiversityMetric):
             Mean BLEU against the other documents. Lower means more diverse.
             Returns 0.0 when fewer than two documents are supplied.
         """
-        from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
-
         docs = [_tokenize(d, self.config.lowercase) for d in corpus]
         docs = [d for d in docs if d]
         if len(docs) < 2:
             return 0.0
 
-        weights = tuple([1.0 / self.config.max_n] * self.config.max_n)
-        smoothing = SmoothingFunction().method1
-
-        scores = []
-        for i, hypothesis in enumerate(docs):
-            references = [d for j, d in enumerate(docs) if j != i]
-            scores.append(
-                sentence_bleu(references, hypothesis, weights=weights, smoothing_function=smoothing)
-            )
+        scores = [
+            _sentence_bleu([d for j, d in enumerate(docs) if j != i], hypothesis, self.config.max_n)
+            for i, hypothesis in enumerate(docs)
+        ]
         return float(sum(scores) / len(scores))

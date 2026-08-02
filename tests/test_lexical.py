@@ -1,5 +1,9 @@
 """Tests for the lexical diversity baselines."""
 
+import re
+
+import pytest
+
 from linguistic_diversity import DistinctN, SelfBLEU, TypeTokenRatio
 
 
@@ -49,3 +53,40 @@ class TestSelfBLEU:
         varied = SelfBLEU()(["alpha beta gamma", "one two three", "red green blue"])
         repetitive = SelfBLEU()(["the cat sat", "the cat sat", "the cat ran"])
         assert varied < repetitive
+
+
+class TestSelfBLEUParity:
+    """Pin the hand-rolled BLEU against nltk's reference implementation.
+
+    SelfBLEU computes BLEU directly rather than calling nltk.translate, which
+    pulls in nltk.corpus and wordnet and fails outright in some environments.
+    These cases lock the two to agreement so the reimplementation cannot drift.
+    """
+
+    CASES = [
+        pytest.param(["alpha beta gamma", "one two three"], id="no-overlap"),
+        pytest.param(["the cat sat down", "the cat sat down"], id="identical"),
+        pytest.param(["the cat sat", "the cat ran", "the cat sat"], id="shorter-than-max-n"),
+        pytest.param(
+            ["machine learning models need data", "machine learning needs lots of data"],
+            id="partial-overlap",
+        ),
+    ]
+
+    @pytest.mark.parametrize("corpus", CASES)
+    def test_matches_nltk(self, corpus):
+        nltk_bleu = pytest.importorskip("nltk.translate.bleu_score")
+
+        tokens = [re.findall(r"\w+", d.lower()) for d in corpus]
+        smoothing = nltk_bleu.SmoothingFunction().method1
+        expected = sum(
+            nltk_bleu.sentence_bleu(
+                [t for j, t in enumerate(tokens) if j != i],
+                hypothesis,
+                weights=(0.25, 0.25, 0.25, 0.25),
+                smoothing_function=smoothing,
+            )
+            for i, hypothesis in enumerate(tokens)
+        ) / len(tokens)
+
+        assert SelfBLEU()(corpus) == pytest.approx(expected, abs=1e-9)
