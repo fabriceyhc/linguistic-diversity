@@ -1,0 +1,108 @@
+{
+  "baselines": [
+    {
+      "name": "averaged_cosine_similarity",
+      "spearman": 0.29683133371355075
+    },
+    {
+      "name": "bert_score",
+      "spearman": 0.40983681564292507
+    },
+    {
+      "name": "averaged_distinct_ngrams",
+      "spearman": 0.23882146310270494
+    }
+  ],
+  "models": [
+    {
+      "model": "sentence-transformers/all-mpnet-base-v2",
+      "spearman_vs_human": 0.5811726399858548,
+      "rho_prompt_gen": 0.8206384823048007,
+      "rho_resp_gen": 0.582637624390081,
+      "rho_story_gen": 0.5904580874473624,
+      "pair_accuracy": 0.9386666666666666,
+      "n_pairs": 3000
+    },
+    {
+      "model": "sentence-transformers/all-MiniLM-L6-v2",
+      "spearman_vs_human": 0.5299709772646195,
+      "rho_prompt_gen": 0.8334296857450321,
+      "rho_resp_gen": 0.5369354220025614,
+      "rho_story_gen": 0.42599779616310035,
+      "pair_accuracy": 0.9263333333333333,
+      "n_pairs": 3000
+    },
+    {
+      "model": "BAAI/bge-base-en-v1.5",
+      "spearman_vs_human": 0.7600786443448867,
+      "rho_prompt_gen": 0.857564258326061,
+      "rho_resp_gen": 0.7222206833998666,
+      "rho_story_gen": 0.7752193491657167,
+      "pair_accuracy": 0.9416666666666667,
+      "n_pairs": 3000
+    },
+    {
+      "model": "BAAI/bge-large-en-v1.5",
+      "spearman_vs_human": 0.7785578654051089,
+      "rho_prompt_gen": 0.8661920004389048,
+      "rho_resp_gen": 0.7464030368816915,
+      "rho_story_gen": 0.8093238692094793,
+      "pair_accuracy": 0.957,
+      "n_pairs": 3000
+    },
+    {
+      "model": "avsolatorio/GIST-large-Embedding-v0",
+      "spearman_vs_human": 0.749118360910301,
+      "rho_prompt_gen": 0.9029002262286439,
+      "rho_resp_gen": 0.7195124158541263,
+      "rho_story_gen": 0.7072638742829775,
+      "pair_accuracy": 0.957,
+      "n_pairs": 3000
+    },
+    {
+      "model": "mixedbread-ai/mxbai-embed-large-v1",
+      "spearman_vs_human": 0.7668077056936909,
+      "rho_prompt_gen": 0.9000645714867476,
+      "rho_resp_gen": 0.7454652711110061,
+      "rho_story_gen": 0.7474704634857109,
+      "pair_accuracy": 0.957,
+      "n_pairs": 3000
+    },
+    {
+      "model": "WhereIsAI/UAE-Large-V1",
+      "spearman_vs_human": 0.7523871296430091,
+      "rho_prompt_gen": 0.8962994521350073,
+      "rho_resp_gen": 0.7358723023832001,
+      "rho_story_gen": 0.7374801444557118,
+      "pair_accuracy": 0.9583333333333334,
+      "n_pairs": 3000
+    },
+    {
+      "model": "google/embeddinggemma-300m",
+      "spearman_vs_human": 0.7304867597368814,
+      "rho_prompt_gen": 0.8308693445719918,
+      "rho_resp_gen": 0.7225852867315091,
+      "rho_story_gen": 0.687566058951395,
+      "pair_accuracy": 0.9383333333333334,
+      "n_pairs": 3000
+    },
+    {
+      "model": "Qwen/Qwen3-Embedding-0.6B",
+      "spearman_vs_human": 0.7162922952160653,
+      "rho_prompt_gen": 0.836611920510938,
+      "rho_resp_gen": 0.7078886215733234,
+      "rho_story_gen": 0.6445942586692459,
+      "pair_accuracy": 0.9426666666666667,
+      "n_pairs": 3000
+    },
+    {
+      "model": "infgrad/Jasper-Token-Compression-600M",
+      "spearman_vs_human": 0.7806327630376276,
+      "rho_prompt_gen": 0.8337372567620102,
+      "rho_resp_gen": 0.7181770373966699,
+      "rho_story_gen": 0.7842539224238287,
+      "pair_accuracy": 0.939,
+      "n_pairs": 3000
+    }
+  ]
+}

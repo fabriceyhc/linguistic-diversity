@@ -1,0 +1,94 @@
+{
+  "_meta": {
+    "purpose": "Held-out data for screening sentence embedders for similarity-sensitive Hill numbers.",
+    "authored_by": "Hand-authored for this repository. Not human-validated by external annotators.",
+    "held_out_from": "The corpus1/corpus2 example in the README, which was used to tune metric settings. No sentence here reuses those phrasings.",
+    "design": {
+      "synonymy_clusters": "Each cluster is ONE concept expressed 4 ways with deliberately varied wording. A corpus built from k clusters has ground-truth effective diversity k, regardless of how many sentences it contains. Tests whether a model COLLAPSES paraphrases.",
+      "polysemy_sets": "Each set shares a surface form across unrelated senses. A set of n sentences has ground-truth effective diversity n. Tests whether a model SEPARATES meanings despite lexical overlap.",
+      "why_both": "A model can trivially win either axis alone: one that calls everything similar aces synonymy and fails polysemy, and vice versa. Only a calibrated similarity scale passes both."
+    },
+    "domains_note": "The domain field enables hard sampling: drawing k clusters from a single domain yields semantically adjacent concepts, which is a much harder test than drawing across domains."
+  },
+
+  "synonymy_clusters": [
+    {"id": "rain_heavy", "domain": "weather", "gloss": "it is raining hard",
+     "paraphrases": ["it is pouring outside", "the rain is coming down hard", "there is a downpour right now", "heavy rain is falling"]},
+    {"id": "room_cold", "domain": "weather", "gloss": "the space is cold",
+     "paraphrases": ["the room feels freezing", "it is chilly in here", "this space is cold", "the temperature is frigid"]},
+    {"id": "light_dim", "domain": "weather", "gloss": "the illumination is weak",
+     "paraphrases": ["the lamp is faint", "the light is dim", "this room is poorly lit", "the glow is weak"]},
+
+    {"id": "dog_friendly", "domain": "animals", "gloss": "the dog is sociable",
+     "paraphrases": ["the dog is very friendly", "that pup is really sociable", "the hound loves people", "this dog is affectionate"]},
+    {"id": "cat_sleeping", "domain": "animals", "gloss": "the cat is asleep",
+     "paraphrases": ["the cat is napping", "that feline is asleep", "the kitten is dozing", "this cat rests quietly"]},
+    {"id": "bird_singing", "domain": "animals", "gloss": "the bird is vocalizing",
+     "paraphrases": ["the bird is chirping", "that sparrow sings", "the robin is warbling", "this bird calls out"]},
+
+    {"id": "meal_delicious", "domain": "food", "gloss": "the food tastes very good",
+     "paraphrases": ["the food tastes wonderful", "this meal is delicious", "the dish is superb", "that food is excellent"]},
+    {"id": "coffee_hot", "domain": "food", "gloss": "the drink is very hot",
+     "paraphrases": ["the coffee is scalding", "this drink is very hot", "the beverage burns my tongue", "that tea steams"]},
+    {"id": "bread_stale", "domain": "food", "gloss": "the bread is old",
+     "paraphrases": ["the bread has gone stale", "this loaf is dry and old", "the roll is hard now", "that bread is past its best"]},
+
+    {"id": "car_fast", "domain": "motion", "gloss": "the vehicle moves quickly",
+     "paraphrases": ["the car moves quickly", "that vehicle is speedy", "the automobile goes fast", "this car has real pace"]},
+    {"id": "river_flow", "domain": "motion", "gloss": "the water moves rapidly",
+     "paraphrases": ["the river runs swiftly", "the stream flows fast", "the current moves rapidly", "the water rushes along"]},
+    {"id": "road_long", "domain": "motion", "gloss": "the route is lengthy",
+     "paraphrases": ["the road stretches far", "that highway is lengthy", "this route goes on forever", "the path is very long"]},
+
+    {"id": "person_tired", "domain": "person_state", "gloss": "the person lacks energy",
+     "paraphrases": ["she feels exhausted", "he is worn out", "they are very tired", "the worker is fatigued"]},
+    {"id": "child_happy", "domain": "person_state", "gloss": "the child feels joy",
+     "paraphrases": ["the kid is delighted", "that child is joyful", "the boy feels cheerful", "this girl is glad"]},
+    {"id": "student_clever", "domain": "person_state", "gloss": "the learner is intelligent",
+     "paraphrases": ["the student is bright", "that pupil is smart", "the learner is intelligent", "this kid is clever"]},
+
+    {"id": "book_boring", "domain": "media", "gloss": "the text is uninteresting",
+     "paraphrases": ["the novel is dull", "that book is tedious", "the story is uninteresting", "this book bores me"]},
+    {"id": "music_loud", "domain": "media", "gloss": "the sound is too loud",
+     "paraphrases": ["the music is blaring", "that song is very loud", "the volume is deafening", "this track is booming"]},
+    {"id": "movie_scary", "domain": "media", "gloss": "the film induces fear",
+     "paraphrases": ["the film is terrifying", "that movie is frightening", "this picture is scary", "the show is chilling"]},
+
+    {"id": "price_expensive", "domain": "commerce", "gloss": "the cost is high",
+     "paraphrases": ["the item costs a lot", "that product is pricey", "this is very expensive", "the price is steep"]},
+    {"id": "task_difficult", "domain": "commerce", "gloss": "the work is hard",
+     "paraphrases": ["the job is hard", "that task is challenging", "this work is tough", "the assignment is demanding"]},
+    {"id": "plan_failed", "domain": "commerce", "gloss": "the plan did not succeed",
+     "paraphrases": ["the plan collapsed", "the scheme fell apart", "that strategy failed", "the project did not work out"]},
+
+    {"id": "medicine_effective", "domain": "misc", "gloss": "the treatment works",
+     "paraphrases": ["the drug works well", "this medicine is effective", "the treatment helps a lot", "that remedy is potent"]},
+    {"id": "city_crowded", "domain": "misc", "gloss": "the place is full of people",
+     "paraphrases": ["the city is packed", "downtown is crowded", "the streets are full of people", "this town is congested"]},
+    {"id": "computer_broken", "domain": "misc", "gloss": "the machine does not work",
+     "paraphrases": ["the laptop stopped working", "my computer is broken", "the machine has failed", "this pc does not run"]},
+    {"id": "team_won", "domain": "misc", "gloss": "the team was victorious",
+     "paraphrases": ["our team won the match", "the squad claimed victory", "they took the game", "our side triumphed"]},
+    {"id": "flower_beautiful", "domain": "misc", "gloss": "the plant looks lovely",
+     "paraphrases": ["the blossom is lovely", "that flower is beautiful", "this bloom is gorgeous", "the plant looks pretty"]}
+  ],
+
+  "polysemy_sets": [
+    {"id": "bank", "surface_form": "bank",
+     "senses": ["she sat on the river bank", "he deposited cash at the bank", "the pilot began to bank left"]},
+    {"id": "spring", "surface_form": "spring",
+     "senses": ["the spring flowers finally bloomed", "the metal spring snapped in half", "cold water flows from the spring"]},
+    {"id": "light", "surface_form": "light",
+     "senses": ["please turn on the light", "this box is surprisingly light", "she will light the candle"]},
+    {"id": "match", "surface_form": "match",
+     "senses": ["he won the tennis match", "strike a match to start the fire", "those two colors match well"]},
+    {"id": "pitch", "surface_form": "pitch",
+     "senses": ["he threw a fast pitch", "the pitch was too high to sing", "they made a sales pitch"]},
+    {"id": "current", "surface_form": "current",
+     "senses": ["the river current is strong", "the current situation is dire", "electric current flows through it"]},
+    {"id": "bark", "surface_form": "bark",
+     "senses": ["the dog began to bark loudly", "the tree bark is rough"]},
+    {"id": "note", "surface_form": "note",
+     "senses": ["she left a handwritten note", "he played a wrong note", "please note the deadline"]}
+  ]
+}

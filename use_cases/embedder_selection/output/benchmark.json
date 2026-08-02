@@ -1,0 +1,1892 @@
+{
+  "_meta": {
+    "random_seed": 20260801,
+    "n_corpora": 68,
+    "source": "concepts.json",
+    "scoring": "A calibrated metric reports true_diversity for every corpus."
+  },
+  "corpora": [
+    {
+      "id": "synonymy-cross_domain-k1-m2-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the blossom is lovely",
+        "that flower is beautiful"
+      ],
+      "concept_labels": [
+        "flower_beautiful",
+        "flower_beautiful"
+      ],
+      "n_documents": 2,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k1-m2-0",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the city is packed",
+        "the streets are full of people"
+      ],
+      "concept_labels": [
+        "city_crowded",
+        "city_crowded"
+      ],
+      "n_documents": 2,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k1-m2-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "that bread is past its best",
+        "the bread has gone stale"
+      ],
+      "concept_labels": [
+        "bread_stale",
+        "bread_stale"
+      ],
+      "n_documents": 2,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k1-m2-1",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the car moves quickly",
+        "that vehicle is speedy"
+      ],
+      "concept_labels": [
+        "car_fast",
+        "car_fast"
+      ],
+      "n_documents": 2,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k1-m2-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the automobile goes fast",
+        "that vehicle is speedy"
+      ],
+      "concept_labels": [
+        "car_fast",
+        "car_fast"
+      ],
+      "n_documents": 2,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k1-m2-2",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the student is bright",
+        "this kid is clever"
+      ],
+      "concept_labels": [
+        "student_clever",
+        "student_clever"
+      ],
+      "n_documents": 2,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k1-m3-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "this work is tough",
+        "that task is challenging",
+        "the job is hard"
+      ],
+      "concept_labels": [
+        "task_difficult",
+        "task_difficult",
+        "task_difficult"
+      ],
+      "n_documents": 3,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k1-m3-0",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "that child is joyful",
+        "the boy feels cheerful",
+        "the kid is delighted"
+      ],
+      "concept_labels": [
+        "child_happy",
+        "child_happy",
+        "child_happy"
+      ],
+      "n_documents": 3,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k1-m3-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the current moves rapidly",
+        "the stream flows fast",
+        "the river runs swiftly"
+      ],
+      "concept_labels": [
+        "river_flow",
+        "river_flow",
+        "river_flow"
+      ],
+      "n_documents": 3,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k1-m3-1",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the dish is superb",
+        "that food is excellent",
+        "the food tastes wonderful"
+      ],
+      "concept_labels": [
+        "meal_delicious",
+        "meal_delicious",
+        "meal_delicious"
+      ],
+      "n_documents": 3,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k1-m3-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "that feline is asleep",
+        "this cat rests quietly",
+        "the kitten is dozing"
+      ],
+      "concept_labels": [
+        "cat_sleeping",
+        "cat_sleeping",
+        "cat_sleeping"
+      ],
+      "n_documents": 3,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k1-m3-2",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the rain is coming down hard",
+        "heavy rain is falling",
+        "it is pouring outside"
+      ],
+      "concept_labels": [
+        "rain_heavy",
+        "rain_heavy",
+        "rain_heavy"
+      ],
+      "n_documents": 3,
+      "true_diversity": 1.0,
+      "rationale": "1 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k2-m2-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the novel is dull",
+        "it is chilly in here",
+        "this book bores me",
+        "the room feels freezing"
+      ],
+      "concept_labels": [
+        "book_boring",
+        "room_cold",
+        "book_boring",
+        "room_cold"
+      ],
+      "n_documents": 4,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k2-m2-0",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the assignment is demanding",
+        "that product is pricey",
+        "the price is steep",
+        "this work is tough"
+      ],
+      "concept_labels": [
+        "task_difficult",
+        "price_expensive",
+        "price_expensive",
+        "task_difficult"
+      ],
+      "n_documents": 4,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k2-m2-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the beverage burns my tongue",
+        "the rain is coming down hard",
+        "that tea steams",
+        "heavy rain is falling"
+      ],
+      "concept_labels": [
+        "coffee_hot",
+        "rain_heavy",
+        "coffee_hot",
+        "rain_heavy"
+      ],
+      "n_documents": 4,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k2-m2-1",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the price is steep",
+        "this is very expensive",
+        "the assignment is demanding",
+        "that task is challenging"
+      ],
+      "concept_labels": [
+        "price_expensive",
+        "price_expensive",
+        "task_difficult",
+        "task_difficult"
+      ],
+      "n_documents": 4,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k2-m2-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the rain is coming down hard",
+        "the drug works well",
+        "there is a downpour right now",
+        "this medicine is effective"
+      ],
+      "concept_labels": [
+        "rain_heavy",
+        "medicine_effective",
+        "rain_heavy",
+        "medicine_effective"
+      ],
+      "n_documents": 4,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k2-m2-2",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the current moves rapidly",
+        "the water rushes along",
+        "the path is very long",
+        "this route goes on forever"
+      ],
+      "concept_labels": [
+        "river_flow",
+        "river_flow",
+        "road_long",
+        "road_long"
+      ],
+      "n_documents": 4,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k2-m3-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the stream flows fast",
+        "the current moves rapidly",
+        "it is chilly in here",
+        "the water rushes along",
+        "the temperature is frigid",
+        "this space is cold"
+      ],
+      "concept_labels": [
+        "river_flow",
+        "river_flow",
+        "room_cold",
+        "river_flow",
+        "room_cold",
+        "room_cold"
+      ],
+      "n_documents": 6,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k2-m3-0",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the coffee is scalding",
+        "the bread has gone stale",
+        "this loaf is dry and old",
+        "this drink is very hot",
+        "that bread is past its best",
+        "that tea steams"
+      ],
+      "concept_labels": [
+        "coffee_hot",
+        "bread_stale",
+        "bread_stale",
+        "coffee_hot",
+        "bread_stale",
+        "coffee_hot"
+      ],
+      "n_documents": 6,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k2-m3-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the beverage burns my tongue",
+        "that pupil is smart",
+        "the coffee is scalding",
+        "the learner is intelligent",
+        "this drink is very hot",
+        "this kid is clever"
+      ],
+      "concept_labels": [
+        "coffee_hot",
+        "student_clever",
+        "coffee_hot",
+        "student_clever",
+        "coffee_hot",
+        "student_clever"
+      ],
+      "n_documents": 6,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k2-m3-1",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "that remedy is potent",
+        "the drug works well",
+        "the machine has failed",
+        "the laptop stopped working",
+        "the treatment helps a lot",
+        "my computer is broken"
+      ],
+      "concept_labels": [
+        "medicine_effective",
+        "medicine_effective",
+        "computer_broken",
+        "computer_broken",
+        "medicine_effective",
+        "computer_broken"
+      ],
+      "n_documents": 6,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k2-m3-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "this meal is delicious",
+        "the plant looks pretty",
+        "this bloom is gorgeous",
+        "that food is excellent",
+        "the dish is superb",
+        "the blossom is lovely"
+      ],
+      "concept_labels": [
+        "meal_delicious",
+        "flower_beautiful",
+        "flower_beautiful",
+        "meal_delicious",
+        "meal_delicious",
+        "flower_beautiful"
+      ],
+      "n_documents": 6,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k2-m3-2",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the plant looks pretty",
+        "that flower is beautiful",
+        "our side triumphed",
+        "they took the game",
+        "this bloom is gorgeous",
+        "the squad claimed victory"
+      ],
+      "concept_labels": [
+        "flower_beautiful",
+        "flower_beautiful",
+        "team_won",
+        "team_won",
+        "flower_beautiful",
+        "team_won"
+      ],
+      "n_documents": 6,
+      "true_diversity": 2.0,
+      "rationale": "2 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k3-m2-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "that bread is past its best",
+        "the road stretches far",
+        "the cat is napping",
+        "the path is very long",
+        "the kitten is dozing",
+        "the bread has gone stale"
+      ],
+      "concept_labels": [
+        "bread_stale",
+        "road_long",
+        "cat_sleeping",
+        "road_long",
+        "cat_sleeping",
+        "bread_stale"
+      ],
+      "n_documents": 6,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k3-m2-0",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "this work is tough",
+        "that product is pricey",
+        "the price is steep",
+        "the plan collapsed",
+        "that strategy failed",
+        "that task is challenging"
+      ],
+      "concept_labels": [
+        "task_difficult",
+        "price_expensive",
+        "price_expensive",
+        "plan_failed",
+        "plan_failed",
+        "task_difficult"
+      ],
+      "n_documents": 6,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k3-m2-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the dish is superb",
+        "that task is challenging",
+        "the road stretches far",
+        "the path is very long",
+        "that food is excellent",
+        "this work is tough"
+      ],
+      "concept_labels": [
+        "meal_delicious",
+        "task_difficult",
+        "road_long",
+        "road_long",
+        "meal_delicious",
+        "task_difficult"
+      ],
+      "n_documents": 6,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k3-m2-1",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the river runs swiftly",
+        "that vehicle is speedy",
+        "the road stretches far",
+        "this car has real pace",
+        "that highway is lengthy",
+        "the stream flows fast"
+      ],
+      "concept_labels": [
+        "river_flow",
+        "car_fast",
+        "road_long",
+        "car_fast",
+        "road_long",
+        "river_flow"
+      ],
+      "n_documents": 6,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k3-m2-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "this bloom is gorgeous",
+        "that pup is really sociable",
+        "there is a downpour right now",
+        "heavy rain is falling",
+        "the blossom is lovely",
+        "the hound loves people"
+      ],
+      "concept_labels": [
+        "flower_beautiful",
+        "dog_friendly",
+        "rain_heavy",
+        "rain_heavy",
+        "flower_beautiful",
+        "dog_friendly"
+      ],
+      "n_documents": 6,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k3-m2-2",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the road stretches far",
+        "the water rushes along",
+        "this car has real pace",
+        "that highway is lengthy",
+        "that vehicle is speedy",
+        "the river runs swiftly"
+      ],
+      "concept_labels": [
+        "road_long",
+        "river_flow",
+        "car_fast",
+        "road_long",
+        "car_fast",
+        "river_flow"
+      ],
+      "n_documents": 6,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k3-m3-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the room feels freezing",
+        "the city is packed",
+        "this car has real pace",
+        "that vehicle is speedy",
+        "downtown is crowded",
+        "the streets are full of people",
+        "it is chilly in here",
+        "this space is cold",
+        "the automobile goes fast"
+      ],
+      "concept_labels": [
+        "room_cold",
+        "city_crowded",
+        "car_fast",
+        "car_fast",
+        "city_crowded",
+        "city_crowded",
+        "room_cold",
+        "room_cold",
+        "car_fast"
+      ],
+      "n_documents": 9,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k3-m3-0",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "it is pouring outside",
+        "this space is cold",
+        "it is chilly in here",
+        "the glow is weak",
+        "heavy rain is falling",
+        "the temperature is frigid",
+        "the lamp is faint",
+        "the light is dim",
+        "the rain is coming down hard"
+      ],
+      "concept_labels": [
+        "rain_heavy",
+        "room_cold",
+        "room_cold",
+        "light_dim",
+        "rain_heavy",
+        "room_cold",
+        "light_dim",
+        "light_dim",
+        "rain_heavy"
+      ],
+      "n_documents": 9,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k3-m3-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "that pup is really sociable",
+        "it is chilly in here",
+        "the hound loves people",
+        "the water rushes along",
+        "the dog is very friendly",
+        "this space is cold",
+        "the river runs swiftly",
+        "the current moves rapidly",
+        "the room feels freezing"
+      ],
+      "concept_labels": [
+        "dog_friendly",
+        "room_cold",
+        "dog_friendly",
+        "river_flow",
+        "dog_friendly",
+        "room_cold",
+        "river_flow",
+        "river_flow",
+        "room_cold"
+      ],
+      "n_documents": 9,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k3-m3-1",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the water rushes along",
+        "the car moves quickly",
+        "the current moves rapidly",
+        "the road stretches far",
+        "the path is very long",
+        "this car has real pace",
+        "the river runs swiftly",
+        "the automobile goes fast",
+        "this route goes on forever"
+      ],
+      "concept_labels": [
+        "river_flow",
+        "car_fast",
+        "river_flow",
+        "road_long",
+        "road_long",
+        "car_fast",
+        "river_flow",
+        "car_fast",
+        "road_long"
+      ],
+      "n_documents": 9,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k3-m3-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the squad claimed victory",
+        "the water rushes along",
+        "the job is hard",
+        "the river runs swiftly",
+        "they took the game",
+        "the stream flows fast",
+        "the assignment is demanding",
+        "this work is tough",
+        "our side triumphed"
+      ],
+      "concept_labels": [
+        "team_won",
+        "river_flow",
+        "task_difficult",
+        "river_flow",
+        "team_won",
+        "river_flow",
+        "task_difficult",
+        "task_difficult",
+        "team_won"
+      ],
+      "n_documents": 9,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k3-m3-2",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "they are very tired",
+        "the learner is intelligent",
+        "that pupil is smart",
+        "the kid is delighted",
+        "she feels exhausted",
+        "this kid is clever",
+        "this girl is glad",
+        "the boy feels cheerful",
+        "the worker is fatigued"
+      ],
+      "concept_labels": [
+        "person_tired",
+        "student_clever",
+        "student_clever",
+        "child_happy",
+        "person_tired",
+        "student_clever",
+        "child_happy",
+        "child_happy",
+        "person_tired"
+      ],
+      "n_documents": 9,
+      "true_diversity": 3.0,
+      "rationale": "3 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k4-m2-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the scheme fell apart",
+        "the water rushes along",
+        "the stream flows fast",
+        "this bird calls out",
+        "the music is blaring",
+        "the bird is chirping",
+        "this track is booming",
+        "the project did not work out"
+      ],
+      "concept_labels": [
+        "plan_failed",
+        "river_flow",
+        "river_flow",
+        "bird_singing",
+        "music_loud",
+        "bird_singing",
+        "music_loud",
+        "plan_failed"
+      ],
+      "n_documents": 8,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k4-m2-0",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the plant looks pretty",
+        "the treatment helps a lot",
+        "downtown is crowded",
+        "that flower is beautiful",
+        "our side triumphed",
+        "our team won the match",
+        "the streets are full of people",
+        "that remedy is potent"
+      ],
+      "concept_labels": [
+        "flower_beautiful",
+        "medicine_effective",
+        "city_crowded",
+        "flower_beautiful",
+        "team_won",
+        "team_won",
+        "city_crowded",
+        "medicine_effective"
+      ],
+      "n_documents": 8,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k4-m2-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the light is dim",
+        "the squad claimed victory",
+        "this room is poorly lit",
+        "that feline is asleep",
+        "this cat rests quietly",
+        "this meal is delicious",
+        "they took the game",
+        "the dish is superb"
+      ],
+      "concept_labels": [
+        "light_dim",
+        "team_won",
+        "light_dim",
+        "cat_sleeping",
+        "cat_sleeping",
+        "meal_delicious",
+        "team_won",
+        "meal_delicious"
+      ],
+      "n_documents": 8,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k4-m2-1",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "that flower is beautiful",
+        "the treatment helps a lot",
+        "the laptop stopped working",
+        "my computer is broken",
+        "this medicine is effective",
+        "our team won the match",
+        "the squad claimed victory",
+        "the blossom is lovely"
+      ],
+      "concept_labels": [
+        "flower_beautiful",
+        "medicine_effective",
+        "computer_broken",
+        "computer_broken",
+        "medicine_effective",
+        "team_won",
+        "team_won",
+        "flower_beautiful"
+      ],
+      "n_documents": 8,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k4-m2-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the river runs swiftly",
+        "that product is pricey",
+        "the bird is chirping",
+        "the robin is warbling",
+        "that remedy is potent",
+        "the stream flows fast",
+        "the drug works well",
+        "this is very expensive"
+      ],
+      "concept_labels": [
+        "river_flow",
+        "price_expensive",
+        "bird_singing",
+        "bird_singing",
+        "medicine_effective",
+        "river_flow",
+        "medicine_effective",
+        "price_expensive"
+      ],
+      "n_documents": 8,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k4-m2-2",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "our team won the match",
+        "this pc does not run",
+        "they took the game",
+        "the machine has failed",
+        "the drug works well",
+        "that remedy is potent",
+        "this bloom is gorgeous",
+        "the plant looks pretty"
+      ],
+      "concept_labels": [
+        "team_won",
+        "computer_broken",
+        "team_won",
+        "computer_broken",
+        "medicine_effective",
+        "medicine_effective",
+        "flower_beautiful",
+        "flower_beautiful"
+      ],
+      "n_documents": 8,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k4-m3-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the scheme fell apart",
+        "this dog is affectionate",
+        "the plan collapsed",
+        "the path is very long",
+        "that flower is beautiful",
+        "the dog is very friendly",
+        "the plant looks pretty",
+        "the project did not work out",
+        "this route goes on forever",
+        "that highway is lengthy",
+        "the hound loves people",
+        "the blossom is lovely"
+      ],
+      "concept_labels": [
+        "plan_failed",
+        "dog_friendly",
+        "plan_failed",
+        "road_long",
+        "flower_beautiful",
+        "dog_friendly",
+        "flower_beautiful",
+        "plan_failed",
+        "road_long",
+        "road_long",
+        "dog_friendly",
+        "flower_beautiful"
+      ],
+      "n_documents": 12,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k4-m3-0",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "this medicine is effective",
+        "the city is packed",
+        "the machine has failed",
+        "this pc does not run",
+        "the laptop stopped working",
+        "the streets are full of people",
+        "the drug works well",
+        "our side triumphed",
+        "the squad claimed victory",
+        "our team won the match",
+        "the treatment helps a lot",
+        "this town is congested"
+      ],
+      "concept_labels": [
+        "medicine_effective",
+        "city_crowded",
+        "computer_broken",
+        "computer_broken",
+        "computer_broken",
+        "city_crowded",
+        "medicine_effective",
+        "team_won",
+        "team_won",
+        "team_won",
+        "medicine_effective",
+        "city_crowded"
+      ],
+      "n_documents": 12,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k4-m3-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the item costs a lot",
+        "this drink is very hot",
+        "there is a downpour right now",
+        "that product is pricey",
+        "the coffee is scalding",
+        "heavy rain is falling",
+        "that tea steams",
+        "it is pouring outside",
+        "this bloom is gorgeous",
+        "that flower is beautiful",
+        "this is very expensive",
+        "the blossom is lovely"
+      ],
+      "concept_labels": [
+        "price_expensive",
+        "coffee_hot",
+        "rain_heavy",
+        "price_expensive",
+        "coffee_hot",
+        "rain_heavy",
+        "coffee_hot",
+        "rain_heavy",
+        "flower_beautiful",
+        "flower_beautiful",
+        "price_expensive",
+        "flower_beautiful"
+      ],
+      "n_documents": 12,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k4-m3-1",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the plant looks pretty",
+        "the drug works well",
+        "the machine has failed",
+        "that flower is beautiful",
+        "the streets are full of people",
+        "this medicine is effective",
+        "downtown is crowded",
+        "the city is packed",
+        "this pc does not run",
+        "the treatment helps a lot",
+        "my computer is broken",
+        "this bloom is gorgeous"
+      ],
+      "concept_labels": [
+        "flower_beautiful",
+        "medicine_effective",
+        "computer_broken",
+        "flower_beautiful",
+        "city_crowded",
+        "medicine_effective",
+        "city_crowded",
+        "city_crowded",
+        "computer_broken",
+        "medicine_effective",
+        "computer_broken",
+        "flower_beautiful"
+      ],
+      "n_documents": 12,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k4-m3-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "this room is poorly lit",
+        "the lamp is faint",
+        "this kid is clever",
+        "that song is very loud",
+        "the music is blaring",
+        "the student is bright",
+        "the learner is intelligent",
+        "the dog is very friendly",
+        "that pup is really sociable",
+        "this track is booming",
+        "this dog is affectionate",
+        "the light is dim"
+      ],
+      "concept_labels": [
+        "light_dim",
+        "light_dim",
+        "student_clever",
+        "music_loud",
+        "music_loud",
+        "student_clever",
+        "student_clever",
+        "dog_friendly",
+        "dog_friendly",
+        "music_loud",
+        "dog_friendly",
+        "light_dim"
+      ],
+      "n_documents": 12,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-within_domain-k4-m3-2",
+      "axis": "synonymy",
+      "regime": "within_domain",
+      "documents": [
+        "the machine has failed",
+        "our team won the match",
+        "that remedy is potent",
+        "this town is congested",
+        "our side triumphed",
+        "the city is packed",
+        "this medicine is effective",
+        "the laptop stopped working",
+        "the squad claimed victory",
+        "my computer is broken",
+        "the treatment helps a lot",
+        "downtown is crowded"
+      ],
+      "concept_labels": [
+        "computer_broken",
+        "team_won",
+        "medicine_effective",
+        "city_crowded",
+        "team_won",
+        "city_crowded",
+        "medicine_effective",
+        "computer_broken",
+        "team_won",
+        "computer_broken",
+        "medicine_effective",
+        "city_crowded"
+      ],
+      "n_documents": 12,
+      "true_diversity": 4.0,
+      "rationale": "4 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k6-m2-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the job is hard",
+        "heavy rain is falling",
+        "the river runs swiftly",
+        "there is a downpour right now",
+        "this work is tough",
+        "the water rushes along",
+        "that feline is asleep",
+        "the cat is napping",
+        "the treatment helps a lot",
+        "the kid is delighted",
+        "this girl is glad",
+        "that remedy is potent"
+      ],
+      "concept_labels": [
+        "task_difficult",
+        "rain_heavy",
+        "river_flow",
+        "rain_heavy",
+        "task_difficult",
+        "river_flow",
+        "cat_sleeping",
+        "cat_sleeping",
+        "medicine_effective",
+        "child_happy",
+        "child_happy",
+        "medicine_effective"
+      ],
+      "n_documents": 12,
+      "true_diversity": 6.0,
+      "rationale": "6 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k6-m2-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the learner is intelligent",
+        "the plan collapsed",
+        "the machine has failed",
+        "the current moves rapidly",
+        "the project did not work out",
+        "that book is tedious",
+        "this pc does not run",
+        "the kitten is dozing",
+        "the story is uninteresting",
+        "this kid is clever",
+        "the stream flows fast",
+        "this cat rests quietly"
+      ],
+      "concept_labels": [
+        "student_clever",
+        "plan_failed",
+        "computer_broken",
+        "river_flow",
+        "plan_failed",
+        "book_boring",
+        "computer_broken",
+        "cat_sleeping",
+        "book_boring",
+        "student_clever",
+        "river_flow",
+        "cat_sleeping"
+      ],
+      "n_documents": 12,
+      "true_diversity": 6.0,
+      "rationale": "6 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k6-m2-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the worker is fatigued",
+        "the kitten is dozing",
+        "this cat rests quietly",
+        "the drug works well",
+        "it is pouring outside",
+        "that vehicle is speedy",
+        "the beverage burns my tongue",
+        "this medicine is effective",
+        "the automobile goes fast",
+        "that tea steams",
+        "he is worn out",
+        "heavy rain is falling"
+      ],
+      "concept_labels": [
+        "person_tired",
+        "cat_sleeping",
+        "cat_sleeping",
+        "medicine_effective",
+        "rain_heavy",
+        "car_fast",
+        "coffee_hot",
+        "medicine_effective",
+        "car_fast",
+        "coffee_hot",
+        "person_tired",
+        "rain_heavy"
+      ],
+      "n_documents": 12,
+      "true_diversity": 6.0,
+      "rationale": "6 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k6-m3-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the blossom is lovely",
+        "that flower is beautiful",
+        "the hound loves people",
+        "the water rushes along",
+        "the plan collapsed",
+        "the volume is deafening",
+        "this bloom is gorgeous",
+        "the project did not work out",
+        "the music is blaring",
+        "that song is very loud",
+        "that strategy failed",
+        "this dog is affectionate",
+        "the roll is hard now",
+        "the current moves rapidly",
+        "the stream flows fast",
+        "the bread has gone stale",
+        "the dog is very friendly",
+        "that bread is past its best"
+      ],
+      "concept_labels": [
+        "flower_beautiful",
+        "flower_beautiful",
+        "dog_friendly",
+        "river_flow",
+        "plan_failed",
+        "music_loud",
+        "flower_beautiful",
+        "plan_failed",
+        "music_loud",
+        "music_loud",
+        "plan_failed",
+        "dog_friendly",
+        "bread_stale",
+        "river_flow",
+        "river_flow",
+        "bread_stale",
+        "dog_friendly",
+        "bread_stale"
+      ],
+      "n_documents": 18,
+      "true_diversity": 6.0,
+      "rationale": "6 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k6-m3-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the room feels freezing",
+        "the river runs swiftly",
+        "this loaf is dry and old",
+        "the bread has gone stale",
+        "that movie is frightening",
+        "that task is challenging",
+        "the water rushes along",
+        "the student is bright",
+        "the roll is hard now",
+        "that pupil is smart",
+        "the assignment is demanding",
+        "this picture is scary",
+        "this work is tough",
+        "the learner is intelligent",
+        "the temperature is frigid",
+        "the stream flows fast",
+        "the film is terrifying",
+        "it is chilly in here"
+      ],
+      "concept_labels": [
+        "room_cold",
+        "river_flow",
+        "bread_stale",
+        "bread_stale",
+        "movie_scary",
+        "task_difficult",
+        "river_flow",
+        "student_clever",
+        "bread_stale",
+        "student_clever",
+        "task_difficult",
+        "movie_scary",
+        "task_difficult",
+        "student_clever",
+        "room_cold",
+        "river_flow",
+        "movie_scary",
+        "room_cold"
+      ],
+      "n_documents": 18,
+      "true_diversity": 6.0,
+      "rationale": "6 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k6-m3-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the water rushes along",
+        "the worker is fatigued",
+        "that book is tedious",
+        "this is very expensive",
+        "this loaf is dry and old",
+        "they are very tired",
+        "it is chilly in here",
+        "this space is cold",
+        "the story is uninteresting",
+        "that product is pricey",
+        "she feels exhausted",
+        "the bread has gone stale",
+        "the room feels freezing",
+        "the river runs swiftly",
+        "this book bores me",
+        "the item costs a lot",
+        "the current moves rapidly",
+        "that bread is past its best"
+      ],
+      "concept_labels": [
+        "river_flow",
+        "person_tired",
+        "book_boring",
+        "price_expensive",
+        "bread_stale",
+        "person_tired",
+        "room_cold",
+        "room_cold",
+        "book_boring",
+        "price_expensive",
+        "person_tired",
+        "bread_stale",
+        "room_cold",
+        "river_flow",
+        "book_boring",
+        "price_expensive",
+        "river_flow",
+        "bread_stale"
+      ],
+      "n_documents": 18,
+      "true_diversity": 6.0,
+      "rationale": "6 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k8-m2-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "that movie is frightening",
+        "the water rushes along",
+        "that pup is really sociable",
+        "this meal is delicious",
+        "the plan collapsed",
+        "the kid is delighted",
+        "that child is joyful",
+        "the light is dim",
+        "the dish is superb",
+        "this dog is affectionate",
+        "our side triumphed",
+        "the river runs swiftly",
+        "our team won the match",
+        "the lamp is faint",
+        "the film is terrifying",
+        "the scheme fell apart"
+      ],
+      "concept_labels": [
+        "movie_scary",
+        "river_flow",
+        "dog_friendly",
+        "meal_delicious",
+        "plan_failed",
+        "child_happy",
+        "child_happy",
+        "light_dim",
+        "meal_delicious",
+        "dog_friendly",
+        "team_won",
+        "river_flow",
+        "team_won",
+        "light_dim",
+        "movie_scary",
+        "plan_failed"
+      ],
+      "n_documents": 16,
+      "true_diversity": 8.0,
+      "rationale": "8 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k8-m2-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "that food is excellent",
+        "that vehicle is speedy",
+        "this space is cold",
+        "the price is steep",
+        "the volume is deafening",
+        "they took the game",
+        "that pup is really sociable",
+        "our team won the match",
+        "the item costs a lot",
+        "this girl is glad",
+        "the car moves quickly",
+        "the temperature is frigid",
+        "this dog is affectionate",
+        "this meal is delicious",
+        "the kid is delighted",
+        "the music is blaring"
+      ],
+      "concept_labels": [
+        "meal_delicious",
+        "car_fast",
+        "room_cold",
+        "price_expensive",
+        "music_loud",
+        "team_won",
+        "dog_friendly",
+        "team_won",
+        "price_expensive",
+        "child_happy",
+        "car_fast",
+        "room_cold",
+        "dog_friendly",
+        "meal_delicious",
+        "child_happy",
+        "music_loud"
+      ],
+      "n_documents": 16,
+      "true_diversity": 8.0,
+      "rationale": "8 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k8-m2-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the streets are full of people",
+        "the light is dim",
+        "the road stretches far",
+        "the glow is weak",
+        "the food tastes wonderful",
+        "this route goes on forever",
+        "she feels exhausted",
+        "this cat rests quietly",
+        "the show is chilling",
+        "that feline is asleep",
+        "the dish is superb",
+        "this town is congested",
+        "the item costs a lot",
+        "this is very expensive",
+        "that movie is frightening",
+        "the worker is fatigued"
+      ],
+      "concept_labels": [
+        "city_crowded",
+        "light_dim",
+        "road_long",
+        "light_dim",
+        "meal_delicious",
+        "road_long",
+        "person_tired",
+        "cat_sleeping",
+        "movie_scary",
+        "cat_sleeping",
+        "meal_delicious",
+        "city_crowded",
+        "price_expensive",
+        "price_expensive",
+        "movie_scary",
+        "person_tired"
+      ],
+      "n_documents": 16,
+      "true_diversity": 8.0,
+      "rationale": "8 distinct concepts, 2 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k8-m3-0",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "the road stretches far",
+        "the beverage burns my tongue",
+        "the assignment is demanding",
+        "our team won the match",
+        "the bird is chirping",
+        "this bird calls out",
+        "that song is very loud",
+        "that sparrow sings",
+        "the volume is deafening",
+        "the coffee is scalding",
+        "the music is blaring",
+        "this route goes on forever",
+        "that task is challenging",
+        "this drink is very hot",
+        "the squad claimed victory",
+        "our side triumphed",
+        "the learner is intelligent",
+        "that pupil is smart",
+        "the job is hard",
+        "this room is poorly lit",
+        "the light is dim",
+        "the path is very long",
+        "the student is bright",
+        "the lamp is faint"
+      ],
+      "concept_labels": [
+        "road_long",
+        "coffee_hot",
+        "task_difficult",
+        "team_won",
+        "bird_singing",
+        "bird_singing",
+        "music_loud",
+        "bird_singing",
+        "music_loud",
+        "coffee_hot",
+        "music_loud",
+        "road_long",
+        "task_difficult",
+        "coffee_hot",
+        "team_won",
+        "team_won",
+        "student_clever",
+        "student_clever",
+        "task_difficult",
+        "light_dim",
+        "light_dim",
+        "road_long",
+        "student_clever",
+        "light_dim"
+      ],
+      "n_documents": 24,
+      "true_diversity": 8.0,
+      "rationale": "8 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k8-m3-1",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "this loaf is dry and old",
+        "the car moves quickly",
+        "this room is poorly lit",
+        "that feline is asleep",
+        "the treatment helps a lot",
+        "this medicine is effective",
+        "the kitten is dozing",
+        "the student is bright",
+        "the cat is napping",
+        "the price is steep",
+        "that bread is past its best",
+        "the show is chilling",
+        "this is very expensive",
+        "that pupil is smart",
+        "the automobile goes fast",
+        "that product is pricey",
+        "that movie is frightening",
+        "this car has real pace",
+        "the drug works well",
+        "the glow is weak",
+        "this picture is scary",
+        "the bread has gone stale",
+        "this kid is clever",
+        "the light is dim"
+      ],
+      "concept_labels": [
+        "bread_stale",
+        "car_fast",
+        "light_dim",
+        "cat_sleeping",
+        "medicine_effective",
+        "medicine_effective",
+        "cat_sleeping",
+        "student_clever",
+        "cat_sleeping",
+        "price_expensive",
+        "bread_stale",
+        "movie_scary",
+        "price_expensive",
+        "student_clever",
+        "car_fast",
+        "price_expensive",
+        "movie_scary",
+        "car_fast",
+        "medicine_effective",
+        "light_dim",
+        "movie_scary",
+        "bread_stale",
+        "student_clever",
+        "light_dim"
+      ],
+      "n_documents": 24,
+      "true_diversity": 8.0,
+      "rationale": "8 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "synonymy-cross_domain-k8-m3-2",
+      "axis": "synonymy",
+      "regime": "cross_domain",
+      "documents": [
+        "that flower is beautiful",
+        "the food tastes wonderful",
+        "the learner is intelligent",
+        "this kid is clever",
+        "the kitten is dozing",
+        "this work is tough",
+        "the assignment is demanding",
+        "the river runs swiftly",
+        "the stream flows fast",
+        "that book is tedious",
+        "the cat is napping",
+        "this bloom is gorgeous",
+        "this book bores me",
+        "the room feels freezing",
+        "the blossom is lovely",
+        "the dish is superb",
+        "that task is challenging",
+        "the water rushes along",
+        "the story is uninteresting",
+        "the temperature is frigid",
+        "that food is excellent",
+        "it is chilly in here",
+        "this cat rests quietly",
+        "that pupil is smart"
+      ],
+      "concept_labels": [
+        "flower_beautiful",
+        "meal_delicious",
+        "student_clever",
+        "student_clever",
+        "cat_sleeping",
+        "task_difficult",
+        "task_difficult",
+        "river_flow",
+        "river_flow",
+        "book_boring",
+        "cat_sleeping",
+        "flower_beautiful",
+        "book_boring",
+        "room_cold",
+        "flower_beautiful",
+        "meal_delicious",
+        "task_difficult",
+        "river_flow",
+        "book_boring",
+        "room_cold",
+        "meal_delicious",
+        "room_cold",
+        "cat_sleeping",
+        "student_clever"
+      ],
+      "n_documents": 24,
+      "true_diversity": 8.0,
+      "rationale": "8 distinct concepts, 3 paraphrases each"
+    },
+    {
+      "id": "polysemy-bank",
+      "axis": "polysemy",
+      "regime": "shared_surface_form",
+      "documents": [
+        "she sat on the river bank",
+        "he deposited cash at the bank",
+        "the pilot began to bank left"
+      ],
+      "concept_labels": [
+        "bank_sense0",
+        "bank_sense1",
+        "bank_sense2"
+      ],
+      "n_documents": 3,
+      "true_diversity": 3.0,
+      "rationale": "3 unrelated senses of 'bank'"
+    },
+    {
+      "id": "polysemy-spring",
+      "axis": "polysemy",
+      "regime": "shared_surface_form",
+      "documents": [
+        "the spring flowers finally bloomed",
+        "the metal spring snapped in half",
+        "cold water flows from the spring"
+      ],
+      "concept_labels": [
+        "spring_sense0",
+        "spring_sense1",
+        "spring_sense2"
+      ],
+      "n_documents": 3,
+      "true_diversity": 3.0,
+      "rationale": "3 unrelated senses of 'spring'"
+    },
+    {
+      "id": "polysemy-light",
+      "axis": "polysemy",
+      "regime": "shared_surface_form",
+      "documents": [
+        "please turn on the light",
+        "this box is surprisingly light",
+        "she will light the candle"
+      ],
+      "concept_labels": [
+        "light_sense0",
+        "light_sense1",
+        "light_sense2"
+      ],
+      "n_documents": 3,
+      "true_diversity": 3.0,
+      "rationale": "3 unrelated senses of 'light'"
+    },
+    {
+      "id": "polysemy-match",
+      "axis": "polysemy",
+      "regime": "shared_surface_form",
+      "documents": [
+        "he won the tennis match",
+        "strike a match to start the fire",
+        "those two colors match well"
+      ],
+      "concept_labels": [
+        "match_sense0",
+        "match_sense1",
+        "match_sense2"
+      ],
+      "n_documents": 3,
+      "true_diversity": 3.0,
+      "rationale": "3 unrelated senses of 'match'"
+    },
+    {
+      "id": "polysemy-pitch",
+      "axis": "polysemy",
+      "regime": "shared_surface_form",
+      "documents": [
+        "he threw a fast pitch",
+        "the pitch was too high to sing",
+        "they made a sales pitch"
+      ],
+      "concept_labels": [
+        "pitch_sense0",
+        "pitch_sense1",
+        "pitch_sense2"
+      ],
+      "n_documents": 3,
+      "true_diversity": 3.0,
+      "rationale": "3 unrelated senses of 'pitch'"
+    },
+    {
+      "id": "polysemy-current",
+      "axis": "polysemy",
+      "regime": "shared_surface_form",
+      "documents": [
+        "the river current is strong",
+        "the current situation is dire",
+        "electric current flows through it"
+      ],
+      "concept_labels": [
+        "current_sense0",
+        "current_sense1",
+        "current_sense2"
+      ],
+      "n_documents": 3,
+      "true_diversity": 3.0,
+      "rationale": "3 unrelated senses of 'current'"
+    },
+    {
+      "id": "polysemy-bark",
+      "axis": "polysemy",
+      "regime": "shared_surface_form",
+      "documents": [
+        "the dog began to bark loudly",
+        "the tree bark is rough"
+      ],
+      "concept_labels": [
+        "bark_sense0",
+        "bark_sense1"
+      ],
+      "n_documents": 2,
+      "true_diversity": 2.0,
+      "rationale": "2 unrelated senses of 'bark'"
+    },
+    {
+      "id": "polysemy-note",
+      "axis": "polysemy",
+      "regime": "shared_surface_form",
+      "documents": [
+        "she left a handwritten note",
+        "he played a wrong note",
+        "please note the deadline"
+      ],
+      "concept_labels": [
+        "note_sense0",
+        "note_sense1",
+        "note_sense2"
+      ],
+      "n_documents": 3,
+      "true_diversity": 3.0,
+      "rationale": "3 unrelated senses of 'note'"
+    }
+  ]
+}

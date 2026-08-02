@@ -1,0 +1,3662 @@
+[
+  {
+    "model": "sentence-transformers/all-mpnet-base-v2",
+    "mean_cosine": 0.3015891978626742,
+    "calibration_ratio": 0.9734870672277988,
+    "mean_abs_error": 0.6242007215947262,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.7135826343966697,
+        "mean_abs_error": 0.8331836007744197,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.9822355487981533,
+        "mean_abs_error": 0.7650301711042602,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 1.0469991558159766,
+        "mean_abs_error": 0.34329558760386075,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.1614303746477797
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.14889637471416
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.1143248576878275
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.2364352592516148
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.2223203590655003
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.5514802146185478
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.5472220825413883
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.2157707306850627
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.3383228998024947
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.2689535444550002
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.3034220027591013
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1320391284953508
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 2.0538088018922362
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 2.11765393787504
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 2.349557522364177
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.9161932831001802
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 2.112283266440117
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.818019478255863
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 2.128621820585016
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 2.318811478131339
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 2.7635563335637867
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 2.66615952560109
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.965417942505797
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 2.643232462587822
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 3.6125789348499038
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 2.7705201566695328
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 2.8982670957739414
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.8786439916254047
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 2.813979124502976
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.9492510536926764
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 2.9034403261215824
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 2.608170197811407
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 3.44039752658987
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 2.165079173825152
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 3.2912535118232222
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 3.142173359952854
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 3.3269405046787557
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 3.7481381515385443
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 3.5758047374981086
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 3.9752809819963186
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 3.546873776613014
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 3.8177450093706913
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 4.0701447330064235
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 4.126480592151568
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 3.3915375420190657
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 4.117344230545761
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 3.779004161690819
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 4.200704741313216
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 5.7629485104879095
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 5.3010234772321105
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 4.769809818117455
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 5.384533890455298
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 4.504893523875681
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 4.838488997410768
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 5.301059351736956
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 4.91044319169336
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 5.271600516048299
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 5.375270749687055
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 5.989752024520951
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 6.3570696051955755
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.8738581385290385
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.8528579965351413
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 2.191925840735808
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 2.3077844425889276
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 2.017876192787502
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 2.3630952568428305
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.5829040634308609
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 2.144229262354534
+      }
+    ],
+    "synonymy_rank_corr": 0.9528202278410671
+  },
+  {
+    "model": "sentence-transformers/all-MiniLM-L6-v2",
+    "mean_cosine": 0.29817309471614223,
+    "calibration_ratio": 0.9762265699378998,
+    "mean_abs_error": 0.7430362423830161,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.6242399000353599,
+        "mean_abs_error": 1.092287574834391,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.9820592595670534,
+        "mean_abs_error": 0.9073447550744557,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 1.0848064254616823,
+        "mean_abs_error": 0.38015636252873203,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.1675022685376704
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.3111799371654749
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.193704164826053
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.1880238651148811
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.1972804804468564
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.52304796833012
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.4295987101464698
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.3424565600966851
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.5316272212371054
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.3103707998594236
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.5215255708456312
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.4241036032758636
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 2.351184472605954
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 2.20875797964675
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 2.231596743412303
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 2.100931923245574
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 2.3460133694295178
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 2.0836011752754406
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 2.4024024725958464
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 2.2668937049239544
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 2.647345749619673
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 2.5489961809260326
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.8636595109102274
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 2.612510167770727
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 3.256644559582716
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 2.6990264907609793
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 2.9123035521019416
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.969380382072595
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 3.044369186623063
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 2.000428736092465
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 2.883314505004731
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 2.814130972458669
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 3.69675399330184
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 2.2560451428186767
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 3.282627241672501
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 3.0396759688175474
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 3.4888962183660897
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 3.626149350432033
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 3.362958376921097
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 3.6949055280668284
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 3.587029247504151
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 3.926031186952315
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 3.685110007551407
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 4.465780230752789
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 3.5855590786296037
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 4.292213615692652
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 3.8921884192196807
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 4.3913068094502155
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 5.301701000492325
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 4.741657494618929
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 4.689687757875394
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 4.986679543862235
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 4.669321108018053
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 4.67121283980198
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 4.750647904844311
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 5.037042183846816
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 4.995665566491793
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 4.9362231095664635
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 5.304870811670252
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 5.290036784905317
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.6310623861783329
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.7099847194124658
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.8782176837476958
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 2.097179439998845
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.7037814726286142
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.7809665483296546
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.4401163990475272
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 2.0203907519817377
+      }
+    ],
+    "synonymy_rank_corr": 0.9560989163656574
+  },
+  {
+    "model": "BAAI/bge-base-en-v1.5",
+    "mean_cosine": 0.6321836819543558,
+    "calibration_ratio": 0.583481232885652,
+    "mean_abs_error": 1.9038446461928695,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.4784127965487911,
+        "mean_abs_error": 1.5136159907684625,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.5434055960786865,
+        "mean_abs_error": 2.4975695695007114,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 0.6786175002083873,
+        "mean_abs_error": 1.1433334797059098,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.082039561118527
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0855477900602548
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.103699150244058
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0562488556388185
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.0637396754456665
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.1301285100029068
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.1138674833434519
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.1210734302855812
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1412668853138523
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1309860331046275
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1919633697800518
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.13437947293164
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.4647847146338773
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.3382390890411853
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.4680367681455075
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.2994314650208467
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.3918506341650991
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.3242849727468853
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.3008561507230638
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.438116076021318
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.507512295349784
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.584797500940606
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.3431595160699583
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.4731022166153191
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.72796593883905
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.481112827893413
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.4606213586877046
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.3401265878796884
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.513017468744752
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.3622321306737706
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.468618779549851
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.4145527191360947
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.527934231493731
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.3821192563931726
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.5183951587326143
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.5323317353489958
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.5852043040942152
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.642642152674479
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.7321921587193527
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.715470065313539
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.6683141004641144
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.6799355346537606
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.7333931470044779
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.725700125681845
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.5386238197934936
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.725125981080295
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.5766374646443866
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.7590401419667823
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 1.851342575977153
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 1.8677194205071057
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 1.7724157441875756
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 1.7378994656962996
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 1.6285511775902213
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 1.7028043762880043
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 1.818881030511596
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 1.6635783163290385
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 1.7837159084508445
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 1.7413457844129512
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 1.8403161128003929
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 1.8483837006137704
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.4060165887393212
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.3776148097869378
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.392682156197308
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 1.4344620418114402
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.319114212401875
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.3530956665849754
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.181670086637375
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 1.4264165116930667
+      }
+    ],
+    "synonymy_rank_corr": 0.9148652403445403
+  },
+  {
+    "model": "BAAI/bge-large-en-v1.5",
+    "mean_cosine": 0.6396022776470465,
+    "calibration_ratio": 0.5772238307621751,
+    "mean_abs_error": 1.90388646152961,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.4925067741738921,
+        "mean_abs_error": 1.4722905333394891,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.5354810622719515,
+        "mean_abs_error": 2.5044088981744603,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 0.6680770023602717,
+        "mean_abs_error": 1.1469681159590401,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0786033740422851
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0749497578268452
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0681699418357475
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.047092596896838
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.0411876348227804
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.1068634280025513
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.1008175139030423
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.0927463418931131
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1044243330611945
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.116111694091799
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1458012029262898
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.0603838924430997
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.475005877184706
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.3019771553490758
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.4559342720014619
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.2775395587287612
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.339661587973861
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.2989110333960512
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.2770595190141216
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.4400908827788148
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.4595840228751031
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.5545328097036641
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.3202576918660016
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.4886496013860309
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.6462839572651937
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.4740034801531205
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.4705033225650523
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.34236458233279
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.4974668418703632
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.356330304854029
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.4583418792880665
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.403494146207491
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.4985667895117163
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.375744669367217
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.5495194563659738
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.4786250545535804
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.605578642977896
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.629776268897178
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.736358628320508
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.7050589653903196
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.6641803815591156
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.6835909686246038
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.7324643965725188
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.7063853976633954
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.5531489143951864
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.7133298724074266
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.563165628698267
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.7405081763437313
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 1.730112628653085
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 1.8837436895471351
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 1.7209542196788408
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 1.7864187654388417
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 1.633825831004416
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 1.708007905379777
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 1.8141490691440636
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 1.6542056009650834
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 1.7791319026161807
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 1.712889357216953
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 1.8240065471898985
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 1.829756339171368
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.480371512057384
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.4336470913717947
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.4540032706910622
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 1.474198128281678
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.3670893535576043
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.359794695196937
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.1969736937786466
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 1.455597988348981
+      }
+    ],
+    "synonymy_rank_corr": 0.9205334815226454
+  },
+  {
+    "model": "avsolatorio/GIST-large-Embedding-v0",
+    "mean_cosine": 0.4803593535633648,
+    "calibration_ratio": 0.6997099577575713,
+    "mean_abs_error": 1.4736184871476536,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.581495685892258,
+        "mean_abs_error": 1.2130472067997695,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.662977177600358,
+        "mean_abs_error": 1.9762468123815577,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 0.7942138852818289,
+        "mean_abs_error": 0.8065330927460924,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0979591127671315
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.104000771622432
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0571382914810015
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0828096355962549
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.073634391732945
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.191553861756383
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.1393245236250797
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.1368943183207987
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1910612776820475
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1657312373388895
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1423141455287078
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.0986471409690626
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.7167145339073433
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.5306053949171767
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.788370539356379
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.4626655594427063
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.6378972760398753
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.5351235410056125
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.6437480267564715
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.7554222153087455
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.863069155834969
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.9508920382669734
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.614976706759981
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.8618183381076252
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 2.00715430710098
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.7814866976580175
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.8456043716846937
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.6164923290047908
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 2.0172733401957434
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.678267079362598
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.9816777208262655
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.9931643810281985
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 2.1108399453966276
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.7270111660125704
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 2.0408085030009735
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 2.0234242406153666
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 2.2174439520877725
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 2.2626055242275047
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 2.4256802584983803
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 2.3895570299766207
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 2.295501888821734
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 2.414388577122502
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 2.4217308332825036
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 2.469864999084337
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 2.160784746800945
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 2.48221309436985
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 2.398697447094716
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 2.487840534186406
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 2.491192558366976
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 2.6123963845392355
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 2.562879942539836
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 2.6923047566162954
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 2.372640526351219
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 2.417571490767702
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 2.7870109477116585
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 2.6128281409023155
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 2.6907603640290483
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 2.6268053086271363
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 2.758169209757619
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 2.744013313425436
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.788504881835919
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.635389859688413
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.710456369129148
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 1.7811645651350845
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.6492941020179905
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.6849334351635084
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.3205482316246953
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 1.7253309010070852
+      }
+    ],
+    "synonymy_rank_corr": 0.9602111697693805
+  },
+  {
+    "model": "mixedbread-ai/mxbai-embed-large-v1",
+    "mean_cosine": 0.5641582700259545,
+    "calibration_ratio": 0.6264136985026773,
+    "mean_abs_error": 1.7209108377870952,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.5361580426565754,
+        "mean_abs_error": 1.3467228892283962,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.5872622738027916,
+        "mean_abs_error": 2.2797110485866137,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 0.7152260541678729,
+        "mean_abs_error": 1.0074398377740503,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0690622391271238
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0766338173530774
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0602466650544116
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0553253662480986
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.0475349138631083
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.130808766779361
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.0946064346963584
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.097273055598155
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.131278290876093
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1055863784142577
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1303424360994512
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.0651419482677993
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.5333910488382243
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.3978087683194675
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.5742861574929488
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.355938580811002
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.4655770001522994
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.3769571382015495
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.4123720847426693
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.5736118436648465
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.6325335164606884
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.6966633089316945
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.4207249911655833
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.638739096113298
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.8442006005205913
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.5773389173964703
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.6322723833499522
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.4922774251131095
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.7423639908625996
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.5180991308625857
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.6994642525282575
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.6198855789769924
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.7806238495533075
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.5442466788336182
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.7880410242200786
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.6882279908594398
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.9095195105907115
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.8662654710147062
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 2.0563612211215574
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.9806798047777563
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.9404248287753185
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.9675913776992668
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 2.0534875453849937
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 2.0185120464958035
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.779076396185831
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.9965592619447659
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.9393325493125284
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 2.0428108060671675
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 2.0318202215367203
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 2.172728383033947
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 2.051233297477871
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 2.1916769013204105
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 1.9545624417063732
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 1.9890602665857287
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 2.232900280900173
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 2.0499689655566633
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 2.142043802131008
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 2.1084886391579913
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 2.164670687664167
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 2.170266392269253
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.6608191813035613
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.5743971727915549
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.5158354305265176
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 1.6125147218988585
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.5159781463409663
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.5227356397071035
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.28315227516996
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 1.5407843184343084
+      }
+    ],
+    "synonymy_rank_corr": 0.9447068630175052
+  },
+  {
+    "model": "WhereIsAI/UAE-Large-V1",
+    "mean_cosine": 0.5612563959815923,
+    "calibration_ratio": 0.6286349518869181,
+    "mean_abs_error": 1.718634768962049,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.5339298271485592,
+        "mean_abs_error": 1.3530571692598758,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.5901237310910122,
+        "mean_abs_error": 2.274185791951467,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 0.7179701579935628,
+        "mean_abs_error": 1.0071674343786459,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0785395821045936
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0821880156482997
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0627397973806287
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0607486206854484
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.0530983993281897
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.1346810593143943
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.096272326270857
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.1022575266575774
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1357637930016835
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1157963958133508
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.141874634241956
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.0705323737025727
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.5412186372981018
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.4003442872348457
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.5879945452717783
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.3567011331713021
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.4615689812577208
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.3956504179880096
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.4363022329030308
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.5991091511417217
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.6355803592754268
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.681930449042133
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.4347916016107605
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.6555172487636787
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.8262797539084803
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.5902124363116372
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.6316142630459367
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.4999436116626714
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.7619016453641743
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.5270273481034984
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.7119653681234097
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.6493542783214252
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.8014825474198164
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.5622462929342331
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.7864177015645422
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.70185887072536
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.920526734531318
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.867949590207206
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 2.05582902954328
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.9686173908806377
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.9465719934522536
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.9586094266780711
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 2.0624018331279563
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.9849576657170442
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.8019035325287664
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.9760886806411728
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.9582585233776786
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 2.0180672872094965
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 2.035645373814756
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 2.164090722575809
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 2.0577633735121066
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 2.206187510821944
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 1.9649219005519314
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 1.9946813838960897
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 2.2334850220654876
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 2.0695709046813486
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 2.143740000910708
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 2.1187725409324294
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 2.1683943571212887
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 2.177737647586766
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.6475276940073793
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.5583333792509735
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.5237813370719664
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 1.6084708368878784
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.4977072704906127
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.5128448477572614
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.2775464112888533
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 1.5493308691660679
+      }
+    ],
+    "synonymy_rank_corr": 0.9534870797443735
+  },
+  {
+    "model": "google/embeddinggemma-300m",
+    "mean_cosine": 0.5319540014161783,
+    "calibration_ratio": 0.6515688040857005,
+    "mean_abs_error": 1.6771400103903276,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.548820970623914,
+        "mean_abs_error": 1.3118839770891302,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.60825179824419,
+        "mean_abs_error": 2.2369297988524144,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 0.7507935906685619,
+        "mean_abs_error": 0.959207338797596,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0908603728188455
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.1113712541723366
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0926960619529107
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.073182944549101
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.097860286147255
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.2687505254218268
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.149392793095137
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.127692236025037
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.170215578638016
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1857647708007502
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1618027813982044
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.0959810601537718
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.5288685140440474
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.4490771774049434
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.667173686381639
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.421043617933104
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.6348952575897604
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.5893498813474918
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.5075399758976327
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.5368285102988488
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.7151307930917643
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.7435647637839715
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.5360581328541363
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.7295520722751547
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.765710613704515
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.7126954327842867
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.844629146238017
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.560805201970452
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.7523303240815906
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.557344990928901
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.7528298660894241
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.5351305872006715
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.8156357118072195
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.6640808687502278
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.9187323652711212
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.9120354883653365
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.941554006970999
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.9989152190944695
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 2.0556236556508627
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 2.060635172617817
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.936849638265974
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 2.0706700282399497
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 2.0936879539567244
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 2.154358667519563
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.8293904458135486
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 2.0425952179420412
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.9565113132186924
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 2.1030837615232874
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 2.090007406237888
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 2.2064548745068375
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 2.083349068387676
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 2.1421848569030444
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 2.01000455115308
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 1.992430186171778
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 2.3982446716175847
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 2.193357049043813
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 2.2672570751493804
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 2.2365627357958378
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 2.21731486549865
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 2.143036373970206
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.6236434406100162
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.4575208830689925
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.625275057756219
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 1.7047288940813623
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.5631249764730488
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.5064955603186512
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.3335502233739542
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 1.6905891476047146
+      }
+    ],
+    "synonymy_rank_corr": 0.947374270630731
+  },
+  {
+    "model": "Qwen/Qwen3-Embedding-0.6B",
+    "mean_cosine": 0.6079025207196965,
+    "calibration_ratio": 0.5979984351933966,
+    "mean_abs_error": 1.8543157849350014,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.49815288427691573,
+        "mean_abs_error": 1.4618934396411811,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.5543495350180436,
+        "mean_abs_error": 2.4492790710047405,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 0.6967536357619196,
+        "mean_abs_error": 1.0926783042616666,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0798874721270226
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.1186721357423302
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0727014579396281
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0526717152617653
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.0595575858200823
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.1549183954380429
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.145300442699521
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.1382310353491172
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.1686950067713924
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.111584942234361
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1635895922303454
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1157952156506212
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.4213491517886112
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.353123728239652
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.4718789855348673
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.2960909615559617
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.4455374991528738
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.4874937057630366
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.3823831082383442
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.4190391047728343
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.5700972412382213
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.5929683146126754
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.3758391719691532
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.5857946053728873
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.6052061866273504
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.5275862000904827
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.447708966851163
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.3108824693698384
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.5683078370371606
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.339917429160323
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.541699612740238
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.461845720727715
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.581405256199605
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.4736242006390967
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.6249408365176983
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.6423961301906675
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.6774110176957093
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.7901549749551104
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.7826470307875546
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.8470616874674939
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.7172407507757284
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.8131172684549282
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.8369915391110452
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.8570397956339388
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.6571867680657764
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.8604548874057296
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.7087514481569601
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.8090029529838703
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 1.834532057332781
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 1.899838242855348
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 1.8180043744803915
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 1.8391158454242749
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 1.7230642912338106
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 1.7520354929562043
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 1.9055829679556529
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 1.8257843893846266
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 1.8964325387212784
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 1.8358054699776714
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 1.8992507910012635
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 1.869656131605966
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.5022433848481322
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.379882842223674
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.3450093417068616
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 1.5065668148795373
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.4539413007091124
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.35093566888498
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.301633479550856
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 1.4646396500673973
+      }
+    ],
+    "synonymy_rank_corr": 0.9292025562656295
+  },
+  {
+    "model": "infgrad/Jasper-Token-Compression-600M",
+    "mean_cosine": 0.7503276221892413,
+    "calibration_ratio": 0.5210380115007403,
+    "mean_abs_error": 2.0851229358101997,
+    "per_axis": {
+      "polysemy/shared_surface_form": {
+        "calibration_ratio": 0.4337899049593877,
+        "mean_abs_error": 1.645410770081754,
+        "n": 8
+      },
+      "synonymy/cross_domain": {
+        "calibration_ratio": 0.47849217001013233,
+        "mean_abs_error": 2.7105523416324275,
+        "n": 36
+      },
+      "synonymy/within_domain": {
+        "calibration_ratio": 0.6139394759171037,
+        "mean_abs_error": 1.2935495489863407,
+        "n": 24
+      }
+    },
+    "measurements": [
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0413244119344252
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-0",
+        "true": 1.0,
+        "measured": 1.0542763071515466
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0344522037080954
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-1",
+        "true": 1.0,
+        "measured": 1.0313085431271458
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.0296802096546318
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m2-2",
+        "true": 1.0,
+        "measured": 1.1261090665990734
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.0548865610895082
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-0",
+        "true": 1.0,
+        "measured": 1.0584982182258438
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.0901298839128606
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-1",
+        "true": 1.0,
+        "measured": 1.0542988228143555
+      },
+      {
+        "corpus": "synonymy-cross_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.0722968236131247
+      },
+      {
+        "corpus": "synonymy-within_domain-k1-m3-2",
+        "true": 1.0,
+        "measured": 1.1016566817904423
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.2051148920595447
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-0",
+        "true": 2.0,
+        "measured": 1.1389913601352648
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.2550852649467252
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-1",
+        "true": 2.0,
+        "measured": 1.1559777493509056
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.2551983222015912
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m2-2",
+        "true": 2.0,
+        "measured": 1.1923487213209505
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.2055304036844958
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-0",
+        "true": 2.0,
+        "measured": 1.2310285191828183
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.2973638418911702
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-1",
+        "true": 2.0,
+        "measured": 1.326764510710589
+      },
+      {
+        "corpus": "synonymy-cross_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.1722170940667134
+      },
+      {
+        "corpus": "synonymy-within_domain-k2-m3-2",
+        "true": 2.0,
+        "measured": 1.309746477574483
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.383098573231255
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-0",
+        "true": 3.0,
+        "measured": 1.2217170087542826
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.2401523909382792
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-1",
+        "true": 3.0,
+        "measured": 1.206103017307996
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.3278239281817101
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m2-2",
+        "true": 3.0,
+        "measured": 1.2278756595077782
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.3097056924417514
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-0",
+        "true": 3.0,
+        "measured": 1.2596670528890344
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.33929307274981
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-1",
+        "true": 3.0,
+        "measured": 1.2410121138192884
+      },
+      {
+        "corpus": "synonymy-cross_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.3283155534459337
+      },
+      {
+        "corpus": "synonymy-within_domain-k3-m3-2",
+        "true": 3.0,
+        "measured": 1.336975128412881
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.3423403520869448
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-0",
+        "true": 4.0,
+        "measured": 1.3828796457929087
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.4383655792178551
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-1",
+        "true": 4.0,
+        "measured": 1.4542497361536757
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.3659805262069113
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m2-2",
+        "true": 4.0,
+        "measured": 1.3965060648066236
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.4147089057504736
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-0",
+        "true": 4.0,
+        "measured": 1.4464676793315467
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.335869271831372
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-1",
+        "true": 4.0,
+        "measured": 1.420844742603459
+      },
+      {
+        "corpus": "synonymy-cross_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.36847003040345
+      },
+      {
+        "corpus": "synonymy-within_domain-k4-m3-2",
+        "true": 4.0,
+        "measured": 1.4318032763817432
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-0",
+        "true": 6.0,
+        "measured": 1.4462667276303256
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-1",
+        "true": 6.0,
+        "measured": 1.4300300543645388
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m2-2",
+        "true": 6.0,
+        "measured": 1.4751346228441116
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-0",
+        "true": 6.0,
+        "measured": 1.4113274165890137
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-1",
+        "true": 6.0,
+        "measured": 1.3715903879675408
+      },
+      {
+        "corpus": "synonymy-cross_domain-k6-m3-2",
+        "true": 6.0,
+        "measured": 1.35400761893257
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-0",
+        "true": 8.0,
+        "measured": 1.4712982986083392
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-1",
+        "true": 8.0,
+        "measured": 1.4249977523164568
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m2-2",
+        "true": 8.0,
+        "measured": 1.4449820106314792
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-0",
+        "true": 8.0,
+        "measured": 1.4291474982180026
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-1",
+        "true": 8.0,
+        "measured": 1.4607171945315884
+      },
+      {
+        "corpus": "synonymy-cross_domain-k8-m3-2",
+        "true": 8.0,
+        "measured": 1.4387525171753048
+      },
+      {
+        "corpus": "polysemy-bank",
+        "true": 3.0,
+        "measured": 1.2932478666347706
+      },
+      {
+        "corpus": "polysemy-spring",
+        "true": 3.0,
+        "measured": 1.212568391892983
+      },
+      {
+        "corpus": "polysemy-light",
+        "true": 3.0,
+        "measured": 1.1635758250731485
+      },
+      {
+        "corpus": "polysemy-match",
+        "true": 3.0,
+        "measured": 1.308041519809471
+      },
+      {
+        "corpus": "polysemy-pitch",
+        "true": 3.0,
+        "measured": 1.2364627413160978
+      },
+      {
+        "corpus": "polysemy-current",
+        "true": 3.0,
+        "measured": 1.21734877284515
+      },
+      {
+        "corpus": "polysemy-bark",
+        "true": 2.0,
+        "measured": 1.1484877593586758
+      },
+      {
+        "corpus": "polysemy-note",
+        "true": 3.0,
+        "measured": 1.25698096241567
+      }
+    ],
+    "synonymy_rank_corr": 0.9214226173937206
+  }
+]
