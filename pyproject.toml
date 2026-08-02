@@ -163,7 +163,10 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403"]
-"tests/**/*.py" = ["S101", "ANN"]
+# E402: test modules legitimately run statements before importing the code
+# under test -- pytest.importorskip guards for optional dependencies, and
+# warning filters must be registered first.
+"tests/**/*.py" = ["S101", "ANN", "E402"]
 
 [tool.mypy]
 # python_version is intentionally unset so mypy checks against the interpreter
