@@ -14,7 +14,7 @@ from typing import Any
 import numpy as np
 import numpy.typing as npt
 import spacy
-from Bio import Align  # type: ignore
+from Bio import Align
 
 from ..metric import MetricConfig, TextDiversity
 from ..utils import (
@@ -56,7 +56,7 @@ def _get_spacy_model(model_name: str = "en_core_web_sm") -> Any:
     return _SPACY_MODEL_CACHE[model_name]
 
 
-class Rhythmic(TextDiversity):
+class Rhythmic(TextDiversity[list[list[str]]]):
     """Rhythmic diversity based on syllable stress and weight patterns.
 
     This metric computes diversity based on the rhythmic patterns of text,
@@ -254,7 +254,7 @@ class Rhythmic(TextDiversity):
         return np.full(n, 1.0 / n, dtype=np.float64)
 
 
-class Phonemic(TextDiversity):
+class Phonemic(TextDiversity[list[str]]):
     """Phonemic diversity based on phoneme sequences.
 
     This metric computes diversity based on phonemic representations of text.

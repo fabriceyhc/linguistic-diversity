@@ -9,26 +9,26 @@ from __future__ import annotations
 import itertools
 from dataclasses import dataclass
 from functools import lru_cache, partial
-from typing import Any
+from typing import Any, cast
 
-import faiss  # type: ignore
+import faiss
 import networkx as nx
 import numpy as np
 import numpy.typing as npt
 import spacy
-import zss  # type: ignore
+import zss
 from sklearn.decomposition import PCA
 from spacy.tokens import Span
 
 # Karateclub is optional - only needed for ldp/feather similarity types
 try:
-    from karateclub import LDP, FeatherGraph  # type: ignore
+    from karateclub import LDP, FeatherGraph
 
     KARATECLUB_AVAILABLE = True
 except ImportError:
     KARATECLUB_AVAILABLE = False
-    FeatherGraph = None  # type: ignore
-    LDP = None  # type: ignore
+    FeatherGraph = None
+    LDP = None
 
 from ..metric import MetricConfig, TextDiversity
 from ..utils import (
@@ -134,7 +134,7 @@ def _tree_edit_distance(graph1: nx.DiGraph, graph2: nx.DiGraph) -> float:
     return float(zss.simple_distance(nodes1[root1], nodes2[root2]))
 
 
-class DependencyParse(TextDiversity):
+class DependencyParse(TextDiversity["npt.NDArray[Any] | list[nx.DiGraph]"]):
     """Dependency parse tree diversity.
 
     This metric computes diversity based on the structure of dependency parse trees.
@@ -224,7 +224,7 @@ class DependencyParse(TextDiversity):
 
         # For graph/tree edit distance, return graphs directly
         if "distance" in self.config.similarity_type:
-            return graphs, corpus  # type: ignore
+            return graphs, corpus
 
         # For embedding methods, convert to embeddings
         # Convert node labels to integers (required by karateclub)
@@ -304,8 +304,9 @@ class DependencyParse(TextDiversity):
                 raise ValueError(f"Unknown distance type: {self.config.similarity_type}")
 
             # Compute distance matrix
+            graphs = cast("list[nx.DiGraph]", features)
             Z = compute_similarity_matrix_pairwise(
-                features,  # type: ignore
+                graphs,
                 dist_fn,
                 diagonal_val=0.0,  # Distance to self is 0
                 verbose=self.config.verbose,
@@ -316,8 +317,9 @@ class DependencyParse(TextDiversity):
 
         # For embedding methods, use FAISS
         else:
+            embeddings = cast("npt.NDArray[np.float64]", features)
             Z = compute_similarity_matrix_faiss(
-                features,  # type: ignore
+                embeddings,
                 distance_metric=faiss.METRIC_INNER_PRODUCT,
                 postprocess=None,
             )
@@ -337,7 +339,7 @@ class DependencyParse(TextDiversity):
         return np.full(n, 1.0 / n, dtype=np.float64)
 
 
-class ConstituencyParse(TextDiversity):
+class ConstituencyParse(TextDiversity["npt.NDArray[Any] | list[nx.DiGraph]"]):
     """Constituency parse tree diversity.
 
     This metric computes diversity based on constituency (phrase structure) parse trees.
@@ -459,7 +461,7 @@ class ConstituencyParse(TextDiversity):
 
         # For edit distance, return graphs
         if "distance" in self.config.similarity_type:
-            return graphs, corpus  # type: ignore
+            return graphs, corpus
 
         # For embeddings, convert to integer labels and embed
         graphs_int = [nx.convert_node_labels_to_integers(g, first_label=0) for g in graphs]
@@ -524,16 +526,18 @@ class ConstituencyParse(TextDiversity):
             else:
                 dist_fn = partial(nx.graph_edit_distance)
 
+            graphs = cast("list[nx.DiGraph]", features)
             Z = compute_similarity_matrix_pairwise(
-                features,  # type: ignore
+                graphs,
                 dist_fn,
                 diagonal_val=0.0,
                 verbose=self.config.verbose,
             )
             Z = np.exp(-Z)
         else:
+            embeddings = cast("npt.NDArray[np.float64]", features)
             Z = compute_similarity_matrix_faiss(
-                features,  # type: ignore
+                embeddings,
                 distance_metric=faiss.METRIC_INNER_PRODUCT,
                 postprocess=None,
             )

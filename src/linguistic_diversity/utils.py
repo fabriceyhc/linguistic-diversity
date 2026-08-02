@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Callable, Iterator
 from functools import lru_cache
-from typing import Any
+from typing import Any, Literal, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -218,17 +218,19 @@ def compute_similarity_matrix_faiss(
     """
     import faiss
 
-    features = np.ascontiguousarray(features.astype(np.float32))
-    n, d = features.shape
+    # faiss operates on contiguous float32 only; keep that conversion in its own
+    # name so the narrower dtype is visible rather than shadowing the argument.
+    feats32: npt.NDArray[np.float32] = np.ascontiguousarray(features.astype(np.float32))
+    n, d = feats32.shape
 
     # Normalize for inner product if needed
     if distance_metric == faiss.METRIC_INNER_PRODUCT:
-        faiss.normalize_L2(features)
+        faiss.normalize_L2(feats32)
 
     # Build index and search
     index = faiss.IndexFlat(int(d), distance_metric)
-    index.add(features)
-    distances, indices = index.search(features, n)
+    index.add(feats32)
+    distances, indices = index.search(feats32, n)
 
     # Construct similarity matrix using vectorized indexing
     Z = np.zeros((n, n), dtype=np.float64)
@@ -267,27 +269,28 @@ def similarity_search_faiss(
     import faiss
 
     # Ensure contiguous float32
-    query_features = np.ascontiguousarray(query_features.astype(np.float32))
-    corpus_features = np.ascontiguousarray(corpus_features.astype(np.float32))
+    # faiss operates on contiguous float32 only (see compute_similarity_matrix_faiss)
+    query32: npt.NDArray[np.float32] = np.ascontiguousarray(query_features.astype(np.float32))
+    corpus32: npt.NDArray[np.float32] = np.ascontiguousarray(corpus_features.astype(np.float32))
 
     # Handle 1D query
-    if len(query_features.shape) == 1:
-        query_features = query_features.reshape(1, -1)
+    if len(query32.shape) == 1:
+        query32 = query32.reshape(1, -1)
         squeeze_output = True
     else:
         squeeze_output = False
 
-    n, d = corpus_features.shape
+    n, d = corpus32.shape
 
     # Normalize for inner product if needed
     if distance_metric == faiss.METRIC_INNER_PRODUCT:
-        faiss.normalize_L2(corpus_features)
-        faiss.normalize_L2(query_features)
+        faiss.normalize_L2(corpus32)
+        faiss.normalize_L2(query32)
 
     # Build index and search
     index = faiss.IndexFlat(int(d), distance_metric)
-    index.add(corpus_features)
-    distances, _ = index.search(query_features, n)
+    index.add(corpus32)
+    distances, _ = index.search(query32, n)
 
     # Post-process
     if postprocess == "exp":
@@ -295,7 +298,10 @@ def similarity_search_faiss(
     elif postprocess == "invert":
         distances = 1.0 - distances
 
-    return distances[0] if squeeze_output else distances
+    result: npt.NDArray[np.float64] = (distances[0] if squeeze_output else distances).astype(
+        np.float64
+    )
+    return result
 
 
 # Text cleaning utilities
@@ -343,6 +349,16 @@ def _get_sentence_splitter() -> Any:
     return nlp
 
 
+@overload
+def split_sentences(texts: list[str] | str, return_ids: Literal[False] = False) -> list[str]: ...
+
+
+@overload
+def split_sentences(
+    texts: list[str] | str, return_ids: Literal[True]
+) -> tuple[list[str], list[int], list[int]]: ...
+
+
 def split_sentences(
     texts: list[str] | str,
     return_ids: bool = False,
@@ -363,7 +379,7 @@ def split_sentences(
 
     sentences = []
     text_ids = []
-    sentence_ids = []
+    sentence_ids: list[int] = []
 
     for text_idx, text in enumerate(texts):
         doc = nlp(text)
@@ -408,5 +424,5 @@ def hamming_similarity(a: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
     dims = a.shape[1]
     # Efficient Hamming distance using matrix operations
-    similarity = (2 * np.inner(a - 0.5, 0.5 - a) + dims / 2) / dims
+    similarity: npt.NDArray[np.float64] = (2 * np.inner(a - 0.5, 0.5 - a) + dims / 2) / dims
     return similarity

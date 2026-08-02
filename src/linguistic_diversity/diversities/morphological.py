@@ -13,7 +13,7 @@ from typing import Any
 import numpy as np
 import numpy.typing as npt
 import spacy
-from Bio import Align  # type: ignore
+from Bio import Align
 
 from ..metric import MetricConfig, TextDiversity
 from ..utils import (
@@ -52,7 +52,7 @@ def _get_spacy_model(model_name: str = "en_core_web_sm") -> Any:
     return _SPACY_MODEL_CACHE[model_name]
 
 
-class PartOfSpeechSequence(TextDiversity):
+class PartOfSpeechSequence(TextDiversity[list[list[str]]]):
     """Part-of-speech sequence diversity.
 
     This metric computes diversity based on the sequences of part-of-speech tags.

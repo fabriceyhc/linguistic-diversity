@@ -20,7 +20,7 @@ help:
 	@echo "  make lint             Run linting checks (ruff)"
 	@echo "  make format           Format code with black"
 	@echo "  make format-check     Verify formatting without changing files"
-	@echo "  make type-check       Run type checking with mypy (advisory)"
+	@echo "  make type-check       Run type checking with mypy"
 	@echo "  make check-all        Run everything CI runs"
 	@echo ""
 	@echo "Cleanup:"
@@ -68,8 +68,8 @@ format-check:
 	black --check src/ tests/
 
 type-check:
-	@echo "Type checking with mypy (advisory)..."
-	-mypy src/
+	@echo "Type checking with mypy..."
+	mypy src/
 
 # Mirrors the CI pipeline: lint, formatting, types, then the test suite.
 check-all: lint format-check type-check test

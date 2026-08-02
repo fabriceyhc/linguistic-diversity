@@ -48,14 +48,16 @@ class DiversitySelector(ABC):
         self,
         embeddings: npt.NDArray[np.float64],
         n_select: int,
-        **kwargs: Any,
+        seed: int = 42,
+        verbose: bool = False,
     ) -> SelectionResult:
         """Select a diverse subset of items.
 
         Args:
             embeddings: Diversity embeddings of shape (n_items, n_metrics).
             n_select: Number of items to select.
-            **kwargs: Algorithm-specific parameters.
+            seed: Random seed.
+            verbose: Whether to report progress.
 
         Returns:
             SelectionResult with selected indices and metadata.
@@ -332,7 +334,7 @@ class MaxMinDiversitySelector(DiversitySelector):
             selected_sims = selected_embeddings @ selected_embeddings.T
             n_sel = len(indices)
             avg_sim = (selected_sims.sum() - n_sel) / (n_sel * (n_sel - 1))
-            diversity_score = 1 - avg_sim
+            diversity_score = float(1 - avg_sim)
         else:
             diversity_score = 0.0
 

@@ -5,9 +5,9 @@ from __future__ import annotations
 import gc
 import warnings
 from abc import ABC, abstractmethod
-from collections.abc import Callable
+from collections.abc import Callable, Sequence, Sized
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Generic, TypeVar
 
 import numpy as np
 import numpy.typing as npt
@@ -434,10 +434,10 @@ class DiversityMetric(Metric):
 
     @staticmethod
     def _fit_growth_curve(
-        sizes: list[int],
-        diversities: list[float],
+        sizes: Sequence[int],
+        diversities: Sequence[float],
         prefer_asymptotic: bool = False,
-    ) -> tuple[str, Callable[[float], float], float, list[float] | None]:
+    ) -> tuple[str, Callable[..., Any], float, list[float] | None]:
         """Fit a growth curve to diversity measurements.
 
         Tries multiple models and returns the best fit:
@@ -510,8 +510,10 @@ class DiversityMetric(Metric):
                     # expected; the best of the remaining fits is used instead.
                     continue
 
-        # Fallback to simple linear extrapolation if scipy unavailable or all fits fail
-        if best_func is None:
+        # Fallback to simple linear extrapolation if scipy unavailable or all fits fail.
+        # best_model and best_func are always set together; checking both lets the
+        # type checker see that the tuple returned below is fully populated.
+        if best_func is None or best_model is None:
             slope = (div_arr[-1] - div_arr[0]) / (sizes_arr[-1] - sizes_arr[0])
             intercept = div_arr[0] - slope * sizes_arr[0]
             return "linear", lambda n: slope * n + intercept, 0.0, [slope, intercept]
@@ -536,7 +538,16 @@ class SimilarityMetric(Metric):
         ...
 
 
-class TextDiversity(DiversityMetric):
+# What extract_features produces and calculate_similarities consumes. It varies by
+# metric -- an embedding matrix for the semantic metrics, parse graphs for the
+# syntactic ones, tag sequences for the morphological and phonological ones -- but
+# it is always the same type within a single metric, which is what this captures.
+# Bounded by Sized because the base class measures the feature container to
+# get the species count.
+FeaturesT = TypeVar("FeaturesT", bound=Sized)
+
+
+class TextDiversity(DiversityMetric, Generic[FeaturesT]):
     """Base class for text diversity metrics using Hill numbers.
 
     This implements the core diversity calculation using similarity-sensitive
@@ -673,9 +684,10 @@ class TextDiversity(DiversityMetric):
             top_n = len(corpus)
 
         # Extract features for query and corpus
-        all_feats, all_docs = self.extract_features(query + corpus)
-        q_feats = all_feats[0]
-        c_feats, c_corpus = all_feats[1:], all_docs[1:]
+        all_feats_any: Any = self.extract_features(query + corpus)[0]
+        _, all_docs = self.extract_features(query + corpus)
+        q_feats = all_feats_any[0]
+        c_feats, c_corpus = all_feats_any[1:], all_docs[1:]
 
         # Handle empty features
         if len(q_feats) == 0 or len(c_feats) == 0:
@@ -693,7 +705,7 @@ class TextDiversity(DiversityMetric):
         return ranking[:top_n], scores[:top_n]
 
     @abstractmethod
-    def extract_features(self, corpus: list[str]) -> tuple[npt.NDArray[Any], list[Any]]:
+    def extract_features(self, corpus: list[str]) -> tuple[FeaturesT, list[Any]]:
         """Extract features and species from corpus.
 
         Args:
@@ -705,7 +717,7 @@ class TextDiversity(DiversityMetric):
         ...
 
     @abstractmethod
-    def calculate_similarities(self, features: npt.NDArray[Any]) -> npt.NDArray[np.float64]:
+    def calculate_similarities(self, features: FeaturesT) -> npt.NDArray[np.float64]:
         """Calculate pairwise similarities between features.
 
         Args:

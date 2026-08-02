@@ -8,11 +8,12 @@ from __future__ import annotations
 
 import gc
 import warnings
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import cache, lru_cache
-from typing import Any
+from typing import Any, cast
 
-import faiss  # type: ignore
+import faiss
 import numpy as np
 import numpy.typing as npt
 import torch
@@ -64,13 +65,16 @@ _MODEL_CACHE: dict[str, Any] = {}
 
 
 def _get_cached_model(
-    model_name: str, model_class: type, cache_scope: str = "", **kwargs: Any
+    model_name: str,
+    model_loader: Callable[..., Any],
+    cache_scope: str = "",
+    **kwargs: Any,
 ) -> Any:
     """Get or load a cached model.
 
     Args:
         model_name: Name/path of the model.
-        model_class: Class to use for loading.
+        model_loader: Callable that loads the model (a class or a from_pretrained).
         cache_scope: Extra cache-key component that is NOT passed to the loader.
             Used for the target device: callers move the returned module onto their
             device, which mutates the shared instance, so models bound for different
@@ -82,9 +86,10 @@ def _get_cached_model(
         Loaded model.
     """
     opts = ",".join(f"{k}={v}" for k, v in sorted(kwargs.items()))
-    cache_key = f"{model_class.__name__}:{model_name}:{opts}:{cache_scope}"
+    loader_name = getattr(model_loader, "__qualname__", repr(model_loader))
+    cache_key = f"{loader_name}:{model_name}:{opts}:{cache_scope}"
     if cache_key not in _MODEL_CACHE:
-        _MODEL_CACHE[cache_key] = model_class(model_name, **kwargs)
+        _MODEL_CACHE[cache_key] = model_loader(model_name, **kwargs)
     return _MODEL_CACHE[cache_key]
 
 
@@ -122,11 +127,11 @@ def _extract_token_states(outputs: Any, expected_len: int) -> torch.Tensor | Non
         # Second-to-last layer is often better for semantic tasks than the last
         candidate = hidden[-2] if len(hidden) >= 2 else hidden[-1]
         if candidate.ndim == 3 and candidate.shape[1] == expected_len:
-            return candidate
+            return cast("torch.Tensor", candidate)
 
     last = getattr(outputs, "last_hidden_state", None)
     if last is not None and last.ndim == 3 and last.shape[1] == expected_len:
-        return last
+        return cast("torch.Tensor", last)
 
     if torch.is_tensor(outputs) and outputs.ndim == 3 and outputs.shape[1] == expected_len:
         return outputs
@@ -190,7 +195,7 @@ def _get_stopwords() -> set[str]:
         return set(stopwords.words("english"))
 
 
-class TokenSemantics(TextDiversity):
+class TokenSemantics(TextDiversity[npt.NDArray[np.float64]]):
     """Token-level semantic diversity using contextualized embeddings.
 
     This metric computes diversity based on contextualized token embeddings
@@ -335,7 +340,8 @@ class TokenSemantics(TextDiversity):
                 embeds = _embed(ids)
                 for projection in _projections:
                     embeds = projection(embeds)
-                return _backbone(inputs_embeds=embeds, attention_mask=mask)["last_hidden_state"]
+                out = _backbone(inputs_embeds=embeds, attention_mask=mask)["last_hidden_state"]
+                return cast("torch.Tensor", out)
 
             states = encode(input_ids, attention_mask)
             if states.ndim == 3 and states.shape[1] == seq_len:
@@ -365,7 +371,7 @@ class TokenSemantics(TextDiversity):
             Contextualized embeddings (batch_size x seq_len x hidden_dim).
         """
         if self._token_encoder is not None:
-            return self._token_encoder(input_ids, attention_mask)
+            return cast("torch.Tensor", self._token_encoder(input_ids, attention_mask))
 
         outputs = self.model(
             input_ids,
@@ -504,7 +510,7 @@ class TokenSemantics(TextDiversity):
         return np.full(n, 1.0 / n, dtype=np.float64)
 
 
-class DocumentSemantics(TextDiversity):
+class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
     """Document-level semantic diversity using sentence embeddings.
 
     This metric computes diversity based on document-level embeddings

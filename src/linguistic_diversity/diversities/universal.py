@@ -115,6 +115,9 @@ class UniversalLinguisticDiversity(DiversityMetric):
         config: Configuration dictionary or UniversalDiversityConfig object
     """
 
+    # Narrow the base annotation so attribute access type-checks
+    config: UniversalDiversityConfig
+
     def __init__(self, config: UniversalDiversityConfig | dict[str, Any] | None = None) -> None:
         """Initialize universal diversity metric."""
         super().__init__(config)
@@ -606,7 +609,8 @@ class UniversalLinguisticDiversity(DiversityMetric):
         normalized = np.log1p(np.maximum(embedding, 0)) / log_max_values
 
         # Clip to [0, 1] in case values exceed expected range
-        return np.clip(normalized, 0.0, 1.0)
+        clipped: npt.NDArray[np.float64] = np.clip(normalized, 0.0, 1.0)
+        return clipped
 
     @staticmethod
     def assemble_diversity_embedding(
@@ -962,7 +966,7 @@ class UniversalLinguisticDiversity(DiversityMetric):
 
 
 # Preset configurations for common use cases
-PRESET_CONFIGS = {
+PRESET_CONFIGS: dict[str, dict[str, Any]] = {
     "balanced": {
         "strategy": "hierarchical",
         "semantic_weight": 0.35,
@@ -1087,4 +1091,5 @@ def get_preset_config(preset: str) -> dict[str, Any]:
     """
     if preset not in PRESET_CONFIGS:
         raise ValueError(f"Unknown preset '{preset}'. Available: {list(PRESET_CONFIGS.keys())}")
-    return PRESET_CONFIGS[preset].copy()
+    config: dict[str, Any] = dict(PRESET_CONFIGS[preset])
+    return config

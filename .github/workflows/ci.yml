@@ -40,11 +40,7 @@ jobs:
       run: |
         black --check src/ tests/
 
-    # Advisory while annotations are completed: the public metric classes are
-    # typed, but the aggregation modules (universal.py, selection.py) still carry
-    # ~100 errors. Surfaced in the log, not yet gating the build.
-    - name: Type check with mypy (advisory)
-      continue-on-error: true
+    - name: Type check with mypy
       run: |
         mypy src/
 

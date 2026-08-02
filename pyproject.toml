@@ -187,6 +187,7 @@ module = [
     "benepar.*",
     "cadences.*",
     "faiss.*",
+    "g2p_en.*",
     "karateclub.*",
     "matplotlib.*",
     "networkx.*",
