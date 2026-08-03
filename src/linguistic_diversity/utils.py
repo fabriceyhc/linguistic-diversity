@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import string
 from collections.abc import Callable, Iterator
 from functools import lru_cache
 from typing import Any, Literal, overload
@@ -454,6 +455,12 @@ def split_sentences(
     return sentences
 
 
+# Symbols the pairwise aligner sees. Letters and digits only: alignment treats
+# every symbol as opaque, but keeping them alphanumeric avoids any interaction
+# with tokenisation or escaping downstream.
+_ALIGNMENT_ALPHABET = string.ascii_uppercase + string.ascii_lowercase + string.digits
+
+
 def tag_to_alpha(tags: list[list[str]]) -> list[list[str]]:
     """Convert tag sequences to alphabetic sequences.
 
@@ -465,9 +472,16 @@ def tag_to_alpha(tags: list[list[str]]) -> list[list[str]]:
     Returns:
         List of alphabetic tag sequences.
     """
-    # Build unique tag mapping
+    # Build unique tag mapping. chr(65 + i) walks out of the uppercase letters at
+    # the 27th tag and into punctuation, which matters now that the fine-grained
+    # PTB tagset (~50 tags) is in use rather than UPOS (~17).
     unique_tags = sorted({tag for seq in tags for tag in seq})
-    tag_map = {tag: chr(65 + i) for i, tag in enumerate(unique_tags)}
+    if len(unique_tags) > len(_ALIGNMENT_ALPHABET):
+        raise ValueError(
+            f"{len(unique_tags)} distinct tags exceeds the {len(_ALIGNMENT_ALPHABET)}-symbol "
+            "alignment alphabet. Use a coarser tagset."
+        )
+    tag_map = {tag: _ALIGNMENT_ALPHABET[i] for i, tag in enumerate(unique_tags)}
 
     # Apply mapping
     return [[tag_map[tag] for tag in seq] for seq in tags]

@@ -178,3 +178,60 @@ class TestAlignmentSimilarityBounds:
             f"pair similarity changed from {z_pair[0, 1]} to {z_extra[0, 1]} "
             "when an unrelated document joined the corpus"
         )
+
+
+class TestTagsetGranularity:
+    """The tagset decides whether this metric is morphological at all.
+
+    UPOS collapses walks/walked/walking onto VERB, so English inflectional
+    morphology is invisible to it: a corpus varying only in tense scores exactly
+    1.0. The fine-grained PTB tagset (VBZ/VBD/VBG) is what makes the "species"
+    morphological rather than coarse syntactic categories.
+    """
+
+    INFLECTION_ONLY = [
+        "The workers walk to the site.",
+        "The workers walked to the site.",
+        "The workers walking to the site.",
+        "The workers walks to the site.",
+    ]
+    ONE_FRAME = [
+        "The tall boy kicked the ball.",
+        "A red car struck the fence.",
+        "The old woman watered the garden.",
+        "That young girl painted the wall.",
+    ]
+
+    def test_fine_tags_see_inflection(self):
+        metric = PartOfSpeechSequence({"tagset": "fine", "verbose": False})
+        assert metric(self.INFLECTION_ONLY) > 1.0, (
+            "a corpus differing only in verb inflection scored 1.0: the tagset "
+            "cannot see morphology"
+        )
+
+    def test_upos_is_blind_to_inflection(self):
+        """Documents the limitation the default exists to avoid."""
+        metric = PartOfSpeechSequence({"tagset": "upos", "verbose": False})
+        assert metric(self.INFLECTION_ONLY) == pytest.approx(1.0, abs=1e-6)
+
+    def test_fine_tags_still_collapse_one_frame(self):
+        """The converse must survive: same structure, different words, is one species."""
+        metric = PartOfSpeechSequence({"tagset": "fine", "verbose": False})
+        assert metric(self.ONE_FRAME) == pytest.approx(1.0, abs=0.01)
+
+    def test_default_is_fine(self):
+        assert PartOfSpeechSequence._default_config()["tagset"] == "fine"
+
+    def test_unknown_tagset_is_rejected(self):
+        metric = PartOfSpeechSequence({"tagset": "penn", "verbose": False})
+        with pytest.raises(ValueError, match="Unknown tagset"):
+            metric(["A sentence."])
+
+    def test_alignment_alphabet_covers_the_fine_tagset(self):
+        """PTB has ~50 tags; chr(65 + i) left the letters at 27."""
+        from linguistic_diversity.utils import tag_to_alpha
+
+        many = [[f"TAG{i}" for i in range(60)]]
+        mapped = tag_to_alpha(many)[0]
+        assert len(set(mapped)) == 60
+        assert all(c.isalnum() for c in mapped), f"non-alphanumeric symbols: {set(mapped)}"

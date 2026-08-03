@@ -29,6 +29,15 @@ from ..utils import (
 class MorphologicalConfig(MetricConfig):
     """Configuration for morphological diversity metrics."""
 
+    # Which tagset the "species" are drawn from.
+    #   "fine"  spaCy's token.tag_ -- the PTB tagset (~50 tags). Distinguishes
+    #           walks/walked/walking (VBZ/VBD/VBG), so inflectional morphology is
+    #           visible. This is what makes the metric morphological.
+    #   "upos"  token.pos_ -- Universal POS (~17 tags). walks/walked/walking are
+    #           all VERB, so English inflection is invisible; this is a coarse
+    #           syntactic-category measure, not a morphological one.
+    tagset: str = "fine"
+
     # Sequence processing
     pad_to_max_len: bool = False
     split_sentences: bool = False
@@ -91,6 +100,7 @@ class PartOfSpeechSequence(TextDiversity[list[list[str]]]):
     @classmethod
     def _default_config(cls) -> dict[str, Any]:
         return {
+            "tagset": "fine",
             "pad_to_max_len": False,
             "split_sentences": False,
         }
@@ -115,11 +125,16 @@ class PartOfSpeechSequence(TextDiversity[list[list[str]]]):
         if self.config.split_sentences:
             corpus = split_sentences(corpus)
 
-        # Extract POS tags
+        # Extract POS tags. See MorphologicalConfig.tagset for why "fine" is the
+        # default: UPOS collapses every inflected form of a verb onto VERB, which
+        # leaves a "morphological" metric with no morphology to measure.
+        if self.config.tagset not in ("fine", "upos"):
+            raise ValueError(f"Unknown tagset {self.config.tagset!r}; expected 'fine' or 'upos'.")
+        use_fine = self.config.tagset == "fine"
         pos_sequences = []
         for text in corpus:
             doc = self.model(text)
-            pos_tags = [token.pos_ for token in doc]
+            pos_tags = [(token.tag_ if use_fine else token.pos_) for token in doc]
             pos_sequences.append(pos_tags)
 
         # Store max length for normalization
