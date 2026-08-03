@@ -179,7 +179,40 @@ class TestTreeEditDistanceHelpers:
         from linguistic_diversity.diversities.syntactic import _get_tree_nodes_dict
 
         graph = nx.DiGraph()
-        graph.add_node(0)
-        nodes = _get_tree_nodes_dict(graph)
+        graph.add_node(0, pos="NOUN")
+        nodes = _get_tree_nodes_dict(graph, graph)
 
         assert 0 in nodes, "edgeless tree produced no node entry"
+        assert nodes[0].label == "NOUN:ROOT", "root node lost its part-of-speech label"
+
+    def test_labels_carry_pos_and_dependency_not_token_index(self):
+        """Node labels must describe structure, not position.
+
+        Labelling ZSS nodes by token index made the edit distance blind to part of
+        speech and grammatical function: any two parses sharing a shape compared
+        as identical, so an intransitive with an adverbial matched a transitive
+        with a direct object.
+        """
+        from linguistic_diversity.diversities.syntactic import _tree_edit_distance
+        from linguistic_diversity import DependencyParse
+
+        metric = DependencyParse({"similarity_type": "tree_edit_distance"})
+        intransitive = metric._generate_dependency_tree("She sings beautifully.")
+        transitive = metric._generate_dependency_tree("Dogs eat bones.")
+
+        assert _tree_edit_distance(intransitive, transitive) > 0, (
+            "same tree shape with different POS and dependencies compared as identical"
+        )
+
+    def test_same_frame_different_words_still_collapses(self):
+        """The converse: identical structure must stay identical across lexicalisations."""
+        from linguistic_diversity.diversities.syntactic import _tree_edit_distance
+        from linguistic_diversity import DependencyParse
+
+        metric = DependencyParse({"similarity_type": "tree_edit_distance"})
+        first = metric._generate_dependency_tree("The tall boy kicked the ball.")
+        second = metric._generate_dependency_tree("A red car struck the fence.")
+
+        assert _tree_edit_distance(first, second) == 0, (
+            "one syntactic frame with different words no longer compares as identical"
+        )

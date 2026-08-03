@@ -84,27 +84,51 @@ def _edge_match_on_dep(edge1: dict[str, Any], edge2: dict[str, Any]) -> bool:
     return edge1.get("dep") == edge2.get("dep")
 
 
-def _get_tree_nodes_dict(tree: nx.DiGraph) -> dict[Any, zss.Node]:
+def _sort_key(node: Any) -> tuple[int, Any]:
+    """Order sibling nodes by token index, so trees are compared in surface order."""
+    try:
+        return (0, int(node))
+    except (TypeError, ValueError):
+        return (1, str(node))
+
+
+def _zss_label(source: nx.DiGraph, node: Any, parent: Any | None) -> str:
+    """Label a node by its part of speech and its relation to its head.
+
+    zss compares nodes by label, so this is what decides whether two parses count
+    as the same structure. Token identity is deliberately excluded -- two
+    sentences sharing a structure should match regardless of their words.
+    """
+    pos = source.nodes.get(node, {}).get("pos", "X")
+    if parent is None:
+        return f"{pos}:ROOT"
+    dep = source.edges.get((parent, node), {}).get("dep", "dep")
+    return f"{pos}:{dep}"
+
+
+def _get_tree_nodes_dict(tree: nx.DiGraph, source: nx.DiGraph) -> dict[Any, zss.Node]:
     """Build ZSS node dictionary from tree edges.
 
     Args:
-        tree: Directed graph representing a tree.
+        tree: Directed graph representing a tree (attributes not preserved by
+            ``nx.dfs_tree``, hence ``source``).
+        source: The original parse graph, carrying ``pos`` and ``dep`` attributes.
 
     Returns:
         Dictionary mapping node IDs to ZSS nodes.
     """
-    nodes_dict: dict[Any, zss.Node] = {}
-    for parent, child in tree.edges():
-        if parent not in nodes_dict:
-            nodes_dict[parent] = zss.Node(parent)
-        if child not in nodes_dict:
-            nodes_dict[child] = zss.Node(child)
+    parents = {child: parent for parent, child in tree.edges()}
+    # Every node gets a node object first, so a lone root (no edges) still resolves
+    # and the caller's nodes_dict[root] lookup cannot raise KeyError.
+    nodes_dict: dict[Any, zss.Node] = {
+        node: zss.Node(_zss_label(source, node, parents.get(node)))
+        for node in tree.nodes()
+    }
+    # zss.simple_distance is an *ordered* tree edit distance, so sibling order is
+    # part of the comparison. Sort by token index to make it surface order rather
+    # than whatever order the graph happens to iterate in.
+    for parent, child in sorted(tree.edges(), key=lambda e: (_sort_key(e[0]), _sort_key(e[1]))):
         nodes_dict[parent].addkid(nodes_dict[child])
-    # A tree with no edges (a lone root) yields no entries above, which would make
-    # the caller's nodes_dict[root] lookup raise KeyError instead of comparing.
-    for node in tree.nodes():
-        if node not in nodes_dict:
-            nodes_dict[node] = zss.Node(node)
     return nodes_dict
 
 
@@ -126,9 +150,10 @@ def _tree_edit_distance(graph1: nx.DiGraph, graph2: nx.DiGraph) -> float:
     tree1 = nx.dfs_tree(graph1, source=root1)
     tree2 = nx.dfs_tree(graph2, source=root2)
 
-    # Build ZSS node dictionaries
-    nodes1 = _get_tree_nodes_dict(tree1)
-    nodes2 = _get_tree_nodes_dict(tree2)
+    # Build ZSS node dictionaries. The dfs_tree copies carry no attributes, so the
+    # original graphs are passed alongside to supply node labels.
+    nodes1 = _get_tree_nodes_dict(tree1, graph1)
+    nodes2 = _get_tree_nodes_dict(tree2, graph2)
 
     # Compute edit distance
     return float(zss.simple_distance(nodes1[root1], nodes2[root2]))
