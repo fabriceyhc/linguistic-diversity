@@ -140,10 +140,13 @@ estimated from the corpus being measured, which is what keeps identical document
 similarity 1 and diversity invariant to replication. Pass `similarity_floor=None` for the
 pre-1.0.3 behaviour, or a float to set it yourself.
 
-Measured against the ceiling that actually applies, every metric here lands at **99% of
-what its similarity structure allows** (see
-[`benchmarks/metric_validation/`](benchmarks/metric_validation/)); `max_diversity(corpus)`
-and `relative_diversity(corpus)` expose it directly.
+`max_diversity(corpus)` reports that ceiling and `relative_diversity(corpus)` the score
+as a fraction of it. Read the second with care: at uniform abundance it is close to 1 by
+construction, so it says the abundance is optimal for this index rather than that the
+index is extracting all the data holds. On the same similarity matrix the Vendi Score
+recovers 0.99 of a known concept count where these metrics recover 0.71 — see
+[`benchmarks/vendi_comparison/`](benchmarks/vendi_comparison/) for why, and for what
+follows from it.
 
 `UniversalLinguisticDiversity` aggregates by geometric mean within a branch, then weighted
 across branches. It enables six of the seven metrics by default; `ConstituencyParse` is

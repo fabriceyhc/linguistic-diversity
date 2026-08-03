@@ -101,24 +101,38 @@ given the similarity matrix the metric actually computed. By Leinster & Meckes
 ([2016](https://www.mdpi.com/1099-4300/18/3/88)) that ceiling is the same for
 every order *q*, so it is a property of the similarity structure alone.
 
-Read together they localise the shortfall, and the answer overturns what earlier
-revisions of this file said. Every metric reads 37–71% of ground truth, which
-looks like systematic under-counting. Every metric is also at **99% of its
-achievable ceiling**. The diversity index is extracting essentially everything
-its similarity structure permits; the gap is that the embedder or parser calls
-these documents more alike than the construction says they are.
+Read together they were supposed to localise the shortfall, and an earlier revision
+of this file drew the wrong conclusion from them. It said: every metric reads 37–71%
+of ground truth while sitting at 99% of its achievable ceiling, therefore the index
+is extracting everything its similarity structure permits and the gap must lie in
+the embedder.
 
-That is a different defect with a different fix. Under-counting would be a
-problem with the Hill number — and
-[`../../tests/test_hill_numbers.py`](../../tests/test_hill_numbers.py) shows it
-is not; the formula recovers *n* for Z = I and 2/(1+z) for two species exactly.
-Over-merging is a problem with the similarity function, addressed by choosing a
-better encoder or parse representation. Reporting the ratio alone pointed at the
-wrong component for the whole of this project's history.
+**That inference does not hold.** Two things undercut it.
 
-`TokenSemantics` at 0.846 is the one metric with real headroom, and the only one
-where the abundance distribution rather than the similarity structure is leaving
-something on the table.
+First, headroom is close to tautological at uniform abundance. For a similarity
+matrix of the form `(1−z)I + zJ` — one baseline similarity between every pair — the
+magnitude equals the Hill number at uniform **p** *exactly*, so headroom is 1.0000
+by construction, not by merit. Every metric here uses uniform abundance. The number
+mostly reports that the abundance distribution is optimal for this index, which it
+is trivially, rather than that the index is extracting what the data holds.
+
+Second, and decisively: given the *same* similarity matrix, the Vendi Score reads
+0.986 of ground truth where the Hill number reads 0.706 (see
+[`../vendi_comparison/`](../vendi_comparison/)). A different index does far better
+on identical input, so the shortfall cannot be attributed to the representation
+alone.
+
+The mechanism is structural. A uniform baseline similarity contributes `zJ`, which
+is **rank one**. Vendi's spectral decomposition confines it to a single eigenvalue
+and leaves the other n−1 untouched; the Hill number spreads it through every
+`(Zp)ᵢ = (1 + (n−1)z)/n`, where it accumulates linearly and drives the score toward
+`1/z` regardless of n. At z = 0.3 and n = 50, the Hill number reads 3.18 against a
+truth of 50; Vendi reads 26.90.
+
+So the honest statement is that **both** components contribute: the encoder's floor
+is real and worth correcting, and this index is unusually fragile to whatever floor
+remains. The order parameter q cannot help — at uniform abundance every `(Zp)ᵢ` is
+equal, so q cancels entirely and q = 0, 0.5, 1 and 2 all return the same value.
 
 The practical consequence: **compare corpora with these scores, and read a single
 score against `max_diversity(corpus)` rather than against the document count.**
