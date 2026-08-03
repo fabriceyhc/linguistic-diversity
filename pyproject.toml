@@ -64,6 +64,7 @@ dev = [
     "ipython>=8.20.0",
     "jupyter>=1.0.0",
     "pre-commit>=3.6.0",
+    "vendi-score>=0.0.3",  # cross-validates the spectral index in tests
 ]
 
 viz = [

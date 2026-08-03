@@ -185,8 +185,11 @@ DocumentSemantics()                    # index="vendi", the default
 DocumentSemantics({"index": "hill"})   # Leinster-Cobbold
 ```
 
-**`"vendi"`** — `exp` of the entropy of the eigenvalues of `diag(√p) Z diag(√p)`, the
-abundance-weighted generalisation of the Vendi Score (Friedman & Dieng, TMLR 2023).
+**`"vendi"`** — the **probability-weighted Vendi Score** at Rényi order *q*: `exp` of the
+entropy of the eigenvalues of `diag(√p) Z diag(√p)`. Not novel here — the weighting is
+Friedman & Dieng's own ([TMLR 2023](https://arxiv.org/abs/2210.02410), defined alongside
+the unweighted score) and the order parameter is Pasarkar & Dieng (2024). Agreement with
+the authors' `vendi-score` package is asserted in the test suite.
 **`"hill"`** — `D_q = (Σᵢ pᵢ (Zp)ᵢ^(q−1))^(1/(1−q))`, Leinster–Cobbold.
 
 They agree exactly at both extremes — Z = I gives *n*, Z all-ones gives 1 — and differ in

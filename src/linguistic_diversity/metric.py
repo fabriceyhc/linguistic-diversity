@@ -52,9 +52,12 @@ class MetricConfig:
     q: float = 1.0  # Diversity order parameter
     # Which diversity index consumes the similarity matrix.
     #   "hill"   Leinster-Cobbold, D_q = (sum_i p_i (Zp)_i^(q-1))^(1/(1-q)).
-    #   "vendi"  exp(entropy of the eigenvalues of diag(sqrt p) Z diag(sqrt p)),
-    #            the abundance-weighted generalisation of the Vendi Score
-    #            (Friedman & Dieng, TMLR 2023).
+    #   "vendi"  the probability-weighted Vendi Score at Renyi order q. The
+    #            weighting diag(sqrt p) Z diag(sqrt p) is Friedman & Dieng's own
+    #            (TMLR 2023, alongside the unweighted score); the order parameter
+    #            is Pasarkar & Dieng (2024). Neither is novel here -- see
+    #            tests/test_vendi_reference.py, which checks agreement against the
+    #            authors' `vendi-score` package.
     #
     # They agree at both extremes -- Z = I gives n, Z all-ones gives 1 -- and
     # differ in between. A uniform baseline similarity contributes a rank-one
@@ -1008,15 +1011,23 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         Z: npt.NDArray[np.float64],
         q: float = 1.0,
     ) -> float:
-        """Abundance-weighted Vendi Score.
+        """Probability-weighted Vendi Score at Renyi order q.
 
         exp of the entropy of the eigenvalues of ``diag(sqrt p) Z diag(sqrt p)``.
         That matrix has trace 1, so its eigenvalues form a probability distribution
         and the entropy is taken of them directly.
 
-        Reduces to the published Vendi Score at uniform abundance and to the
-        classical Hill number when Z is the identity, so it is the common
-        generalisation of the two.
+        Both ingredients are published. The probability weighting is Friedman &
+        Dieng's (*The Vendi Score*, TMLR 2023), which defines it alongside the
+        unweighted form; the order parameter is Pasarkar & Dieng (2024), where low
+        q is more sensitive to rare features and high q to common ones. Agreement
+        with the reference `vendi-score` package is asserted in
+        tests/test_vendi_reference.py: exact across 1000 comparisons on full-rank
+        matrices.
+
+        It reduces to the unweighted Vendi Score at uniform abundance and to the
+        classical Hill number when Z is the identity, which is why it can serve as
+        the default without giving up either behaviour.
         """
         Zp = _nearest_psd(np.asarray(Z, dtype=np.float64))
         root = np.sqrt(np.clip(np.asarray(p, dtype=np.float64), 0.0, None))
@@ -1025,7 +1036,13 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         total = eigenvalues.sum()
         if total <= 0:
             return 0.0
-        eigenvalues = eigenvalues[eigenvalues > 0] / total
+        # Discard numerical dust with a relative rank tolerance rather than a bare
+        # ">0". At q=0 every surviving eigenvalue contributes a whole unit, so an
+        # eigenvalue of 1e-17 -- which is what a rank-deficient matrix leaves after
+        # eigendecomposition -- otherwise moves the score by 1. The convention is
+        # numpy.linalg.matrix_rank's: n * eps * largest eigenvalue.
+        tolerance = eigenvalues.size * np.finfo(np.float64).eps * eigenvalues.max()
+        eigenvalues = eigenvalues[eigenvalues > tolerance] / total
         if q == 1.0:
             return float(np.exp(-np.sum(eigenvalues * np.log(eigenvalues))))
         if np.isinf(q):

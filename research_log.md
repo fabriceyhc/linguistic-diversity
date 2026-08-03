@@ -12,6 +12,54 @@ Newest first.
 
 ---
 
+## 2026-08-03 — The "new" index was already published, and validates against its authors
+
+**Naming question, answered by the literature rather than by invention.** What
+`index="vendi"` computes is the **probability-weighted Vendi Score at Rényi order
+q**. Neither half is novel:
+
+- `diag(√p) K diag(√p)` — Friedman & Dieng, *The Vendi Score* (TMLR 2023). Defined
+  in the same paper as the unweighted score, which I had not registered when I
+  derived it independently.
+- the order parameter — Pasarkar & Dieng (2024), where low q is more sensitive to
+  rare features and high q to common ones.
+
+So it gets attribution, not a new name. Corrected in `metric.py`, the README and
+the tests.
+
+**Cross-validated against the authors' `vendi-score` package** (now a dev
+dependency, skipped if absent):
+
+| comparison | result |
+|---|---|
+| 200 full-rank Gram matrices × 5 orders | **1000/1000 exact** |
+| 400 random (Z, p, q) triples, q ≠ 0 | **0 mismatches** |
+| same, q = 0 | 7 mismatches, all rank-deficient |
+
+The q = 0 difference is deliberate and now enforced with a relative rank tolerance
+(`n · eps · λ_max`, numpy's `matrix_rank` convention). At q = 0 every surviving
+eigenvalue contributes a whole unit, so an eigenvalue of **1.18e-17** — what
+eigendecomposition leaves on a rank-deficient matrix — moves the reference by 1.
+Two identical species are one species; the numerical rank says so and a bare
+`> 0` test does not.
+
+**Axioms verified for both indices**, since the Vendi paper does not prove them
+for the spectral form:
+
+| axiom | hill | vendi |
+|---|---|---|
+| replication (pool k dissimilar communities → k·D) | exact | **exact** |
+| absent species do not count | ok | ok |
+| more similarity never raises diversity (300 trials) | 0 violations | 0 violations |
+| bounded by 1 and the species count (300 trials) | 0 violations | 0 violations |
+| non-increasing in q | ok | ok |
+
+Replication is the axiom that makes the number *effective* rather than merely an
+index, and it is the one the original paper leaves unproved. It holds to floating
+point: 2.0000×, 3.0000×, 5.0000×.
+
+---
+
 ## 2026-08-03 — Weighted Vendi becomes the default index *(v1.1.0)*
 
 `K_p = diag(√p) Z diag(√p)`. Reduces to the published Vendi Score at uniform **p**
