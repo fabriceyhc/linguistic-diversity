@@ -75,6 +75,34 @@ Note the tagger is `averaged_perceptron_tagger_eng` on modern NLTK. The older
 empty phoneme strings rather than raising — so the symptom is a silently wrong score,
 not an error.
 
+## macOS hangs on the first model load
+
+On Apple silicon, constructing a semantic metric can hang indefinitely instead of
+raising. The process sits at 100% CPU with no output and does not respond to Ctrl-C,
+because it is stuck below Python in native code.
+
+The likely cause is two OpenMP runtimes in one process. Both wheels bundle their own
+copy:
+
+```
+torch/lib/libomp.dylib          (torch, macosx_arm64)
+faiss/.dylibs/libomp.dylib      (faiss-cpu, macosx_arm64)
+```
+
+Linux resolves this to a single shared `libgomp` and Windows does not use OpenMP the
+same way, which fits the observation that only macOS hangs. This has not been confirmed
+against a stack trace, so treat it as the leading explanation rather than a diagnosis.
+Working around it:
+
+```bash
+export OMP_NUM_THREADS=1        # serialises the OpenMP regions
+export KMP_DUPLICATE_LIB_OK=TRUE
+```
+
+macOS is not covered by CI for this reason, so regressions there will not be caught
+before a release. If you develop on a Mac and want the matrix restored, the exclusion
+is a single line in `.github/workflows/ci.yml`.
+
 ## Large corpora are slow
 
 Exact diversity builds an O(n²) similarity matrix. Use `estimate_diversity()`, which
