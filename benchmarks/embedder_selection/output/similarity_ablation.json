@@ -1,0 +1,77 @@
+{
+  "_meta": {
+    "n_sets": 600,
+    "encoder": "BAAI/bge-large-en-v1.5"
+  },
+  "document_semantics": {
+    "clamped_cosine (current)": {
+      "spearman": 0.7786,
+      "p_value": 4.209319799377778e-123,
+      "n": 600,
+      "mean_similarity": 1.4387
+    },
+    "rescaled_(1+cos)/2": {
+      "spearman": 0.7792,
+      "p_value": 2.0795485938096982e-123,
+      "n": 600,
+      "mean_similarity": 1.1756
+    },
+    "angular_1-acos/pi": {
+      "spearman": 0.7843,
+      "p_value": 4.01419080356518e-126,
+      "n": 600,
+      "mean_similarity": 1.2884
+    },
+    "squared_cosine": {
+      "spearman": 0.7849,
+      "p_value": 2.0332533519371783e-126,
+      "n": 600,
+      "mean_similarity": 1.9548
+    },
+    "exp_euclidean": {
+      "spearman": 0.79,
+      "p_value": 3.679624318225525e-129,
+      "n": 600,
+      "mean_similarity": 1.8323
+    }
+  },
+  "negative_cosines": {
+    "below_zero": 0,
+    "total": 48000,
+    "fraction": 0.0
+  },
+  "token_semantics": {
+    "mean_adj=True, power_reg=True (current)": {
+      "spearman": 0.3479,
+      "p_value": 1.6217732664328517e-18,
+      "n": 600,
+      "replication_invariant": false,
+      "D_1x": 12.515,
+      "D_3x": 14.1577
+    },
+    "mean_adj=False, power_reg=True": {
+      "spearman": 0.3878,
+      "p_value": 5.698238497090367e-23,
+      "n": 600,
+      "replication_invariant": true,
+      "D_1x": 5.7825,
+      "D_3x": 5.7825
+    },
+    "mean_adj=False, power_reg=False": {
+      "spearman": 0.304,
+      "p_value": 2.677900083712644e-14,
+      "n": 600,
+      "replication_invariant": true,
+      "D_1x": 2.9651,
+      "D_3x": 2.9651
+    },
+    "mean_adj=True, power_reg=False": {
+      "spearman": 0.2014,
+      "p_value": 6.564463166424643e-07,
+      "n": 600,
+      "replication_invariant": false,
+      "D_1x": 9.8448,
+      "D_3x": 11.4479
+    }
+  }
+}

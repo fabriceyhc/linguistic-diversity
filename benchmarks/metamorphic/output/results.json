@@ -1,0 +1,1450 @@
+{
+  "DocumentSemantics": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "4.758168 vs 4.758168"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "3.202757 vs 3.202757"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.072048 vs 1.072048"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "4.758168 stable"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "3.202757 vs 3.202757"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.072048 stable"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "[0.000, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "[0.022, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "[0.878, 1.000] symmetric"
+        }
+      ]
+    },
+    "replication_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "4.758168 vs 4.758168 at 3x"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "3.202757 vs 3.202757 at 3x"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.072048 vs 1.072048 at 3x"
+        }
+      ]
+    },
+    "identical_corpus_is_one": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        }
+      ]
+    },
+    "bounds": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "4.758168 within [1, 8]"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "3.202757 within [1, 4]"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.072048 within [1, 5]"
+        }
+      ]
+    },
+    "q_monotonicity": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "q0=4.9238 q1=4.7582 q2=4.6097"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "q0=3.2082 q1=3.2028 q2=3.1972"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "q0=1.0721 q1=1.0720 q2=1.0720"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "4.758168 -> 5.462429 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "3.202757 -> 4.155500 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.072048 -> 1.662857 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "TokenSemantics": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.461213 vs 6.461213"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "4.633092 vs 4.633092"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "3.383423 vs 3.383423"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.461213 vs 6.461213"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "4.633092 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "3.383423 vs 3.383423"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "[0.000, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "[0.001, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "[0.000, 1.000] symmetric"
+        }
+      ]
+    },
+    "replication_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.461213 vs 6.461213 at 3x"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "4.633092 vs 4.633092 at 3x"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "3.383423 vs 3.383423 at 3x"
+        }
+      ]
+    },
+    "identical_corpus_is_one": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "not applicable: species are tokens"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "not applicable: species are tokens"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "not applicable: species are tokens"
+        }
+      ]
+    },
+    "bounds": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.461213 within [1, 8]"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "4.633092 within [1, 4]"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "3.383423 within [1, 5]"
+        }
+      ]
+    },
+    "q_monotonicity": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "q0=6.6541 q1=6.4612 q2=6.2967"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "q0=4.9386 q1=4.6331 q2=4.4501"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "q0=3.7374 q1=3.3834 q2=3.1747"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.461213 -> 7.195265 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "4.633092 -> 6.010998 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "3.383423 -> 4.530869 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "DependencyParse": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "7.597175 vs 7.597175"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 vs 1.000000"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.897985 vs 4.897985"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "7.597175 stable"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.897985 vs 4.897985"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "[0.000, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "[1.000, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "[0.000, 1.000] symmetric"
+        }
+      ]
+    },
+    "replication_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "7.597175 vs 7.597175 at 3x"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 vs 1.000000 at 3x"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.897985 vs 4.897985 at 3x"
+        }
+      ]
+    },
+    "identical_corpus_is_one": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        }
+      ]
+    },
+    "bounds": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "7.597175 within [1, 8]"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 within [1, 4]"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.897985 within [1, 5]"
+        }
+      ]
+    },
+    "q_monotonicity": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "q0=7.6078 q1=7.5972 q2=7.5862"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "q0=1.0000 q1=1.0000 q2=1.0000"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "q0=4.8984 q1=4.8980 q2=4.8975"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "7.597175 -> 8.582715 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 -> 1.645318 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.897985 -> 5.879559 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "ConstituencyParse": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.413572 vs 6.413572"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 vs 1.000000"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.632337 vs 4.632337"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.413572 vs 6.413572"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.632337 vs 4.632337"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "[0.000, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "[1.000, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "[0.000, 1.000] symmetric"
+        }
+      ]
+    },
+    "replication_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.413572 vs 6.413572 at 3x"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 vs 1.000000 at 3x"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.632337 vs 4.632337 at 3x"
+        }
+      ]
+    },
+    "identical_corpus_is_one": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        }
+      ]
+    },
+    "bounds": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.413572 within [1, 8]"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 within [1, 4]"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.632337 within [1, 5]"
+        }
+      ]
+    },
+    "q_monotonicity": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "q0=6.6418 q1=6.4136 q2=6.1443"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "q0=1.0000 q1=1.0000 q2=1.0000"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "q0=4.6401 q1=4.6323 q2=4.6245"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "6.413572 -> 7.156152 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 -> 1.647884 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "4.632337 -> 5.362576 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "PartOfSpeechSequence": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.593002 vs 1.593002"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 vs 1.000000"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.333468 vs 1.333468"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.593002 stable"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.333468 stable"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "[0.375, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "[1.000, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "[0.556, 1.000] symmetric"
+        }
+      ]
+    },
+    "replication_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.593002 vs 1.593002 at 3x"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 vs 1.000000 at 3x"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.333468 vs 1.333468 at 3x"
+        }
+      ]
+    },
+    "identical_corpus_is_one": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        }
+      ]
+    },
+    "bounds": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.593002 within [1, 8]"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 within [1, 4]"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.333468 within [1, 5]"
+        }
+      ]
+    },
+    "q_monotonicity": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "q0=1.6009 q1=1.5930 q2=1.5858"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "q0=1.0000 q1=1.0000 q2=1.0000"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "q0=1.3345 q1=1.3335 q2=1.3325"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.593002 -> 1.671505 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000 -> 1.235881 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.333468 -> 1.495389 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "Rhythmic": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.423839 vs 1.423839"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.231945 vs 1.231945"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.297953 vs 1.297953"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.423839 stable"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.231945 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.297953 vs 1.297953"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "[0.429, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "[0.667, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "[0.500, 1.000] symmetric"
+        }
+      ]
+    },
+    "replication_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.423839 vs 1.423839 at 3x"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.231945 vs 1.231945 at 3x"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.297953 vs 1.297953 at 3x"
+        }
+      ]
+    },
+    "identical_corpus_is_one": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        }
+      ]
+    },
+    "bounds": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.423839 within [1, 8]"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.231945 within [1, 4]"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.297953 within [1, 5]"
+        }
+      ]
+    },
+    "q_monotonicity": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "q0=1.4272 q1=1.4238 q2=1.4207"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "q0=1.2331 q1=1.2319 q2=1.2308"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "q0=1.2991 q1=1.2980 q2=1.2968"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.423839 -> 1.461879 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.231945 -> 1.355295 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.297953 -> 1.415393 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "Phonemic": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.633904 vs 1.633904"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.422033 vs 1.422033"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.356294 vs 1.356294"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.633904 vs 1.633904"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.422033 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.356294 stable"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "[0.420, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "[0.557, 1.000] symmetric"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "[0.598, 1.000] symmetric"
+        }
+      ]
+    },
+    "replication_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.633904 vs 1.633904 at 3x"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.422033 vs 1.422033 at 3x"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.356294 vs 1.356294 at 3x"
+        }
+      ]
+    },
+    "identical_corpus_is_one": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.000000, expected 1.0"
+        }
+      ]
+    },
+    "bounds": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.633904 within [1, 8]"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.422033 within [1, 4]"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.356294 within [1, 5]"
+        }
+      ]
+    },
+    "q_monotonicity": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "q0=1.6365 q1=1.6339 q2=1.6314"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "q0=1.4224 q1=1.4220 q2=1.4216"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "q0=1.3572 q1=1.3563 q2=1.3554"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "1.633904 -> 1.805305 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "1.422033 -> 1.724057 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "1.356294 -> 1.611833 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "TypeTokenRatio": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "0.730769 vs 0.730769"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "0.791667 vs 0.791667"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "0.281250 vs 0.281250"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "0.730769 stable"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "0.791667 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "0.281250 stable"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "no similarity matrix"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "no similarity matrix"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "no similarity matrix"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "0.730769 -> 0.766667 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "0.791667 -> 0.843750 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "0.281250 -> 0.425000 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "DistinctN": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "0.730769 vs 0.730769"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "0.791667 vs 0.791667"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "0.281250 vs 0.281250"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "0.730769 stable"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "0.791667 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "0.281250 stable"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "no similarity matrix"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "no similarity matrix"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "no similarity matrix"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "0.730769 -> 0.766667 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "0.791667 -> 0.843750 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "0.281250 -> 0.425000 after adding an unrelated document"
+        }
+      ]
+    }
+  },
+  "SelfBLEU": {
+    "determinism": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "0.034865 vs 0.034865"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "0.044687 vs 0.044687"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "0.259319 vs 0.259319"
+        }
+      ]
+    },
+    "permutation_invariance": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "0.034865 stable"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "0.044687 stable"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "0.259319 stable"
+        }
+      ]
+    },
+    "similarity_matrix_valid": {
+      "strength": "LAW",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "no similarity matrix"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "no similarity matrix"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "no similarity matrix"
+        }
+      ]
+    },
+    "novel_never_decreases": {
+      "strength": "EXPECTED",
+      "passed": true,
+      "cases": [
+        {
+          "corpus": "varied",
+          "passed": true,
+          "detail": "-0.034865 -> -0.030991 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_frame",
+          "passed": true,
+          "detail": "-0.044687 -> -0.035750 after adding an unrelated document"
+        },
+        {
+          "corpus": "one_meaning",
+          "passed": true,
+          "detail": "-0.259319 -> -0.216099 after adding an unrelated document"
+        }
+      ]
+    }
+  }
+}

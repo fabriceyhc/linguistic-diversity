@@ -156,3 +156,10 @@ test_*.py
 debug_*.py
 verify_*.sh
 setup_*.sh
+
+# McDiv evaluation data (Tevet & Berant 2021), downloaded on demand.
+# 12MB of third-party data; benchmarks/embedder_selection/README.md has the curl.
+benchmarks/embedder_selection/data.zip
+benchmarks/embedder_selection/data/raw/
+benchmarks/embedder_selection/data/with_metrics/
+benchmarks/embedder_selection/data/experiments/
