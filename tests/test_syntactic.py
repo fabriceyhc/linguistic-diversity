@@ -216,3 +216,77 @@ class TestTreeEditDistanceHelpers:
         assert (
             _tree_edit_distance(first, second) == 0
         ), "one syntactic frame with different words no longer compares as identical"
+
+
+class TestScaleFreeSimilarity:
+    """Parse similarity must not depend on sentence length.
+
+    exp(-edit_distance) is not scale-free. Edit distance grows with sentence
+    length, so on ordinary text every off-diagonal entry underflowed to ~0, Z
+    became the identity, and diversity saturated at the document count. The
+    metric was counting sentences, not comparing structures -- and it looked
+    healthy on the validation benchmark only because sentences sharing a frame
+    there have distance exactly 0.
+    """
+
+    @staticmethod
+    def _realistic_corpus():
+        return [
+            "escape plan we haven't thought of yet.",
+            "omelet that is the most amazing ever.",
+            "airplane ticket that's even cheaper.",
+            "actual deadline for this paper.",
+            "event that we can go to this weekend.",
+        ]
+
+    def test_does_not_saturate_on_ordinary_sentences(self):
+        from linguistic_diversity import DependencyParse
+
+        corpus = self._realistic_corpus()
+        diversity = DependencyParse({"verbose": False})(corpus)
+
+        assert diversity < len(corpus) * 0.6, (
+            f"diversity {diversity:.3f} is close to the document count "
+            f"{len(corpus)}: the similarity matrix has collapsed to the identity"
+        )
+
+    def test_off_diagonal_similarity_is_not_underflowed(self):
+        import numpy as np
+
+        from linguistic_diversity import DependencyParse
+
+        metric = DependencyParse({"verbose": False})
+        features, _ = metric.extract_features(self._realistic_corpus())
+        Z = metric.calculate_similarities(features)
+        off_diagonal = Z[~np.eye(Z.shape[0], dtype=bool)]
+
+        assert off_diagonal.mean() > 0.05, (
+            f"mean off-diagonal similarity {off_diagonal.mean():.2e} -- these are all "
+            "short English sentences and should not be mutually unrecognisable"
+        )
+        assert Z.min() >= 0.0 and Z.max() <= 1.0
+        assert np.allclose(np.diag(Z), 1.0)
+
+    def test_similarity_is_invariant_to_sentence_length(self):
+        """The same structural contrast must score the same at any length.
+
+        Two sentences sharing a frame, and two differing in the same way, should
+        compare alike whether they are short or long. Under exp(-distance) the
+        long pair scored far lower purely because more tokens meant more edits.
+        """
+        from linguistic_diversity import DependencyParse
+        from linguistic_diversity.diversities.syntactic import _tree_edit_similarity
+
+        metric = DependencyParse({"verbose": False})
+        short = ["The boy kicked the ball.", "A car struck the fence."]
+        long = [
+            "The determined boy from the village kicked the muddy ball over the fence.",
+            "A speeding car from the highway struck the wooden fence beside the road.",
+        ]
+        short_sim = _tree_edit_similarity(*[metric._generate_dependency_tree(s) for s in short])
+        long_sim = _tree_edit_similarity(*[metric._generate_dependency_tree(s) for s in long])
+
+        assert abs(short_sim - long_sim) < 0.35, (
+            f"same structural contrast scored {short_sim:.3f} when short and "
+            f"{long_sim:.3f} when long: similarity still depends on length"
+        )

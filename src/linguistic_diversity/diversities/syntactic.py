@@ -7,6 +7,7 @@ using dependency and constituency parse trees.
 from __future__ import annotations
 
 import itertools
+from collections.abc import Callable
 from dataclasses import dataclass
 from functools import lru_cache, partial
 from typing import Any, cast
@@ -129,6 +130,45 @@ def _get_tree_nodes_dict(tree: nx.DiGraph, source: nx.DiGraph) -> dict[Any, zss.
     for parent, child in sorted(tree.edges(), key=lambda e: (_sort_key(e[0]), _sort_key(e[1]))):
         nodes_dict[parent].addkid(nodes_dict[child])
     return nodes_dict
+
+
+def _normalized_edit_similarity(graph1: nx.DiGraph, graph2: nx.DiGraph, distance: float) -> float:
+    """Turn an edit distance into a similarity in [0, 1], free of tree size.
+
+    The bound is ``max(|T1|, |T2|)``, not the sum: relabelling is a single edit,
+    so the worst case is relabelling every node of the smaller tree and inserting
+    the size difference. Dividing by the sum instead would floor two
+    maximally-different equal-sized trees at 0.5 and compress every score into the
+    upper half of the range.
+
+    The previous conversion, ``exp(-distance)``, was not scale-free, and that
+    made the metric useless on realistic text. Edit distance grows with sentence
+    length: on the 6-9 token responses in McDiv, distances of 4-8 are ordinary,
+    and ``exp(-6)`` is 0.002. Every off-diagonal entry underflowed to ~0, Z
+    became the identity, and diversity saturated at the document count -- the
+    metric was counting sentences rather than comparing structures. It looked
+    healthy on benchmarks/metric_validation/ only because sentences sharing a
+    frame there have distance exactly 0, and those zeros carried all the signal.
+    """
+    denom = max(graph1.number_of_nodes(), graph2.number_of_nodes())
+    if denom == 0:
+        return 1.0
+    return float(min(max(1.0 - distance / denom, 0.0), 1.0))
+
+
+def _tree_edit_similarity(graph1: nx.DiGraph, graph2: nx.DiGraph) -> float:
+    """Size-normalised tree edit similarity in [0, 1]."""
+    return _normalized_edit_similarity(graph1, graph2, _tree_edit_distance(graph1, graph2))
+
+
+def _graph_edit_similarity_fn(**kwargs: Any) -> Callable[[nx.DiGraph, nx.DiGraph], float]:
+    """Size-normalised wrapper around networkx graph edit distance."""
+    raw = partial(nx.graph_edit_distance, **kwargs)
+
+    def similarity(graph1: nx.DiGraph, graph2: nx.DiGraph) -> float:
+        return _normalized_edit_similarity(graph1, graph2, float(raw(graph1, graph2)))
+
+    return similarity
 
 
 def _tree_edit_distance(graph1: nx.DiGraph, graph2: nx.DiGraph) -> float:
@@ -316,28 +356,26 @@ class DependencyParse(TextDiversity["npt.NDArray[Any] | list[nx.DiGraph]"]):
                     f"Use 'ldp', 'feather', or 'tree_edit_distance' instead."
                 )
 
+            sim_fn: Callable[[nx.DiGraph, nx.DiGraph], float]
             if self.config.similarity_type == "tree_edit_distance":
-                dist_fn = _tree_edit_distance
+                sim_fn = _tree_edit_similarity
             elif self.config.similarity_type == "graph_edit_distance":
-                dist_fn = partial(
-                    nx.graph_edit_distance,
+                sim_fn = _graph_edit_similarity_fn(
                     node_match=_node_match_on_pos,
                     edge_match=_edge_match_on_dep,
                 )
             else:
                 raise ValueError(f"Unknown distance type: {self.config.similarity_type}")
 
-            # Compute distance matrix
+            # sim_fn already returns a size-normalised similarity in [0, 1], so the
+            # diagonal is 1.0 and no exponential decay is applied afterwards.
             graphs = cast("list[nx.DiGraph]", features)
             Z = compute_similarity_matrix_pairwise(
                 graphs,
-                dist_fn,
-                diagonal_val=0.0,  # Distance to self is 0
+                sim_fn,
+                diagonal_val=1.0,
                 verbose=self.config.verbose,
             )
-
-            # Convert distances to similarities (exponential decay)
-            Z = np.exp(-Z)
 
         # For embedding methods, use FAISS
         else:
@@ -545,19 +583,21 @@ class ConstituencyParse(TextDiversity["npt.NDArray[Any] | list[nx.DiGraph]"]):
                     f"Use 'ldp', 'feather', or 'tree_edit_distance' instead."
                 )
 
+            sim_fn: Callable[[nx.DiGraph, nx.DiGraph], float]
             if self.config.similarity_type == "tree_edit_distance":
-                dist_fn = _tree_edit_distance
+                sim_fn = _tree_edit_similarity
             else:
-                dist_fn = partial(nx.graph_edit_distance)
+                sim_fn = _graph_edit_similarity_fn()
 
+            # sim_fn already returns a size-normalised similarity in [0, 1], so the
+            # diagonal is 1.0 and no exponential decay is applied afterwards.
             graphs = cast("list[nx.DiGraph]", features)
             Z = compute_similarity_matrix_pairwise(
                 graphs,
-                dist_fn,
-                diagonal_val=0.0,
+                sim_fn,
+                diagonal_val=1.0,
                 verbose=self.config.verbose,
             )
-            Z = np.exp(-Z)
         else:
             embeddings = cast("npt.NDArray[np.float64]", features)
             Z = compute_similarity_matrix_faiss(
