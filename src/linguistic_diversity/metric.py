@@ -22,11 +22,57 @@ except ImportError:
     SCIPY_AVAILABLE = False
 
 
+def _nearest_psd(Z: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    """Closest positive semi-definite matrix, with the diagonal restored to 1.
+
+    Alignment identity and normalised tree-edit distance are not kernels, so the
+    similarity matrices at the structural and phonological levels routinely carry
+    negative eigenvalues -- DependencyParse reaches -1.6 on real text. A Hill
+    number does not mind; anything built on log(eigenvalue) is undefined without
+    this.
+
+    The correction is smaller than that figure suggests. Negative eigenvalues hold
+    0.7% (PartOfSpeechSequence) to 4.2% (DependencyParse) of total spectral
+    magnitude, and projecting moves the matrix 1.3% to 13.6% in Frobenius norm.
+    """
+    sym = (Z + Z.T) / 2
+    eigenvalues, vectors = np.linalg.eigh(sym)
+    projected = vectors @ np.diag(np.clip(eigenvalues, 0.0, None)) @ vectors.T
+    scale = np.sqrt(np.clip(np.diag(projected), 1e-12, None))
+    projected = projected / np.outer(scale, scale)
+    np.clip(projected, 0.0, 1.0, out=projected)
+    np.fill_diagonal(projected, 1.0)
+    return np.asarray(projected, dtype=np.float64)
+
+
 @dataclass
 class MetricConfig:
     """Base configuration for metrics."""
 
     q: float = 1.0  # Diversity order parameter
+    # Which diversity index consumes the similarity matrix.
+    #   "hill"   Leinster-Cobbold, D_q = (sum_i p_i (Zp)_i^(q-1))^(1/(1-q)).
+    #   "vendi"  exp(entropy of the eigenvalues of diag(sqrt p) Z diag(sqrt p)),
+    #            the abundance-weighted generalisation of the Vendi Score
+    #            (Friedman & Dieng, TMLR 2023).
+    #
+    # They agree at both extremes -- Z = I gives n, Z all-ones gives 1 -- and
+    # differ in between. A uniform baseline similarity contributes a rank-one
+    # component; the spectral form confines it to a single eigenvalue while the
+    # Hill form spreads it through every (Zp)_i, where it accumulates linearly in
+    # n and pulls the score toward 1/z regardless of corpus size.
+    #
+    # "vendi" is the default from v1.1.0. It is better on both criteria at every
+    # level measured -- rank agreement against known ground truth and calibration
+    # ratio -- and on human agreement, while preserving the discriminant
+    # behaviour and every metamorphic law. See benchmarks/vendi_comparison/.
+    #
+    # Costs, which is why "hill" remains available: an O(n^3) eigendecomposition
+    # rather than an O(n^2) matrix-vector product, and a projection onto the
+    # nearest PSD matrix, since alignment and tree-edit similarities are not
+    # kernels. Choose "hill" for very large corpora or when the exact
+    # Leinster-Cobbold quantity is wanted.
+    index: str = "vendi"
     normalize: bool = False  # Normalize diversity by number of species
     verbose: bool = False
 
@@ -706,7 +752,7 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
             Z = Z[np.ix_(keep, keep)]
 
         # Calculate diversity
-        D = self._calc_diversity(p, Z, self.config.q)
+        D = self._calc_diversity(p, Z, self.config.q, self.config.index)
 
         # Validate result
         if np.isnan(D) or np.isinf(D):
@@ -759,7 +805,7 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         if keep is not None:
             Z = Z[np.ix_(keep, keep)]
         # Z and the features are computed once; only the cheap reduction repeats.
-        return {float(q): float(self._calc_diversity(p, Z, q)) for q in q_values}
+        return {float(q): float(self._calc_diversity(p, Z, q, self.config.index)) for q in q_values}
 
     def max_diversity(self, corpus: list[str]) -> float:
         """Highest diversity this corpus's species could reach at any abundance.
@@ -769,6 +815,12 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         dissimilar. This returns the ceiling that actually applies, which is a
         property of the similarity structure alone and -- by Leinster & Meckes
         (2016) -- the same for every value of q.
+
+        **This is the ceiling for the Hill index specifically.** The theorem is
+        about max_p of the Leinster-Cobbold quantity; the spectral index is a
+        different functional of the same matrix and routinely exceeds it. There is
+        no comparable standard result for it, so ``relative_diversity`` refuses
+        rather than return a ratio above 1.
 
         Args:
             corpus: List of text documents.
@@ -789,6 +841,16 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         "how many effective species are here", this answers "how close is the
         abundance distribution to the most diverse arrangement of *these* species".
 
+        Hill index only. The denominator comes from Leinster & Meckes (2016), a
+        result about the Leinster-Cobbold quantity; applying it to the spectral
+        index gives ratios above 1 rather than a fraction.
+
+        Read the result with care even where it is defined: at uniform abundance
+        it is near 1 by construction, since for a similarity matrix of the form
+        (1-z)I + zJ the magnitude equals the Hill number at uniform p exactly. It
+        reports that the abundance is optimal for this index, not that the index
+        is extracting everything the data holds.
+
         The two come apart, and the gap is what makes raw scores look
         under-calibrated: a corpus of near-paraphrases has a low ceiling, so a low
         raw score against it may be near-optimal rather than poor. Reach for this
@@ -802,12 +864,19 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         Returns:
             Diversity relative to the achievable maximum.
         """
+        if self.config.index != "hill":
+            raise ValueError(
+                f"relative_diversity is defined for the Hill index only; this metric "
+                f"uses index={self.config.index!r}. The ceiling comes from Leinster & "
+                f"Meckes (2016), a result about the Leinster-Cobbold quantity, and the "
+                f"spectral index routinely exceeds it. Set index='hill' to use this."
+            )
         if not corpus:
             return 0.0
         features, species = self.extract_features(corpus)
         Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
         p = self.calculate_abundance(species)
-        observed = self._calc_diversity(p, Z, self.config.q)
+        observed = self._calc_diversity(p, Z, self.config.q, self.config.index)
         ceiling = maximum_diversity(Z)[0]
         if ceiling <= 0:
             return 0.0
@@ -934,10 +1003,41 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         )
 
     @staticmethod
+    def _calc_vendi(
+        p: npt.NDArray[np.float64],
+        Z: npt.NDArray[np.float64],
+        q: float = 1.0,
+    ) -> float:
+        """Abundance-weighted Vendi Score.
+
+        exp of the entropy of the eigenvalues of ``diag(sqrt p) Z diag(sqrt p)``.
+        That matrix has trace 1, so its eigenvalues form a probability distribution
+        and the entropy is taken of them directly.
+
+        Reduces to the published Vendi Score at uniform abundance and to the
+        classical Hill number when Z is the identity, so it is the common
+        generalisation of the two.
+        """
+        Zp = _nearest_psd(np.asarray(Z, dtype=np.float64))
+        root = np.sqrt(np.clip(np.asarray(p, dtype=np.float64), 0.0, None))
+        weighted = (Zp * root[None, :]) * root[:, None]
+        eigenvalues = np.clip(np.linalg.eigvalsh((weighted + weighted.T) / 2), 0.0, None)
+        total = eigenvalues.sum()
+        if total <= 0:
+            return 0.0
+        eigenvalues = eigenvalues[eigenvalues > 0] / total
+        if q == 1.0:
+            return float(np.exp(-np.sum(eigenvalues * np.log(eigenvalues))))
+        if np.isinf(q):
+            return float(1.0 / eigenvalues.max())
+        return float(np.power(np.sum(np.power(eigenvalues, q)), 1.0 / (1.0 - q)))
+
+    @staticmethod
     def _calc_diversity(
         p: npt.NDArray[np.float64],
         Z: npt.NDArray[np.float64],
         q: float = 1.0,
+        index: str = "hill",
     ) -> float:
         """Calculate diversity using Hill number formula.
 
@@ -949,6 +1049,11 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         Returns:
             Diversity value.
         """
+        if index == "vendi":
+            return TextDiversity._calc_vendi(p, Z, q)
+        if index != "hill":
+            raise ValueError(f"index must be 'hill' or 'vendi', got {index!r}")
+
         Zp = Z @ p
 
         if q == 1:

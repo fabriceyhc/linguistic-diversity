@@ -23,6 +23,7 @@ the usual distribution of topic frequency in a real corpus.
 Usage:
     python run_study.py [--out output/results.json]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -85,12 +86,16 @@ def main() -> None:
     metric = DocumentSemantics({"verbose": False})
     results: dict[str, Any] = {}
 
-    print(f"{len(seed['abundance_themes']['themes'])} themes x {DOCS_PER_THEME} paraphrases; "
-          f"true diversity is the Hill number of the theme weights\n")
+    print(
+        f"{len(seed['abundance_themes']['themes'])} themes x {DOCS_PER_THEME} paraphrases; "
+        f"true diversity is the Hill number of the theme weights\n"
+    )
 
     for profile in seed["abundance_themes"]["profiles"]:
         docs, abundance = build(seed, profile)
-        truth = true_profile(np.asarray(profile["weights"][: len(seed["abundance_themes"]["themes"])]))
+        truth = true_profile(
+            np.asarray(profile["weights"][: len(seed["abundance_themes"]["themes"])])
+        )
         measured = metric.diversity_profile(docs, q_values=Q_VALUES, abundance=abundance)
         uniform = metric.diversity_profile(docs, q_values=Q_VALUES)
 
@@ -98,8 +103,10 @@ def main() -> None:
         print(f"  {'q':>5s} {'true':>8s} {'weighted':>9s} {'uniform':>9s}")
         for q in Q_VALUES:
             label = "inf" if np.isinf(q) else f"{q:g}"
-            print(f"  {label:>5s} {truth[float(q)]:8.3f} {measured[float(q)]:9.3f} "
-                  f"{uniform[float(q)]:9.3f}")
+            print(
+                f"  {label:>5s} {truth[float(q)]:8.3f} {measured[float(q)]:9.3f} "
+                f"{uniform[float(q)]:9.3f}"
+            )
         results[profile["id"]] = {
             "note": profile["note"],
             "true": {str(k): round(v, 4) for k, v in truth.items()},
@@ -136,8 +143,7 @@ def main() -> None:
         feats, _ = metric.extract_features(docs)
         K = np.asarray(metric.calculate_similarities(feats), dtype=np.float64)
         t = true_profile(np.asarray(profile["weights"][: len(seed["abundance_themes"]["themes"])]))
-        print(f"  {profile['id']:16s} Vendi {vendi_score(K):7.3f}   "
-              f"true D_1 {t[1.0]:7.3f}")
+        print(f"  {profile['id']:16s} Vendi {vendi_score(K):7.3f}   " f"true D_1 {t[1.0]:7.3f}")
     print("\n  The corpus text is identical across profiles -- only the weights differ --")
     print("  so Vendi returns one number for all five while the truth ranges widely.")
 

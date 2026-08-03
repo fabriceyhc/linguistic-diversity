@@ -16,6 +16,7 @@ evidence that chose the default encoder -- see README.
 Usage:
     python ablate_similarity.py --data-dir ./data
 """
+
 from __future__ import annotations
 
 import argparse
@@ -181,16 +182,20 @@ def main() -> None:
         scores = score_sets(metric, df)
         doc_rows[label] = agreement(scores, human)
         doc_rows[label]["mean_similarity"] = round(float(np.nanmean(scores)), 4)
-        print(f"  {label:26s} rho={doc_rows[label]['spearman']:+.4f}  "
-              f"mean D={doc_rows[label]['mean_similarity']:7.3f}  n={doc_rows[label]['n']}")
+        print(
+            f"  {label:26s} rho={doc_rows[label]['spearman']:+.4f}  "
+            f"mean D={doc_rows[label]['mean_similarity']:7.3f}  n={doc_rows[label]['n']}"
+        )
         clear_model_cache()
     results["document_semantics"] = doc_rows
 
     neg = _NEGATIVE_TALLY
     frac = neg["below_zero"] / neg["total"] if neg["total"] else 0.0
     results["negative_cosines"] = {**neg, "fraction": round(frac, 6)}
-    print(f"\n  raw cosines below zero: {neg['below_zero']:,} of {neg['total']:,} "
-          f"off-diagonal pairs ({frac:.2%})")
+    print(
+        f"\n  raw cosines below zero: {neg['below_zero']:,} of {neg['total']:,} "
+        f"off-diagonal pairs ({frac:.2%})"
+    )
 
     print("\n" + "=" * 78)
     print("Q2  TokenSemantics: keep mean_adj?")
@@ -206,8 +211,10 @@ def main() -> None:
             "D_1x": round(a, 4),
             "D_3x": round(b, 4),
         }
-        print(f"  {label:42s} rho={tok_rows[label]['spearman']:+.4f}  "
-              f"invariant={'yes' if ok else 'NO ':3s}  ({a:.2f} -> {b:.2f} at 3x)")
+        print(
+            f"  {label:42s} rho={tok_rows[label]['spearman']:+.4f}  "
+            f"invariant={'yes' if ok else 'NO ':3s}  ({a:.2f} -> {b:.2f} at 3x)"
+        )
         clear_model_cache()
     results["token_semantics"] = tok_rows
 

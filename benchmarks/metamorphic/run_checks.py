@@ -22,6 +22,7 @@ Relations are split by how strongly they bind:
 Usage:
     python run_checks.py [--only METRIC ...] [--out output/results.json]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -56,8 +57,13 @@ TOL = 1e-6
 # the species count. The lexical baselines are ratios and are exempt from the
 # bound and ordering laws, but not from invariance.
 HILL_METRICS = {
-    "DocumentSemantics", "TokenSemantics", "DependencyParse",
-    "ConstituencyParse", "PartOfSpeechSequence", "Rhythmic", "Phonemic",
+    "DocumentSemantics",
+    "TokenSemantics",
+    "DependencyParse",
+    "ConstituencyParse",
+    "PartOfSpeechSequence",
+    "Rhythmic",
+    "Phonemic",
 }
 # Species are tokens, not documents, so document-count bounds do not apply.
 TOKEN_UNIT = {"TokenSemantics"}
@@ -99,14 +105,16 @@ def load_corpora() -> dict[str, list[str]]:
 # Relations. Each returns (passed, detail).
 # --------------------------------------------------------------------------
 
+
 def r_determinism(metric: Any, corpus: list[str], **_: Any) -> tuple[bool, str]:
     """LAW. The same input must produce the same output."""
     a, b = float(metric(corpus)), float(metric(corpus))
     return abs(a - b) <= TOL, f"{a:.6f} vs {b:.6f}"
 
 
-def r_permutation_invariance(metric: Any, corpus: list[str], rng: random.Random,
-                             **_: Any) -> tuple[bool, str]:
+def r_permutation_invariance(
+    metric: Any, corpus: list[str], rng: random.Random, **_: Any
+) -> tuple[bool, str]:
     """LAW. A corpus is a multiset; document order carries no information."""
     base = float(metric(corpus))
     worst, detail = 0.0, ""
@@ -126,8 +134,9 @@ def r_replication_invariance(metric: Any, corpus: list[str], **_: Any) -> tuple[
     return abs(got - base) <= 1e-4, f"{base:.6f} vs {got:.6f} at 3x"
 
 
-def r_identical_corpus_is_one(metric: Any, _corpus: list[str], token_unit: bool = False,
-                              **__: Any) -> tuple[bool, str]:
+def r_identical_corpus_is_one(
+    metric: Any, _corpus: list[str], token_unit: bool = False, **__: Any
+) -> tuple[bool, str]:
     """LAW (Hill, document-unit only). n copies of one document is one species.
 
     Skipped for token-unit metrics: repeating a document repeats its tokens, and
@@ -139,8 +148,9 @@ def r_identical_corpus_is_one(metric: Any, _corpus: list[str], token_unit: bool 
     return abs(got - 1.0) <= 1e-3, f"{got:.6f}, expected 1.0"
 
 
-def r_bounds(metric: Any, corpus: list[str], token_unit: bool = False,
-             **_: Any) -> tuple[bool, str]:
+def r_bounds(
+    metric: Any, corpus: list[str], token_unit: bool = False, **_: Any
+) -> tuple[bool, str]:
     """LAW (Hill only). 1 <= D <= number of species."""
     got = float(metric(corpus))
     if got < 1.0 - 1e-6:
@@ -150,8 +160,9 @@ def r_bounds(metric: Any, corpus: list[str], token_unit: bool = False,
     return True, f"{got:.6f} within [1, {len(corpus)}]"
 
 
-def r_q_monotonicity(_metric: Any, corpus: list[str], builder: Callable[..., Any] | None = None,
-                     **_kw: Any) -> tuple[bool, str]:
+def r_q_monotonicity(
+    _metric: Any, corpus: list[str], builder: Callable[..., Any] | None = None, **_kw: Any
+) -> tuple[bool, str]:
     """LAW (Hill only). Hill numbers are non-increasing in the order q."""
     if builder is None:
         return True, "skipped"
@@ -245,7 +256,10 @@ def main() -> None:
             for corpus_name, corpus in corpora.items():
                 try:
                     ok, detail = fn(
-                        metric, corpus, rng=rng, builder=builder,
+                        metric,
+                        corpus,
+                        rng=rng,
+                        builder=builder,
                         token_unit=name in TOKEN_UNIT,
                     )
                 except Exception as e:
@@ -293,7 +307,9 @@ def main() -> None:
                     continue
                 for case in v["cases"]:
                     if not case["passed"]:
-                        print(f"  {v['strength']:8s} {name}.{rel} [{case['corpus']}]: {case['detail']}")
+                        print(
+                            f"  {v['strength']:8s} {name}.{rel} [{case['corpus']}]: {case['detail']}"
+                        )
     print(f"\n{total_fail} failing metric/relation pairs. Wrote {args.out}")
 
 

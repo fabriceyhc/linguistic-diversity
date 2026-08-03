@@ -19,6 +19,7 @@ Three readouts:
 Usage:
     python evaluate_metrics.py [--out output/results.json]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -94,6 +95,11 @@ def score_corpora(benchmark: dict, only: list[str] | None) -> dict[str, dict[str
             print(f"SKIPPED ({type(e).__name__}: {e})")
             continue
 
+        try:
+            hill_twin = build()
+            hill_twin.config.index = "hill"
+        except Exception:
+            hill_twin = None
         per_corpus: dict[str, float] = {}
         headroom: list[float] = []
         failures = 0
@@ -107,9 +113,12 @@ def score_corpora(benchmark: dict, only: list[str] | None) -> dict[str, dict[str
                 failures += 1
                 continue
             # How much of the achievable ceiling this score reaches.
+            # Headroom is a Hill-index quantity (Leinster & Meckes 2016), so it is
+            # measured on a Hill-configured twin regardless of which index is being
+            # scored -- it diagnoses the similarity structure, not the index.
             try:
-                if hasattr(metric, "relative_diversity"):
-                    headroom.append(float(metric.relative_diversity(corpus["documents"])))
+                if hill_twin is not None:
+                    headroom.append(float(hill_twin.relative_diversity(corpus["documents"])))
             except Exception:
                 pass
         scores[name] = per_corpus
@@ -248,13 +257,15 @@ def within_corpus_checks(benchmark: dict, scores: dict[str, dict[str, float]]) -
         lo = scores[lo_metric].get(contrast["corpus"])
         if hi is None or lo is None:
             continue
-        results.append({
-            "corpus": contrast["corpus"],
-            f"{contrast['greater_level']}": round(hi, 4),
-            f"{contrast['lesser_level']}": round(lo, 4),
-            "satisfied": bool(hi > lo),
-            "rationale": contrast["rationale"],
-        })
+        results.append(
+            {
+                "corpus": contrast["corpus"],
+                f"{contrast['greater_level']}": round(hi, 4),
+                f"{contrast['lesser_level']}": round(lo, 4),
+                "satisfied": bool(hi > lo),
+                "rationale": contrast["rationale"],
+            }
+        )
     return results
 
 
@@ -266,8 +277,10 @@ def main() -> None:
     args = parser.parse_args()
 
     benchmark = json.loads(args.benchmark.read_text())
-    print(f"Scoring {len(benchmark['corpora'])} corpora, "
-          f"{len(benchmark['contrasts'])} contrasts\n")
+    print(
+        f"Scoring {len(benchmark['corpora'])} corpora, "
+        f"{len(benchmark['contrasts'])} contrasts\n"
+    )
 
     scores = score_corpora(benchmark, args.only)
 
@@ -295,8 +308,10 @@ def main() -> None:
     for name, r in sorted(
         results["inverse_pair"].items(), key=lambda kv: -kv[1]["frame_over_alternation_rate"]
     ):
-        print(f"  {name:24s} {str(r['claims_level'] or '-'):14s} "
-              f"{r['frame_over_alternation_rate']:8.3f} {r['n_pairs']:5d}")
+        print(
+            f"  {name:24s} {str(r['claims_level'] or '-'):14s} "
+            f"{r['frame_over_alternation_rate']:8.3f} {r['n_pairs']:5d}"
+        )
 
     print(f"\n{'=' * 74}")
     print("CALIBRATION at each metric's own level")
@@ -312,8 +327,10 @@ def main() -> None:
         cell = f"{ratio:8.3f}" if ratio is not None else f"{'n/a':>8s}"
         head = r.get("median_headroom")
         hcell = f"{head:9.3f}" if head is not None else f"{'n/a':>9s}"
-        print(f"  {name:24s} {r['level']:14s} {r['spearman_vs_expected']:8.3f} "
-              f"{cell} {hcell} {r['n']:5d}")
+        print(
+            f"  {name:24s} {r['level']:14s} {r['spearman_vs_expected']:8.3f} "
+            f"{cell} {hcell} {r['n']:5d}"
+        )
 
     print(f"\n{'=' * 74}")
     print("CONTRAST ACCURACY by level")
@@ -333,9 +350,11 @@ def main() -> None:
         print("-" * 74)
         for r in results["within_corpus"]:
             mark = "PASS" if r["satisfied"] else "FAIL"
-            print(f"  {mark}  {r['corpus']:34s} "
-                  f"syn={r.get('syntactic', float('nan')):7.3f}  "
-                  f"morph={r.get('morphological', float('nan')):7.3f}")
+            print(
+                f"  {mark}  {r['corpus']:34s} "
+                f"syn={r.get('syntactic', float('nan')):7.3f}  "
+                f"morph={r.get('morphological', float('nan')):7.3f}"
+            )
 
     print(f"\nWrote {args.out}")
 

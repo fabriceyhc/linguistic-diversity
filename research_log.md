@@ -12,6 +12,46 @@ Newest first.
 
 ---
 
+## 2026-08-03 — Weighted Vendi becomes the default index *(v1.1.0)*
+
+`K_p = diag(√p) Z diag(√p)`. Reduces to the published Vendi Score at uniform **p**
+and to the classical Hill number at Z = I, so it is the common generalisation of
+the two rather than a third thing.
+
+**The PSD blocker was softer than it looked.** Alignment and tree-edit
+similarities are not kernels, and `DependencyParse` reaches −1.6. But negative
+eigenvalues hold only 0.7% (`PartOfSpeechSequence`) to 4.2% (`DependencyParse`) of
+total spectral magnitude, and projecting onto the nearest PSD matrix moves it
+1.3–13.6% in Frobenius norm. A modest correction, not surgery — so the index is
+available at every level, not only the two that were PSD to begin with.
+
+**Result on `metric_validation`,** ρ and calibration ratio, Hill → wVendi:
+
+| metric | ρ | ratio |
+|---|---|---|
+| `DocumentSemantics` | +0.922 → **+0.939** | 0.706 → **0.953** |
+| `DependencyParse` | +0.911 → **+0.960** | 0.667 → **0.930** |
+| `ConstituencyParse` | +0.885 → **+0.915** | 0.506 → **0.727** |
+| `PartOfSpeechSequence` | +0.772 → **+0.869** | 0.437 → **0.714** |
+| `Rhythmic` | +0.771 → **+0.811** | 0.492 → **0.848** |
+| `Phonemic` | +0.874 → **+0.927** | 0.372 → **0.664** |
+
+Every metric improves on both criteria. Discriminant behaviour preserved
+(`PartOfSpeechSequence` gets *more* correct, 0.056 → 0.000 on the inverse pair).
+Human agreement +0.5813 → +0.5959 and +0.6503 → +0.6668. All metamorphic laws hold.
+
+**Consequence caught during the change:** `relative_diversity` broke. Its
+denominator is the Leinster–Meckes magnitude, which is the ceiling for the *Hill*
+quantity; the spectral index exceeds it, so headroom came out at 1.28–2.71 instead
+of ≤1. It now raises for `index="vendi"` rather than returning a meaningless
+ratio, and the benchmark measures headroom on a Hill-configured twin, since it
+diagnoses the similarity structure rather than the index.
+
+**Kept `"hill"`** for large corpora — O(n³) eigendecomposition against O(n²)
+matrix-vector — and for the exact Leinster–Cobbold quantity.
+
+---
+
 ## 2026-08-03 — Feature-level duplication is already handled *(deferred: an optimisation only)*
 
 **Question.** Discrete levels can produce identical species from different
@@ -113,8 +153,9 @@ n = 50: Hill 3.18, Vendi 26.90, truth 50.
   only the shared floor.
 
 **Standing.** Vendi wins on uniform-abundance benchmarks and cannot compete at all on
-skewed abundance. Neither result subsumes the other. **Open decision:** whether to offer
-Vendi as a selectable aggregator, and whether Hill should remain the default index.
+skewed abundance. Neither result subsumes the other. **Resolved** by the weighted form
+(entry above): `diag(√p) Z diag(√p)` takes abundance *and* keeps the spectral
+robustness, and became the default in v1.1.0.
 
 ---
 
@@ -224,17 +265,16 @@ exactly that shape.
 
 **Decisions pending**
 
-- Release as 1.0.3 or 1.1.0. Six metrics change behaviour; `~=1.0.2` picks a patch up
-  with no signal. Was chosen as a patch on the grounds that the previous behaviour was
-  defective, but the scope has roughly tripled since.
-- When to merge PR #1 and tag.
-- Whether Hill remains the default index, given the Vendi result.
+- When to merge PR #1 and tag. *(Version settled: 1.1.0, since the scope is well past a
+  patch and the index default now changes too.)*
+- Whether an independent validation pass should confirm the index change before release.
+  The evidence is strong but comes from benchmarks built in the same session as the
+  index.
 
 **Deferred work**
 
 - Feature-level deduplication by hashing discrete features before building Z
   (`ConstituencyParse`, `Rhythmic`; performance only).
-- Vendi as a selectable aggregator across the existing extractors.
 - Reliability: split-half, seed stability, cross-encoder rank stability. Named in the
   research plan, never built.
 - α/β/γ decomposition (Chao et al.) — would let "is this corpus diverse because each

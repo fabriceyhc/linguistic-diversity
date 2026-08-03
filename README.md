@@ -59,15 +59,15 @@ semantically_diverse = [
 ]
 
 metric = DocumentSemantics()
-print(f"{metric(lexically_diverse):.2f}")     # 1.51
-print(f"{metric(semantically_diverse):.2f}")  # 3.75
+print(f"{metric(lexically_diverse):.2f}")     # 3.10
+print(f"{metric(semantically_diverse):.2f}")  # 4.60
 ```
 
 Set A is **perfect on every standard lexical measure** — type-token ratio 1.000,
 distinct-1 1.000, distinct-2 1.000, and self-BLEU 0.000, meaning literally zero n-gram
 overlap between its sentences — yet it states one proposition five times. Set B looks
 repetitive to those measures because *run* recurs, but each use is a different sense, so
-it carries ~3.8 distinct meanings out of 5.
+it carries ~4.6 distinct meanings out of 5.
 
 All four lexical baselines ship with the library (`TypeTokenRatio`, `DistinctN`,
 `SelfBLEU`) so you can reproduce the comparison rather than take it on faith. If you are
@@ -86,14 +86,14 @@ documents / 30 words / 30 token species, so ceilings are identical):
 | `DistinctN` (n=1) | Lexical *(baseline)* | unique unigrams / total | **1.000** | 0.767 | 1 |
 | `DistinctN` (n=2) | Lexical *(baseline)* | unique bigrams / total | 1.000 | 1.000 | 1 |
 | `SelfBLEU` | Lexical *(baseline)* | n-gram overlap — *lower* is diverse | **0.000** | 0.049 | 0 |
-| `TokenSemantics` | Semantic | contextualized token embeddings | 3.46 | **5.12** | 30 |
-| `DocumentSemantics` | Semantic | sentence embeddings | 1.56 | **3.75** | 5 |
-| `DependencyParse` | Syntactic | dependency tree structure | 1.38 | **2.91** | 5 |
-| `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.10 | **1.24** | 5 |
-| `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 1.46 | **1.75** | 5 |
-| `Rhythmic` | Phonological | stress and syllable weight | 1.39 | 1.48 | 5 |
-| `Phonemic` | Phonological | phoneme sequences | 1.60 | 1.53 | 5 |
-| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 1.70 | **2.73** | — |
+| `TokenSemantics` | Semantic | contextualized token embeddings | 15.41 | **21.11** | 30 |
+| `DocumentSemantics` | Semantic | sentence embeddings | 3.10 | **4.60** | 5 |
+| `DependencyParse` | Syntactic | dependency tree structure | 2.13 | **4.36** | 5 |
+| `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.33 | **1.86** | 5 |
+| `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 2.43 | **3.34** | 5 |
+| `Rhythmic` | Phonological | stress and syllable weight | 2.59 | 2.72 | 5 |
+| `Phonemic` | Phonological | phoneme sequences | 3.25 | 3.07 | 5 |
+| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 3.49 | **5.13** | — |
 
 ```python
 from linguistic_diversity import DependencyParse, UniversalLinguisticDiversity
@@ -112,15 +112,15 @@ detailed = universal.get_detailed_scores(corpus)   # {'universal': ..., 'branche
 
 Reading the results:
 
-- **Document semantics separates the sets most sharply** (1.56 vs 3.75, a 2.4x gap). Reach
+- **Document semantics separates the sets** (3.10 vs 4.60). Reach
   for it when you care how many distinct *things* a corpus says.
-- **Syntax is an independent signal** (1.38 vs 2.91). Set A leans on one frame without
+- **Syntax is an independent signal** (2.13 vs 4.36). Set A leans on one frame without
   repeating it exactly — four distinct POS sequences across five sentences, three of them
   `DET ADJ NOUN VERB · NOUN` — so it is syntactically narrow rather than monotonous. A
   corpus can be semantically varied yet syntactically narrow, and only measuring both will
   tell you which.
-- **Several metrics barely separate these two sets** — `ConstituencyParse` 1.10 vs 1.24,
-  `Rhythmic` 1.39 vs 1.48, `Phonemic` 1.60 vs 1.53 the wrong way round. They measure
+- **Several metrics barely separate these two sets** — `ConstituencyParse` 1.33 vs 1.86,
+  `Rhythmic` 2.59 vs 2.72, `Phonemic` 3.25 vs 3.07 the wrong way round. They measure
   something real; these two sets just do not differ much in it. Stated rather than left to
   be inferred from which rows are unbolded, because a table that only shows its winners is
   not much use for picking a metric.
@@ -175,6 +175,36 @@ answers a different question:
   against the Vendi Score on one shared similarity matrix. **Vendi wins on both human
   agreement and calibration**; what survives the comparison is the multi-level
   instrumentation, not the choice of index.
+
+## Choosing the index
+
+Two indices consume the same similarity matrix, and the default changed in v1.1.0.
+
+```python
+DocumentSemantics()                    # index="vendi", the default
+DocumentSemantics({"index": "hill"})   # Leinster-Cobbold
+```
+
+**`"vendi"`** — `exp` of the entropy of the eigenvalues of `diag(√p) Z diag(√p)`, the
+abundance-weighted generalisation of the Vendi Score (Friedman & Dieng, TMLR 2023).
+**`"hill"`** — `D_q = (Σᵢ pᵢ (Zp)ᵢ^(q−1))^(1/(1−q))`, Leinster–Cobbold.
+
+They agree exactly at both extremes — Z = I gives *n*, Z all-ones gives 1 — and differ in
+between. A uniform baseline similarity contributes a **rank-one** component: the spectral
+form confines it to a single eigenvalue, while the Hill form spreads it through every
+`(Zp)ᵢ`, where it accumulates linearly in *n* and pulls the score toward `1/z` whatever
+the corpus size. At z = 0.3 and n = 50 the Hill number reads 3.18 against a truth of 50;
+the spectral form reads 26.90.
+
+Vendi is the default because it is better on both criteria at **every** level measured —
+rank agreement against known ground truth and calibration ratio — and on human agreement,
+while preserving the discriminant behaviour and every metamorphic law. See
+[`benchmarks/vendi_comparison/`](benchmarks/vendi_comparison/).
+
+Keep `"hill"` for very large corpora, where an O(n³) eigendecomposition costs more than an
+O(n²) matrix-vector product, or when the exact Leinster–Cobbold quantity is wanted.
+`relative_diversity()` is Hill-only: its ceiling comes from a theorem about that quantity,
+and the spectral index routinely exceeds it.
 
 ## Abundance and the diversity profile
 

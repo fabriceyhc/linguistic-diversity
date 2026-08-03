@@ -7,6 +7,7 @@ can be scored on absolute calibration rather than ranking alone.
 Usage:
     python build_benchmark.py [--out output/benchmark.json]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -62,9 +63,7 @@ def build_synonymy_corpora(
                     extra = rng.choice(clusters)
                     if extra["id"] not in {c["id"] for c in picked}:
                         picked.append(extra)
-                corpora.append(
-                    _make_record("synonymy", "cross_domain", k, m, draw, picked, rng)
-                )
+                corpora.append(_make_record("synonymy", "cross_domain", k, m, draw, picked, rng))
 
                 # Within-domain: only from domains large enough to supply k concepts
                 eligible = [d for d, cs in by_domain.items() if len(cs) >= k]
@@ -121,16 +120,18 @@ def build_polysemy_corpora(sets: list[dict[str, Any]]) -> list[dict[str, Any]]:
     corpora = []
     for pset in sets:
         senses = pset["senses"]
-        corpora.append({
-            "id": f"polysemy-{pset['id']}",
-            "axis": "polysemy",
-            "regime": "shared_surface_form",
-            "documents": list(senses),
-            "concept_labels": [f"{pset['id']}_sense{i}" for i in range(len(senses))],
-            "n_documents": len(senses),
-            "true_diversity": float(len(senses)),
-            "rationale": f"{len(senses)} unrelated senses of '{pset['surface_form']}'",
-        })
+        corpora.append(
+            {
+                "id": f"polysemy-{pset['id']}",
+                "axis": "polysemy",
+                "regime": "shared_surface_form",
+                "documents": list(senses),
+                "concept_labels": [f"{pset['id']}_sense{i}" for i in range(len(senses))],
+                "n_documents": len(senses),
+                "true_diversity": float(len(senses)),
+                "rationale": f"{len(senses)} unrelated senses of '{pset['surface_form']}'",
+            }
+        )
     return corpora
 
 
@@ -148,15 +149,20 @@ def main() -> None:
     corpora += build_polysemy_corpora(seed["polysemy_sets"])
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps({
-        "_meta": {
-            "random_seed": args.random_seed,
-            "n_corpora": len(corpora),
-            "source": str(args.seed_data.name),
-            "scoring": "A calibrated metric reports true_diversity for every corpus.",
-        },
-        "corpora": corpora,
-    }, indent=2))
+    args.out.write_text(
+        json.dumps(
+            {
+                "_meta": {
+                    "random_seed": args.random_seed,
+                    "n_corpora": len(corpora),
+                    "source": str(args.seed_data.name),
+                    "scoring": "A calibrated metric reports true_diversity for every corpus.",
+                },
+                "corpora": corpora,
+            },
+            indent=2,
+        )
+    )
 
     by_axis: dict[str, int] = defaultdict(int)
     for c in corpora:

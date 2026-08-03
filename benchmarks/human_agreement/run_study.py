@@ -26,6 +26,7 @@ Two questions:
 Usage:
     python run_study.py --data-dir ../embedder_selection/data
 """
+
 from __future__ import annotations
 
 import argparse
@@ -113,11 +114,16 @@ def rho(x: npt.NDArray[np.float64], y: npt.NDArray[np.float64]) -> tuple[float, 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-dir", type=Path,
-                        default=HERE.parent / "embedder_selection" / "data")
+    parser.add_argument(
+        "--data-dir", type=Path, default=HERE.parent / "embedder_selection" / "data"
+    )
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
-    parser.add_argument("--temp-limit", type=int, default=900,
-                        help="Rows of decTest_full for the temperature sweep (0 = all)")
+    parser.add_argument(
+        "--temp-limit",
+        type=int,
+        default=900,
+        help="Rows of decTest_full for the temperature sweep (0 = all)",
+    )
     parser.add_argument("--only", nargs="*")
     args = parser.parse_args()
 
@@ -127,8 +133,10 @@ def main() -> None:
     # ---- Q1: agreement with human judgments, on all three datasets ----
     loaded = {k: load(args.data_dir, p) for k, p in DATASETS.items()}
     for k, df in loaded.items():
-        print(f"{k:15s} {len(df):5d} sets, "
-              f"{len([c for c in df.columns if c.startswith('resp_')])} responses each")
+        print(
+            f"{k:15s} {len(df):5d} sets, "
+            f"{len([c for c in df.columns if c.startswith('resp_')])} responses each"
+        )
     results["_meta"]["dataset_sizes"] = {k: len(v) for k, v in loaded.items()}
 
     agreement: dict[str, dict[str, Any]] = {}
@@ -150,8 +158,10 @@ def main() -> None:
     if args.temp_limit:
         temp_df = temp_df.sample(n=min(args.temp_limit, len(temp_df)), random_state=20260803)
     temps = temp_df["label_value"].to_numpy(dtype=float)
-    print(f"\n\n{TEMPERATURE_SET[0]}: {len(temp_df)} sets, "
-          f"temperature {temps.min():.2f}-{temps.max():.2f}")
+    print(
+        f"\n\n{TEMPERATURE_SET[0]}: {len(temp_df)} sets, "
+        f"temperature {temps.min():.2f}-{temps.max():.2f}"
+    )
 
     temperature: dict[str, dict[str, Any]] = {}
     for name in names:
@@ -178,10 +188,10 @@ def main() -> None:
     print("  Tevet & Berant: decoding parameters change form, not meaning.")
     print("-" * 78)
     print(f"  {'metric':22s} {'level':16s} {'rho vs temp':>12s}")
-    for name, row in sorted(temperature.items(),
-                            key=lambda kv: -abs(kv[1]["spearman_vs_temperature"])):
-        print(f"  {name:22s} {row['level']:16s} "
-              f"{row['spearman_vs_temperature']:+12.4f}")
+    for name, row in sorted(
+        temperature.items(), key=lambda kv: -abs(kv[1]["spearman_vs_temperature"])
+    ):
+        print(f"  {name:22s} {row['level']:16s} " f"{row['spearman_vs_temperature']:+12.4f}")
 
     print(f"\nWrote {args.out}")
 

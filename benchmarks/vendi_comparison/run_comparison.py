@@ -21,6 +21,7 @@ them except the index itself. Two questions:
 Usage:
     python run_comparison.py --data-dir ../embedder_selection/data
 """
+
 from __future__ import annotations
 
 import argparse
@@ -75,8 +76,9 @@ def rho(x: npt.NDArray[np.float64], y: npt.NDArray[np.float64]) -> float:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-dir", type=Path,
-                        default=HERE.parent / "embedder_selection" / "data")
+    parser.add_argument(
+        "--data-dir", type=Path, default=HERE.parent / "embedder_selection" / "data"
+    )
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     args = parser.parse_args()
 
@@ -93,9 +95,7 @@ def main() -> None:
         agreement[name] = {}
         for key, df in loaded.items():
             scores = score_rows(metric, df)
-            agreement[name][key] = round(
-                rho(scores, df[HUMAN_COL].to_numpy(dtype=float)), 4
-            )
+            agreement[name][key] = round(rho(scores, df[HUMAN_COL].to_numpy(dtype=float)), 4)
     print(f"  {'index':22s} " + " ".join(f"{k:>15s}" for k in DATASETS))
     for name, row in agreement.items():
         print(f"  {name:22s} " + " ".join(f"{row[k]:+15.4f}" for k in DATASETS))
@@ -106,7 +106,8 @@ def main() -> None:
     print("-" * 78)
     benchmark = json.loads(BENCHMARK.read_text())
     targeted = [
-        c for c in benchmark["corpora"]
+        c
+        for c in benchmark["corpora"]
         if c["expected"].get("semantic") is not None
         and c["family"] in ("syntactic_alternations", "syntactic_frames", "random_controls")
     ]
@@ -127,8 +128,10 @@ def main() -> None:
         }
     print(f"  {'index':22s} {'rho vs known k':>15s} {'median ratio':>13s} {'n':>5s}")
     for name, r in calib.items():
-        print(f"  {name:22s} {r['spearman_vs_expected']:+15.4f} "
-              f"{r['median_ratio']:13.3f} {r['n']:5d}")
+        print(
+            f"  {name:22s} {r['spearman_vs_expected']:+15.4f} "
+            f"{r['median_ratio']:13.3f} {r['n']:5d}"
+        )
     results["calibration"] = calib
 
     print(f"\n{'=' * 78}")

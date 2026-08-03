@@ -21,6 +21,7 @@ mean_adj did, and it cost replication invariance.
 Usage:
     python calibrate_floor.py --data-dir ./data
 """
+
 from __future__ import annotations
 
 import argparse
@@ -61,8 +62,9 @@ def load(data_dir: Path, pattern: str) -> pd.DataFrame:
     return pd.concat([pd.read_csv(f) for f in files], ignore_index=True)
 
 
-def estimate_floor(metric: DocumentSemantics, df: pd.DataFrame, n_pairs: int = 400,
-                   seed: int = 20260803) -> dict[str, float]:
+def estimate_floor(
+    metric: DocumentSemantics, df: pd.DataFrame, n_pairs: int = 400, seed: int = 20260803
+) -> dict[str, float]:
     """Baseline similarity between responses to *different* prompts.
 
     Cross-prompt pairs are unrelated by construction, which is what makes this an
@@ -81,7 +83,7 @@ def estimate_floor(metric: DocumentSemantics, df: pd.DataFrame, n_pairs: int = 4
     feats, _ = metric.extract_features(texts)
     Z = np.asarray(metric.calculate_similarities(feats), dtype=float)
     owner = np.array(owners)
-    cross = (owner[:, None] != owner[None, :])
+    cross = owner[:, None] != owner[None, :]
     vals = Z[cross]
     return {
         "mean": float(vals.mean()),
@@ -132,29 +134,42 @@ def main() -> None:
         print(f"\n{'=' * 78}\n{encoder}\n{'-' * 78}")
         base = DocumentSemantics({"model_name": encoder, "verbose": False})
         floor = estimate_floor(base, loaded["McDiv_nuggets"])
-        print(f"  cross-prompt similarity: mean {floor['mean']:.3f}  median "
-              f"{floor['median']:.3f}  p10 {floor['p10']:.3f}  p90 {floor['p90']:.3f}")
+        print(
+            f"  cross-prompt similarity: mean {floor['mean']:.3f}  median "
+            f"{floor['median']:.3f}  p10 {floor['p10']:.3f}  p90 {floor['p90']:.3f}"
+        )
         print(f"  implied cap 1/mean = {1 / floor['mean']:.1f} effective species\n")
 
         # Sweep candidate floors, including none.
-        candidates = [None, round(floor["p10"], 3), round(floor["median"], 3),
-                      round(floor["mean"], 3)]
+        candidates = [
+            None,
+            round(floor["p10"], 3),
+            round(floor["median"], 3),
+            round(floor["mean"], 3),
+        ]
         rows = []
-        print(f"  {'floor':>8s} {'ceiling':>8s} " +
-              " ".join(f"{k:>14s}" for k in DATASETS))
+        print(f"  {'floor':>8s} {'ceiling':>8s} " + " ".join(f"{k:>14s}" for k in DATASETS))
         for cand in candidates:
             cfg = {"model_name": encoder, "verbose": False}
             if cand is not None:
                 cfg["similarity_floor"] = cand
             m = DocumentSemantics(cfg)
             ceiling = mean_ceiling(m, loaded["McDiv_nuggets"])
-            agree = {k: rho(score_sets(m, df), df[HUMAN_COL].to_numpy(dtype=float))
-                     for k, df in loaded.items()}
-            rows.append({"floor": cand, "mean_ceiling": round(ceiling, 3),
-                         "agreement": {k: round(v, 4) for k, v in agree.items()}})
+            agree = {
+                k: rho(score_sets(m, df), df[HUMAN_COL].to_numpy(dtype=float))
+                for k, df in loaded.items()
+            }
+            rows.append(
+                {
+                    "floor": cand,
+                    "mean_ceiling": round(ceiling, 3),
+                    "agreement": {k: round(v, 4) for k, v in agree.items()},
+                }
+            )
             label = "none" if cand is None else f"{cand:.3f}"
-            print(f"  {label:>8s} {ceiling:8.2f} " +
-                  " ".join(f"{agree[k]:+14.4f}" for k in DATASETS))
+            print(
+                f"  {label:>8s} {ceiling:8.2f} " + " ".join(f"{agree[k]:+14.4f}" for k in DATASETS)
+            )
         results[encoder] = {"floor_estimate": floor, "sweep": rows}
         clear_model_cache()
 

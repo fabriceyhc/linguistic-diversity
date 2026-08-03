@@ -28,6 +28,7 @@ score) and as Spearman correlation against the swept quantity. Both should be 0.
 Usage:
     python run_study.py [--quick] [--out output/results.json]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -152,10 +153,13 @@ def run_sweep(
         failures = 0
         for base in bases:
             for level, corpus in sweep(base):
-                sizes.setdefault(level, {
-                    "n_documents": len(corpus),
-                    "mean_tokens": round(mean_tokens(corpus), 1),
-                })
+                sizes.setdefault(
+                    level,
+                    {
+                        "n_documents": len(corpus),
+                        "mean_tokens": round(mean_tokens(corpus), 1),
+                    },
+                )
                 try:
                     value = float(metric(corpus))
                     if value != value:
@@ -207,7 +211,9 @@ def print_table(title: str, summary: dict[str, Any], levels: dict[int, dict[str,
     header = " ".join(f"{lv:>8}" for lv in ordered)
     print(f"  {'metric':22s} {'drift':>7s} {'rho':>7s}  {header}")
     for mname, r in sorted(summary.items(), key=lambda kv: kv[1]["drift"]):
-        cells = " ".join(f"{r['by_level'].get(str(float(lv)), float('nan')):8.3f}" for lv in ordered)
+        cells = " ".join(
+            f"{r['by_level'].get(str(float(lv)), float('nan')):8.3f}" for lv in ordered
+        )
         print(f"  {mname:22s} {r['drift']:7.3f} {r['spearman_vs_level']:7.3f}  {cells}")
 
 
@@ -243,6 +249,7 @@ def run_extrapolation(metric_names: list[str]) -> dict[str, Any]:
     full = [s for s in pool if not (s in seen or seen.add(s))]
 
     import random
+
     rng = random.Random(20260803)
     budgets = [m for m in (10, 20, 30, 40) if m < len(full)]
     print(f"  full corpus: {len(full)} documents; budgets {budgets}\n")
@@ -271,34 +278,47 @@ def run_extrapolation(metric_names: list[str]) -> dict[str, Any]:
                 continue
             try:
                 est = metric.estimate_diversity(
-                    full, base_sample_size=max(5, m // 4), max_sample_size=m,
-                    num_trials=2, verbose=False,
+                    full,
+                    base_sample_size=max(5, m // 4),
+                    max_sample_size=m,
+                    num_trials=2,
+                    verbose=False,
                 )
                 extrap, model = float(est.diversity), est.model
             except Exception as e:
                 extrap, model = float("nan"), type(e).__name__
             ok = extrap == extrap
-            rows.append({
-                "budget": m,
-                "raw_subsample": round(raw, 3),
-                "extrapolated": round(extrap, 3) if ok else None,
-                "model": model,
-                "raw_error": round(abs(raw - truth) / truth, 3),
-                "extrap_error": round(abs(extrap - truth) / truth, 3) if ok else None,
-            })
-        out[mname] = {"truth": round(truth, 3), "n_full": len(full),
-                      "saturated": saturated, "budgets": rows}
+            rows.append(
+                {
+                    "budget": m,
+                    "raw_subsample": round(raw, 3),
+                    "extrapolated": round(extrap, 3) if ok else None,
+                    "model": model,
+                    "raw_error": round(abs(raw - truth) / truth, 3),
+                    "extrap_error": round(abs(extrap - truth) / truth, 3) if ok else None,
+                }
+            )
+        out[mname] = {
+            "truth": round(truth, 3),
+            "n_full": len(full),
+            "saturated": saturated,
+            "budgets": rows,
+        }
         clear_model_cache()
 
-    print(f"  {'metric':22s} {'truth':>7s} {'bud':>4s} {'raw':>8s} {'extrap':>8s} "
-          f"{'rawerr':>7s} {'exterr':>7s}  model")
+    print(
+        f"  {'metric':22s} {'truth':>7s} {'bud':>4s} {'raw':>8s} {'extrap':>8s} "
+        f"{'rawerr':>7s} {'exterr':>7s}  model"
+    )
     for mname, r in out.items():
         flag = "  [SATURATED: reports the species count]" if r["saturated"] else ""
         for row in r["budgets"]:
             ex = f"{row['extrapolated']:8.3f}" if row["extrapolated"] is not None else f"{'-':>8s}"
             ee = f"{row['extrap_error']:7.3f}" if row["extrap_error"] is not None else f"{'-':>7s}"
-            print(f"  {mname:22s} {r['truth']:7.3f} {row['budget']:4d} "
-                  f"{row['raw_subsample']:8.3f} {ex} {row['raw_error']:7.3f} {ee}  {row['model']}")
+            print(
+                f"  {mname:22s} {r['truth']:7.3f} {row['budget']:4d} "
+                f"{row['raw_subsample']:8.3f} {ex} {row['raw_error']:7.3f} {ee}  {row['model']}"
+            )
         if flag:
             print(f"  {'':22s}{flag}")
     return out
@@ -314,25 +334,33 @@ def main() -> None:
     n_bases = 2 if args.quick else N_BASE_CORPORA
     bases = load_base_corpora(n_bases, BASE_SIZE)
     metric_names = args.only or list(METRICS)
-    print(f"{len(bases)} base corpora of {BASE_SIZE} distinct documents, "
-          f"{len(metric_names)} metrics")
+    print(
+        f"{len(bases)} base corpora of {BASE_SIZE} distinct documents, "
+        f"{len(metric_names)} metrics"
+    )
 
-    results: dict[str, Any] = {"_meta": {
-        "base_corpora": len(bases),
-        "base_size": BASE_SIZE,
-        "replication_levels": list(REPLICATION_LEVELS),
-        "padding_levels": list(PADDING_LEVELS),
-        "boilerplate": BOILERPLATE,
-    }}
+    results: dict[str, Any] = {
+        "_meta": {
+            "base_corpora": len(bases),
+            "base_size": BASE_SIZE,
+            "replication_levels": list(REPLICATION_LEVELS),
+            "padding_levels": list(PADDING_LEVELS),
+            "boilerplate": BOILERPLATE,
+        }
+    }
 
     for name, sweep in (("replication", sweep_replication), ("padding", sweep_padding)):
         raw = run_sweep(name, sweep, bases, metric_names)
         summary = summarise(raw)
-        results[name] = {"levels": {str(k): v for k, v in raw["levels"].items()},
-                         "summary": summary}
-        label = ("REPLICATION: corpus size grows, true diversity fixed"
-                 if name == "replication"
-                 else "PADDING: document length grows, true diversity fixed")
+        results[name] = {
+            "levels": {str(k): v for k, v in raw["levels"].items()},
+            "summary": summary,
+        }
+        label = (
+            "REPLICATION: corpus size grows, true diversity fixed"
+            if name == "replication"
+            else "PADDING: document length grows, true diversity fixed"
+        )
         print_table(label, summary, raw["levels"])
 
     results["extrapolation"] = run_extrapolation(metric_names)

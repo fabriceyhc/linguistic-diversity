@@ -7,17 +7,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "5.431844 vs 5.431844"
+          "detail": "7.646313 vs 7.646313"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "3.560631 vs 3.560631"
+          "detail": "3.978299 vs 3.978299"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.076393 vs 1.076393"
+          "detail": "1.411238 vs 1.411238"
         }
       ]
     },
@@ -28,17 +28,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "5.431844 vs 5.431844"
+          "detail": "7.646313 vs 7.646313"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "3.560631 vs 3.560631"
+          "detail": "3.978299 stable"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.076393 stable"
+          "detail": "1.411238 vs 1.411238"
         }
       ]
     },
@@ -70,17 +70,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "5.431844 vs 5.431844 at 3x"
+          "detail": "7.646313 vs 7.646313 at 3x"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "3.560631 vs 3.560631 at 3x"
+          "detail": "3.978299 vs 3.978299 at 3x"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.076393 vs 1.076393 at 3x"
+          "detail": "1.411238 vs 1.411239 at 3x"
         }
       ]
     },
@@ -112,17 +112,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "5.431844 within [1, 8]"
+          "detail": "7.646313 within [1, 8]"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "3.560631 within [1, 4]"
+          "detail": "3.978299 within [1, 4]"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.076393 within [1, 5]"
+          "detail": "1.411238 within [1, 5]"
         }
       ]
     },
@@ -133,17 +133,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "q0=5.6123 q1=5.4318 q2=5.2632"
+          "detail": "q0=8.0000 q1=7.6463 q2=7.2647"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "q0=3.5662 q1=3.5606 q2=3.5550"
+          "detail": "q0=4.0000 q1=3.9783 q2=3.9569"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "q0=1.0765 q1=1.0764 q2=1.0763"
+          "detail": "q0=5.0000 q1=1.4112 q2=1.1560"
         }
       ]
     },
@@ -154,17 +154,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "5.431844 -> 6.275356 after adding an unrelated document"
+          "detail": "7.646313 -> 8.640325 after adding an unrelated document"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "3.560631 -> 4.555579 after adding an unrelated document"
+          "detail": "3.978299 -> 4.978287 after adding an unrelated document"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.076393 -> 1.668470 after adding an unrelated document"
+          "detail": "1.411238 -> 2.090947 after adding an unrelated document"
         }
       ]
     }
@@ -177,17 +177,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "8.894231 vs 8.894231"
+          "detail": "36.883265 vs 36.883265"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "5.886709 vs 5.886709"
+          "detail": "19.388854 vs 19.388854"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "3.962513 vs 3.962513"
+          "detail": "14.891496 vs 14.891496"
         }
       ]
     },
@@ -198,17 +198,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "8.894231 vs 8.894231"
+          "detail": "36.883265 vs 36.883265"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "5.886709 vs 5.886709"
+          "detail": "19.388854 vs 19.388854"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "3.962513 vs 3.962513"
+          "detail": "14.891496 vs 14.891496"
         }
       ]
     },
@@ -240,17 +240,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "8.894231 vs 8.894230 at 3x"
+          "detail": "36.883265 vs 36.883329 at 3x"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "5.886709 vs 5.886709 at 3x"
+          "detail": "19.388854 vs 19.388875 at 3x"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "3.962513 vs 3.962513 at 3x"
+          "detail": "14.891496 vs 14.891525 at 3x"
         }
       ]
     },
@@ -282,17 +282,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "8.894231 within [1, 8]"
+          "detail": "36.883265 within [1, 8]"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "5.886709 within [1, 4]"
+          "detail": "19.388854 within [1, 4]"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "3.962513 within [1, 5]"
+          "detail": "14.891496 within [1, 5]"
         }
       ]
     },
@@ -303,17 +303,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "q0=9.1811 q1=8.8942 q2=8.6539"
+          "detail": "q0=61.0000 q1=36.8833 q2=23.6478"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "q0=6.2109 q1=5.8867 q2=5.6623"
+          "detail": "q0=28.0000 q1=19.3889 q2=13.7628"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "q0=4.3613 q1=3.9625 q2=3.7067"
+          "detail": "q0=38.0000 q1=14.8915 q2=7.7904"
         }
       ]
     },
@@ -324,17 +324,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "8.894231 -> 10.180214 after adding an unrelated document"
+          "detail": "36.883265 -> 42.252348 after adding an unrelated document"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "5.886709 -> 7.957060 after adding an unrelated document"
+          "detail": "19.388854 -> 25.557529 after adding an unrelated document"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "3.962513 -> 5.580442 after adding an unrelated document"
+          "detail": "14.891496 -> 20.247450 after adding an unrelated document"
         }
       ]
     }
@@ -347,7 +347,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "3.055489 vs 3.055489"
+          "detail": "6.267698 vs 6.267698"
         },
         {
           "corpus": "one_frame",
@@ -357,7 +357,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "2.435236 vs 2.435236"
+          "detail": "4.239314 vs 4.239314"
         }
       ]
     },
@@ -368,7 +368,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "3.055489 vs 3.055489"
+          "detail": "6.267698 vs 6.267698"
         },
         {
           "corpus": "one_frame",
@@ -378,7 +378,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "2.435236 stable"
+          "detail": "4.239314 vs 4.239314"
         }
       ]
     },
@@ -410,7 +410,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "3.055489 vs 3.055489 at 3x"
+          "detail": "6.267698 vs 6.267698 at 3x"
         },
         {
           "corpus": "one_frame",
@@ -420,7 +420,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "2.435236 vs 2.435236 at 3x"
+          "detail": "4.239314 vs 4.239314 at 3x"
         }
       ]
     },
@@ -452,7 +452,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "3.055489 within [1, 8]"
+          "detail": "6.267698 within [1, 8]"
         },
         {
           "corpus": "one_frame",
@@ -462,7 +462,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "2.435236 within [1, 5]"
+          "detail": "4.239314 within [1, 5]"
         }
       ]
     },
@@ -473,17 +473,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "q0=3.0868 q1=3.0555 q2=3.0265"
+          "detail": "q0=8.0000 q1=6.2677 q2=5.1360"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "q0=1.0000 q1=1.0000 q2=1.0000"
+          "detail": "q0=2.0000 q1=1.0000 q2=1.0000"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "q0=2.4529 q1=2.4352 q2=2.4156"
+          "detail": "q0=5.0000 q1=4.2393 q2=3.6791"
         }
       ]
     },
@@ -494,17 +494,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "3.055489 -> 3.338811 after adding an unrelated document"
+          "detail": "6.267698 -> 7.041588 after adding an unrelated document"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.000000 -> 1.305921 after adding an unrelated document"
+          "detail": "1.000000 -> 1.581825 after adding an unrelated document"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "2.435236 -> 2.841659 after adding an unrelated document"
+          "detail": "4.239314 -> 4.974048 after adding an unrelated document"
         }
       ]
     }
@@ -517,7 +517,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.525233 vs 1.525233"
+          "detail": "3.319832 vs 3.319832"
         },
         {
           "corpus": "one_frame",
@@ -527,7 +527,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.398936 vs 1.398936"
+          "detail": "2.593363 vs 2.593363"
         }
       ]
     },
@@ -538,7 +538,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.525233 stable"
+          "detail": "3.319832 vs 3.319832"
         },
         {
           "corpus": "one_frame",
@@ -548,7 +548,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.398936 stable"
+          "detail": "2.593363 vs 2.593363"
         }
       ]
     },
@@ -580,7 +580,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.525233 vs 1.525233 at 3x"
+          "detail": "3.319832 vs 3.319832 at 3x"
         },
         {
           "corpus": "one_frame",
@@ -590,7 +590,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.398936 vs 1.398936 at 3x"
+          "detail": "2.593363 vs 2.593363 at 3x"
         }
       ]
     },
@@ -622,7 +622,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.525233 within [1, 8]"
+          "detail": "3.319832 within [1, 8]"
         },
         {
           "corpus": "one_frame",
@@ -632,7 +632,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.398936 within [1, 5]"
+          "detail": "2.593363 within [1, 5]"
         }
       ]
     },
@@ -643,17 +643,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "q0=1.5276 q1=1.5252 q2=1.5229"
+          "detail": "q0=8.0000 q1=3.3198 q2=2.1795"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "q0=1.0000 q1=1.0000 q2=1.0000"
+          "detail": "q0=2.0000 q1=1.0000 q2=1.0000"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "q0=1.4001 q1=1.3989 q2=1.3978"
+          "detail": "q0=5.0000 q1=2.5934 q2=1.8563"
         }
       ]
     },
@@ -664,17 +664,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.525233 -> 1.533581 after adding an unrelated document"
+          "detail": "3.319832 -> 3.426072 after adding an unrelated document"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.000000 -> 1.172819 after adding an unrelated document"
+          "detail": "1.000000 -> 1.457569 after adding an unrelated document"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.398936 -> 1.405741 after adding an unrelated document"
+          "detail": "2.593363 -> 2.706349 after adding an unrelated document"
         }
       ]
     }
@@ -687,7 +687,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.717940 vs 1.717940"
+          "detail": "4.051375 vs 4.051375"
         },
         {
           "corpus": "one_frame",
@@ -697,7 +697,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.349473 vs 1.349473"
+          "detail": "2.499577 vs 2.499577"
         }
       ]
     },
@@ -708,7 +708,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.717940 vs 1.717940"
+          "detail": "4.051375 vs 4.051375"
         },
         {
           "corpus": "one_frame",
@@ -718,7 +718,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.349473 stable"
+          "detail": "2.499577 vs 2.499577"
         }
       ]
     },
@@ -750,7 +750,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.717940 vs 1.717940 at 3x"
+          "detail": "4.051375 vs 4.051375 at 3x"
         },
         {
           "corpus": "one_frame",
@@ -760,7 +760,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.349473 vs 1.349473 at 3x"
+          "detail": "2.499577 vs 2.499577 at 3x"
         }
       ]
     },
@@ -792,7 +792,7 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.717940 within [1, 8]"
+          "detail": "4.051375 within [1, 8]"
         },
         {
           "corpus": "one_frame",
@@ -802,7 +802,7 @@
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.349473 within [1, 5]"
+          "detail": "2.499577 within [1, 5]"
         }
       ]
     },
@@ -813,17 +813,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "q0=1.7332 q1=1.7179 q2=1.7031"
+          "detail": "q0=8.0000 q1=4.0514 q2=2.5840"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "q0=1.0000 q1=1.0000 q2=1.0000"
+          "detail": "q0=2.0000 q1=1.0000 q2=1.0000"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "q0=1.3505 q1=1.3495 q2=1.3485"
+          "detail": "q0=5.0000 q1=2.4996 q2=1.7554"
         }
       ]
     },
@@ -834,17 +834,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.717940 -> 1.854939 after adding an unrelated document"
+          "detail": "4.051375 -> 4.659731 after adding an unrelated document"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.000000 -> 1.305921 after adding an unrelated document"
+          "detail": "1.000000 -> 1.581825 after adding an unrelated document"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.349473 -> 1.672158 after adding an unrelated document"
+          "detail": "2.499577 -> 3.276051 after adding an unrelated document"
         }
       ]
     }
@@ -857,17 +857,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.423839 vs 1.423839"
+          "detail": "3.011271 vs 3.011271"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.231945 vs 1.231945"
+          "detail": "1.929820 vs 1.929820"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.297953 vs 1.297953"
+          "detail": "2.256913 vs 2.256913"
         }
       ]
     },
@@ -878,17 +878,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.423839 stable"
+          "detail": "3.011271 vs 3.011271"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.231945 stable"
+          "detail": "1.929820 vs 1.929820"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.297953 vs 1.297953"
+          "detail": "2.256913 vs 2.256913"
         }
       ]
     },
@@ -920,17 +920,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.423839 vs 1.423839 at 3x"
+          "detail": "3.011271 vs 3.011271 at 3x"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.231945 vs 1.231945 at 3x"
+          "detail": "1.929820 vs 1.929820 at 3x"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.297953 vs 1.297953 at 3x"
+          "detail": "2.256913 vs 2.256913 at 3x"
         }
       ]
     },
@@ -962,17 +962,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.423839 within [1, 8]"
+          "detail": "3.011271 within [1, 8]"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.231945 within [1, 4]"
+          "detail": "1.929820 within [1, 4]"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.297953 within [1, 5]"
+          "detail": "2.256913 within [1, 5]"
         }
       ]
     },
@@ -983,17 +983,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "q0=1.4272 q1=1.4238 q2=1.4207"
+          "detail": "q0=8.0000 q1=3.0113 q2=1.9292"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "q0=1.2331 q1=1.2319 q2=1.2308"
+          "detail": "q0=4.0000 q1=1.9298 q2=1.4769"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "q0=1.2991 q1=1.2980 q2=1.2968"
+          "detail": "q0=5.0000 q1=2.2569 q2=1.6274"
         }
       ]
     },
@@ -1004,17 +1004,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.423839 -> 1.461879 after adding an unrelated document"
+          "detail": "3.011271 -> 3.292766 after adding an unrelated document"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.231945 -> 1.355295 after adding an unrelated document"
+          "detail": "1.929820 -> 2.407904 after adding an unrelated document"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.297953 -> 1.415393 after adding an unrelated document"
+          "detail": "2.256913 -> 2.721664 after adding an unrelated document"
         }
       ]
     }
@@ -1027,17 +1027,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.633904 vs 1.633904"
+          "detail": "4.040091 vs 4.040091"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.422033 vs 1.422033"
+          "detail": "2.532800 vs 2.532800"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.356294 vs 1.356294"
+          "detail": "2.519969 vs 2.519969"
         }
       ]
     },
@@ -1048,17 +1048,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.633904 vs 1.633904"
+          "detail": "4.040091 vs 4.040091"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.422033 stable"
+          "detail": "2.532800 vs 2.532800"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.356294 stable"
+          "detail": "2.519969 vs 2.519969"
         }
       ]
     },
@@ -1090,17 +1090,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.633904 vs 1.633904 at 3x"
+          "detail": "4.040091 vs 4.040091 at 3x"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.422033 vs 1.422033 at 3x"
+          "detail": "2.532800 vs 2.532800 at 3x"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.356294 vs 1.356294 at 3x"
+          "detail": "2.519969 vs 2.519969 at 3x"
         }
       ]
     },
@@ -1132,17 +1132,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.633904 within [1, 8]"
+          "detail": "4.040091 within [1, 8]"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.422033 within [1, 4]"
+          "detail": "2.532800 within [1, 4]"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.356294 within [1, 5]"
+          "detail": "2.519969 within [1, 5]"
         }
       ]
     },
@@ -1153,17 +1153,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "q0=1.6365 q1=1.6339 q2=1.6314"
+          "detail": "q0=8.0000 q1=4.0401 q2=2.4896"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "q0=1.4224 q1=1.4220 q2=1.4216"
+          "detail": "q0=4.0000 q1=2.5328 q2=1.9035"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "q0=1.3572 q1=1.3563 q2=1.3554"
+          "detail": "q0=5.0000 q1=2.5200 q2=1.7715"
         }
       ]
     },
@@ -1174,17 +1174,17 @@
         {
           "corpus": "varied",
           "passed": true,
-          "detail": "1.633904 -> 1.805305 after adding an unrelated document"
+          "detail": "4.040091 -> 4.720572 after adding an unrelated document"
         },
         {
           "corpus": "one_frame",
           "passed": true,
-          "detail": "1.422033 -> 1.724057 after adding an unrelated document"
+          "detail": "2.532800 -> 3.322714 after adding an unrelated document"
         },
         {
           "corpus": "one_meaning",
           "passed": true,
-          "detail": "1.356294 -> 1.611833 after adding an unrelated document"
+          "detail": "2.519969 -> 3.246561 after adding an unrelated document"
         }
       ]
     }

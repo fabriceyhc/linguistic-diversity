@@ -240,10 +240,19 @@ class TestScaleFreeSimilarity:
         ]
 
     def test_does_not_saturate_on_ordinary_sentences(self):
+        """Pinned to the Hill index: the threshold is calibrated to that quantity.
+
+        The defect this guards against lives in the similarity matrix, not the
+        index -- a Z collapsed to the identity. Vendi reads the same matrix higher
+        (4.37 against 2.63 here) because it discounts similarity less
+        aggressively, so a fraction-of-ceiling bound written for one index is
+        meaningless for the other. The index-independent version of this check is
+        test_off_diagonal_similarity_is_not_underflowed below.
+        """
         from linguistic_diversity import DependencyParse
 
         corpus = self._realistic_corpus()
-        diversity = DependencyParse({"verbose": False})(corpus)
+        diversity = DependencyParse({"index": "hill", "verbose": False})(corpus)
 
         assert diversity < len(corpus) * 0.6, (
             f"diversity {diversity:.3f} is close to the document count "
