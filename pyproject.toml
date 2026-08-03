@@ -215,6 +215,10 @@ addopts = [
     "-v",
     "--strict-markers",
 ]
+# A hung test otherwise runs until the CI job's ceiling and reports nothing about
+# where it stopped. Every test here finishes in seconds, so five minutes in one
+# test means it is wedged: dump the stacks of all threads and exit.
+faulthandler_timeout = 300
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
