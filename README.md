@@ -176,6 +176,55 @@ answers a different question:
   agreement and calibration**; what survives the comparison is the multi-level
   instrumentation, not the choice of index.
 
+## Abundance and the diversity profile
+
+Species are rarely equally common. A Hill number takes that as an explicit abundance
+vector — corpus frequencies, sampling weights, duplicate counts — which is the one thing
+a purely spectral index cannot express.
+
+```python
+from linguistic_diversity import DocumentSemantics
+
+metric = DocumentSemantics()
+
+metric(corpus)                             # uniform, the default
+metric(corpus, abundance=[97, 1, 1, 1])    # counts, normalised internally
+metric(corpus, deduplicate=True)           # merge identical docs, weight by count
+```
+
+`deduplicate=True` returns the same value as leaving the duplicates in, on a matrix the
+size of the distinct set. For 20,000 documents over 500 distinct texts that is 500×500
+rather than 20,000×20,000 — 1,600× fewer entries, and since the work is O(n³), some
+64,000× less of it.
+
+One number hides the shape, so report the profile:
+
+```python
+metric.diversity_profile(corpus)
+# {0.0: 2.85, 0.5: 2.79, 1.0: 2.72, 2.0: 2.60, 4.0: 2.49, inf: 1.98}
+```
+
+Low *q* asks how many distinct things are **present**; high *q* asks how many
+**dominate**. A flat profile is an even corpus; a steep one means a few items carry it.
+Weighted `[0.97, 0.01, 0.01, 0.01]` the same corpus runs 2.08 → 1.02: four things are
+there, and one of them is effectively all of it. Both readings are true, and neither
+number alone tells you which case you are in. The similarity matrix is computed once and
+reused across every *q*.
+
+### Why there is no species aggregation
+
+Ecology assigns individuals to species before counting — two cows are one species despite
+differing DNA. This library does not, and does not need to: similarity-sensitivity
+dissolves the species-boundary problem that made taxonomic aggregation necessary.
+Merging a 9-document corpus down to 3 clustered species moves the score by 12%, and
+merging only near-identical items (Z ≥ 0.95) changes it by nothing at all — the
+similarity matrix has already done the discounting.
+
+For tokens it would be actively wrong. Grouping the five senses of *run* in the example
+above by surface form collapses the score from 5.12 to 1.77, destroying the distinction
+the metric exists to detect. Their contextual embeddings sit at pairwise similarity
+0.09–0.24; they are already separate species and should stay that way.
+
 ## Large corpora
 
 Exact diversity needs an O(n²) similarity matrix. Every metric offers

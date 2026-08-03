@@ -556,15 +556,95 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
     Hill numbers, based on the framework from ecological diversity studies.
     """
 
-    def __call__(self, corpus: list[str]) -> float:
+    def __call__(
+        self,
+        corpus: list[str],
+        abundance: npt.ArrayLike | None = None,
+        deduplicate: bool = False,
+    ) -> float:
         """Compute diversity for a corpus."""
-        return self.diversity(corpus)
+        return self.diversity(corpus, abundance=abundance, deduplicate=deduplicate)
 
-    def diversity(self, corpus: list[str]) -> float:
+    def _resolve_abundance(
+        self,
+        corpus: list[str],
+        species: list[Any],
+        abundance: npt.ArrayLike | None,
+        deduplicate: bool,
+    ) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.intp] | None]:
+        """Work out the abundance vector, and which species survive deduplication.
+
+        Returns (p, keep) where ``keep`` indexes the retained species, or None if
+        every species is retained.
+
+        Abundance is what distinguishes this index from a purely spectral one: a
+        corpus of 20,000 documents with 500 distinct texts can be scored as a
+        500x500 matrix with counts as weights, rather than a 20,000x20,000 matrix
+        with the duplicates materialised. The two give identical answers, and the
+        eigendecomposition of the second is ~64,000x the work.
+        """
+        if abundance is None and not deduplicate:
+            return self.calculate_abundance(species), None
+
+        if len(species) != len(corpus):
+            raise ValueError(
+                f"{type(self).__name__} has {len(species)} species for {len(corpus)} "
+                "documents, so its species are not documents and per-document "
+                "abundance cannot be aligned to them. Drop the abundance and "
+                "deduplicate arguments for this metric."
+            )
+
+        weights = (
+            np.ones(len(corpus), dtype=np.float64)
+            if abundance is None
+            else np.asarray(abundance, dtype=np.float64)
+        )
+        if weights.shape != (len(corpus),):
+            raise ValueError(
+                f"abundance must have one entry per document: got {weights.shape}, "
+                f"expected ({len(corpus)},)"
+            )
+        if np.any(weights < 0):
+            raise ValueError("abundance entries must be non-negative")
+
+        keep: npt.NDArray[np.intp] | None = None
+        if deduplicate:
+            # Merge byte-identical documents and sum their weights. First
+            # occurrence wins, so the surviving order is the corpus order.
+            first: dict[str, int] = {}
+            merged: list[float] = []
+            keep_list: list[int] = []
+            for i, doc in enumerate(corpus):
+                if doc in first:
+                    merged[first[doc]] += float(weights[i])
+                else:
+                    first[doc] = len(keep_list)
+                    keep_list.append(i)
+                    merged.append(float(weights[i]))
+            keep = np.asarray(keep_list, dtype=np.intp)
+            weights = np.asarray(merged, dtype=np.float64)
+
+        total = weights.sum()
+        if total <= 0:
+            raise ValueError("abundance sums to zero")
+        return weights / total, keep
+
+    def diversity(
+        self,
+        corpus: list[str],
+        abundance: npt.ArrayLike | None = None,
+        deduplicate: bool = False,
+    ) -> float:
         """Calculate diversity using similarity-sensitive Hill numbers.
 
         Args:
             corpus: List of text documents.
+            abundance: Optional weight per document -- corpus frequencies, sampling
+                weights, duplicate counts. Defaults to uniform. Only meaningful for
+                metrics whose species are documents.
+            deduplicate: Merge byte-identical documents and weight each by how often
+                it occurred. Gives the same answer as leaving the duplicates in, on a
+                matrix the size of the distinct set.
 
         Returns:
             Diversity score (effective number of species).
@@ -620,8 +700,10 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
                     stacklevel=2,
                 )
 
-        # Calculate abundance vector p
-        p = self.calculate_abundance(species)
+        # Calculate abundance vector p, collapsing duplicates if asked
+        p, keep = self._resolve_abundance(corpus, species, abundance, deduplicate)
+        if keep is not None:
+            Z = Z[np.ix_(keep, keep)]
 
         # Calculate diversity
         D = self._calc_diversity(p, Z, self.config.q)
@@ -639,6 +721,45 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
             D /= len(p)
 
         return float(D)
+
+    def diversity_profile(
+        self,
+        corpus: list[str],
+        q_values: Sequence[float] = (0.0, 0.5, 1.0, 2.0, 4.0, float("inf")),
+        abundance: npt.ArrayLike | None = None,
+        deduplicate: bool = False,
+    ) -> dict[float, float]:
+        """Diversity across a range of orders q, sharing one similarity matrix.
+
+        Ecology reports the *profile* rather than a single number, because the
+        shape carries what no one order can. Low q asks how many distinct things
+        are present at all; high q asks how many dominate. A flat profile means an
+        even corpus; a steeply falling one means a few items carry most of it.
+
+        The gap between D_0 and D_inf is exactly the information a spectral index
+        cannot express, since it has no abundance to be even or uneven about.
+
+        Args:
+            corpus: List of text documents.
+            q_values: Orders to evaluate. 0 approaches richness, 1 is Shannon,
+                2 is Simpson, and infinity is Berger-Parker.
+            abundance: Optional weight per document. See ``diversity``.
+            deduplicate: Merge identical documents and weight by count.
+
+        Returns:
+            Mapping of q to diversity. Empty if the corpus yields no features.
+        """
+        if not corpus:
+            return {}
+        features, species = self.extract_features(corpus)
+        if len(features) == 0:
+            return {}
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+        p, keep = self._resolve_abundance(corpus, species, abundance, deduplicate)
+        if keep is not None:
+            Z = Z[np.ix_(keep, keep)]
+        # Z and the features are computed once; only the cheap reduction repeats.
+        return {float(q): float(self._calc_diversity(p, Z, q)) for q in q_values}
 
     def max_diversity(self, corpus: list[str]) -> float:
         """Highest diversity this corpus's species could reach at any abundance.
