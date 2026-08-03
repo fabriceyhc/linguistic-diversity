@@ -9,7 +9,7 @@ validates all of them, and it is built around the property that a scalar diversi
 cannot express: **discriminant validity**.
 
 ```bash
-python build_benchmark.py      # 116 corpora, 138 contrasts, deterministic
+python build_benchmark.py      # 154 corpora, 166 contrasts, deterministic
 python evaluate_metrics.py     # scores all 10 metrics, writes output/results.json
 ```
 
@@ -27,6 +27,10 @@ targets. That is what turns a calibration check into a discriminant test.
 | `rhythmic_meters` | *k* meters × *m* lines | *k·m* | — | — | does rhythm collapse metrically identical lines? |
 | `phonemic_oronyms` | near-homophonic, semantically unrelated | *n* | — | — | does phonemics collapse homophones? |
 | `phonemic_minimal_pairs` | single-phoneme differences vs distant controls | — | — | — | graded phonemic separation |
+| `morphological_inflection` | *k* inflectional patterns × *m* lexicalisations, one frame | *k·m* | **1** | **k** | needs the fine tagset; invisible to UPOS |
+| `constituency_contrasts` | phrase-structure contrasts, each verified against the parsers | *n* | *n* | — | which parser sees what |
+| `rhythmic_stress_pairs` | noun/verb stress alternations (*a REcord* / *to reCORD*) | *n* | — | — | phonology where lexis barely moves |
+| `phonemic_graded` | three tiers of phonological distance at one frame | — | — | — | scored as an **ordering**, not a target |
 | `surface_parse_blind` | distinctions a surface parse cannot encode | *n* | **1** | **1** | records the metric's boundary |
 | `random_controls` | unrelated sentences, matched size | *n* | *n* | *n* | the ceiling every family is read against |
 
@@ -50,16 +54,16 @@ metrics → 1.0, structural metrics → 0.0, uninformative → 0.5.
 
 | Metric | claims | rate | n |
 |---|---|---:|---:|
-| `DocumentSemantics` | semantic | **1.000** | 54 |
+| `DocumentSemantics` | semantic | 1.000 | 54 |
+| `TokenSemantics` | semantic | 1.000 | 54 |
 | `TypeTokenRatio` | *(baseline)* | 1.000 | 54 |
 | `DistinctN` | *(baseline)* | 1.000 | 54 |
 | `SelfBLEU` | *(baseline)* | 0.944 | 54 |
-| `TokenSemantics` | semantic | 1.000 | 54 |
 | `Phonemic` | phonemic | 0.389 | 54 |
-| `DependencyParse` | syntactic | **0.000** | 54 |
-| `ConstituencyParse` | syntactic | **0.000** | 54 |
-| `PartOfSpeechSequence` | morphological | **0.000** | 54 |
 | `Rhythmic` | rhythmic | 0.315 | 54 |
+| `PartOfSpeechSequence` | morphological | 0.056 | 54 |
+| `DependencyParse` | syntactic | 0.000 | 54 |
+| `ConstituencyParse` | syntactic | 0.000 | 54 |
 
 The syntactic and morphological metrics sit at the floor and the semantic metric at the
 ceiling — a total separation. The two phonological metrics land at 0.32–0.39, nearer the
@@ -79,41 +83,46 @@ axis that separates them is synonymy — paraphrases built from *disjoint* vocab
 which lives in [`../embedder_selection/`](../embedder_selection/). The two benchmarks are
 complementary and neither is sufficient alone. Report both.
 
-### Calibration at each metric's own level
+### Calibration, and where the shortfall actually lives
 
-| Metric | level | ρ vs expected | median ratio | n |
-|---|---|---:|---:|---:|
-| `DocumentSemantics` | semantic | **0.965** | **0.695** | 113 |
-| `TokenSemantics` | semantic | 0.916 | *n/a* | 113 |
-| `DependencyParse` | syntactic | 0.906 | 0.573 | 81 |
-| `ConstituencyParse` | syntactic | 0.872 | 0.432 | 81 |
-| `Phonemic` | phonemic | 0.889 | 0.363 | 32 |
-| `PartOfSpeechSequence` | morphological | 0.877 | 0.419 | 81 |
-| `TokenSemantics` | semantic | 0.839 | *n/a* | 113 |
-| `Rhythmic` | rhythmic | 0.769 | 0.448 | 45 |
+| Metric | level | ρ vs expected | ratio | headroom | n |
+|---|---|---:|---:|---:|---:|
+| `DocumentSemantics` | semantic | **0.918** | 0.662 | 0.993 | 147 |
+| `DependencyParse` | syntactic | 0.911 | 0.667 | 0.995 | 110 |
+| `ConstituencyParse` | syntactic | 0.885 | 0.506 | 0.999 | 110 |
+| `Phonemic` | phonemic | 0.874 | 0.372 | 0.995 | 32 |
+| `TokenSemantics` | semantic | 0.819 | *n/a* | 0.846 | 147 |
+| `PartOfSpeechSequence` | morphological | 0.772 | 0.437 | 0.995 | 105 |
+| `Rhythmic` | rhythmic | 0.771 | 0.492 | 0.990 | 50 |
 
-`TokenSemantics` has no ratio because its species are **tokens** while the benchmark's
-ground truth counts documents — a corpus of *k* concepts contains far more than *k* token
-species, so an absolute comparison is meaningless (it reads 3.3x if computed anyway). Its
-rank agreement is meaningful and is the weakest of the two semantic metrics, as is its
-inverse-pair rate (0.833 vs 1.000). If you want one semantic metric, `DocumentSemantics`
-is the better instrument.
+**ratio** is observed / authored ground truth. **headroom** is observed /
+`max_diversity(Z)` — the largest value *any* abundance distribution could reach
+given the similarity matrix the metric actually computed. By Leinster & Meckes
+([2016](https://www.mdpi.com/1099-4300/18/3/88)) that ceiling is the same for
+every order *q*, so it is a property of the similarity structure alone.
 
-`ConstituencyParse` is validated here for the first time. It was entirely non-functional
-before v1.0.2, and now tracks `DependencyParse` almost exactly — at roughly 20x the
-runtime, since it needs benepar. Prefer `DependencyParse` unless you specifically need
-phrase structure.
+Read together they localise the shortfall, and the answer overturns what earlier
+revisions of this file said. Every metric reads 37–67% of ground truth, which
+looks like systematic under-counting. Every metric is also at **99% of its
+achievable ceiling**. The diversity index is extracting essentially everything
+its similarity structure permits; the gap is that the embedder or parser calls
+these documents more alike than the construction says they are.
 
-Every metric ranks well (ρ 0.77–0.97) and every one under-reports magnitude (ratio
-0.36–0.70). The two are separate properties and the gap between them is the honest state
-of the art here: use these to *compare* corpora, and treat the absolute number as a lower
-bound.
+That is a different defect with a different fix. Under-counting would be a
+problem with the Hill number — and
+[`../../tests/test_hill_numbers.py`](../../tests/test_hill_numbers.py) shows it
+is not; the formula recovers *n* for Z = I and 2/(1+z) for two species exactly.
+Over-merging is a problem with the similarity function, addressed by choosing a
+better encoder or parse representation. Reporting the ratio alone pointed at the
+wrong component for the whole of this project's history.
 
-`DependencyParse` read 0.986 before v1.0.3 and now reads 0.573. That earlier figure was an
-artefact: `exp(-edit_distance)` drove every off-diagonal entry to ~0, and a similarity
-matrix that is nearly the identity reports nearly the species count — which happened to be
-close to the true *k* on these small constructed corpora, and was catastrophically wrong on
-real text. See [`../length_robustness/`](../length_robustness/).
+`TokenSemantics` at 0.846 is the one metric with real headroom, and the only one
+where the abundance distribution rather than the similarity structure is leaving
+something on the table.
+
+The practical consequence: **compare corpora with these scores, and read a single
+score against `max_diversity(corpus)` rather than against the document count.**
+`relative_diversity(corpus)` returns the pair as one number.
 
 ### Morphology vs syntax
 
@@ -171,3 +180,29 @@ as failures of `DependencyParse`, which was a benchmark error, not a metric defe
   results predating it are not comparable.
 - `ConstituencyParse` is not scored here; it needs `benepar`, which is an optional extra.
   Add it to `METRICS` in `evaluate_metrics.py` if the extra is installed.
+
+## What the newer families settled
+
+Four families were added after the first round, because the non-semantic metrics were
+being scored entirely on constructions built for semantics and syntax. `ConstituencyParse`
+had none of its own at all.
+
+**`phonemic_graded` is the one that mattered.** Three tiers of phonological distance at a
+fixed syntactic frame — rhyme, shared onset, distant — scored as an ordering rather than a
+calibration target. `Phonemic` gets it right **1.000** of the time; every other metric
+scores 0.000–0.625, the three lexical baselines included. It is the only construction in
+the suite where `Phonemic` is uniquely correct, and it moved the metric from "looks weak"
+to "was untested".
+
+**`constituency_contrasts` produced an unwelcome result and is kept for it.** Every pair
+was checked against spaCy and benepar before authoring, and dependency parsing separates
+most classic constituency contrasts *better* than constituency does: center-embedding
+0.375 vs 0.571, complement-vs-relative 0.375 vs 0.714, PP stacking 0.400 vs 0.611. Only
+coordination scope favours constituency, and NP-internal bracketing (*[French [history
+teacher]]*) is invisible to both. Given `ConstituencyParse` costs roughly 20x the runtime
+and an optional dependency, that is worth knowing before reaching for it.
+
+**`morphological_inflection`** exists because `PartOfSpeechSequence` read UPOS until
+v1.0.3, where *walks*, *walked* and *walking* are all `VERB`. It was not a morphological
+metric. With the fine-grained PTB tagset a corpus varying only in tense scores above 1.0
+where UPOS gives exactly 1.0, while one frame across different words still collapses.

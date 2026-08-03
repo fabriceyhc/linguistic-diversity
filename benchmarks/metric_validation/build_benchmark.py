@@ -182,6 +182,96 @@ def build_surface_parse_blind(seed: dict, rng: random.Random) -> list[dict]:
     return corpora
 
 
+def build_morphological_inflection(seed: dict, rng: random.Random) -> list[dict]:
+    """k inflectional patterns x m lexicalisations, one syntactic frame throughout.
+
+    The family the fine-grained tagset exists for: under UPOS every pattern here
+    is VERB and the whole family collapses to 1.
+    """
+    patterns = seed["morphological_inflection"]["patterns"]
+    corpora = []
+    for k in K_VALUES:
+        if k > len(patterns):
+            continue
+        for m in M_VALUES:
+            for draw in range(DRAWS_PER_CELL):
+                picked = rng.sample(patterns, k)
+                docs = []
+                for pattern in picked:
+                    docs.extend(rng.sample(pattern["lexicalisations"], m))
+                corpora.append(_record(
+                    corpus_id=f"infl-k{k}-m{m}-{draw}",
+                    family="morphological_inflection",
+                    target_level="morphological",
+                    documents=docs,
+                    # One frame throughout, so syntax stays at ~1 while morphology
+                    # tracks the number of inflectional patterns.
+                    expected={
+                        "morphological": float(k),
+                        "syntactic": 1.0,
+                        "semantic": float(k * m),
+                    },
+                    rationale=f"{k} inflectional patterns x {m} lexicalisations, one frame",
+                    rng=rng,
+                ))
+    return corpora
+
+
+def build_constituency_contrasts(seed: dict, rng: random.Random) -> list[dict]:
+    """Phrase-structure contrasts, annotated with which parser actually sees them."""
+    corpora = []
+    for s in seed["constituency_contrasts"]["sets"]:
+        n = len(s["realisations"])
+        blind = s["favours"] == "neither"
+        corpora.append(_record(
+            corpus_id=f"const-{s['id']}",
+            family="constituency_contrasts",
+            target_level="syntactic",
+            documents=s["realisations"],
+            expected={"syntactic": 1.0 if blind else float(n), "semantic": float(n)},
+            rationale=f"favours {s['favours']}: {s['note']}",
+            rng=rng,
+        ))
+    return corpora
+
+
+def build_rhythmic_stress_pairs(seed: dict, rng: random.Random) -> list[dict]:
+    """Noun/verb stress alternations: near-identical words, different stress."""
+    corpora = []
+    for s in seed["rhythmic_stress_pairs"]["sets"]:
+        n = len(s["realisations"])
+        corpora.append(_record(
+            corpus_id=f"stress-{s['id']}",
+            family="rhythmic_stress_pairs",
+            target_level="rhythmic",
+            documents=s["realisations"],
+            expected={"rhythmic": float(n), "semantic": float(n)},
+            rationale=f"stress alternation on '{s['id']}'",
+            rng=rng,
+        ))
+    return corpora
+
+
+def build_phonemic_graded(seed: dict, rng: random.Random) -> list[dict]:
+    """Three tiers of phonological distance at a fixed frame, scored as an ordering."""
+    corpora = []
+    for tier in seed["phonemic_graded"]["tiers"]:
+        n = len(tier["realisations"])
+        corpora.append(_record(
+            corpus_id=f"graded-{tier['id']}",
+            family="phonemic_graded",
+            target_level="phonemic",
+            documents=tier["realisations"],
+            # No absolute target: the claim is the ordering between tiers, which
+            # the contrast list carries.
+            expected={},
+            rationale=f"phonological distance tier {tier['rank']}",
+            rng=rng,
+        ))
+        corpora[-1]["tier_rank"] = tier["rank"]
+    return corpora
+
+
 def build_rhythmic_meters(seed: dict, rng: random.Random) -> list[dict]:
     """k meters x m lines. Stress contour flat within a meter, content varies."""
     meters = seed["rhythmic_meters"]["meters"]
@@ -351,6 +441,21 @@ def build_contrasts(corpora: list[dict]) -> list[dict]:
                         "rationale": f"random ceiling vs semantically compressed {family} at n={size}",
                     })
 
+    # Graded phonological distance: a higher tier must score higher than a lower
+    # one at the same frame and size. An ordering, not a calibration target --
+    # absolute phonemic values are not interpretable on their own.
+    graded = [c for c in corpora if c["family"] == "phonemic_graded"]
+    for hi in graded:
+        for lo in graded:
+            if hi["tier_rank"] > lo["tier_rank"] and hi["n_documents"] == lo["n_documents"]:
+                contrasts.append({
+                    "level": "phonemic",
+                    "kind": "graded",
+                    "greater": hi["id"],
+                    "lesser": lo["id"],
+                    "rationale": f"tier {hi['tier_rank']} vs tier {lo['tier_rank']}",
+                })
+
     return contrasts
 
 
@@ -401,6 +506,10 @@ BUILDERS = (
     build_pos_identical,
     build_surface_parse_blind,
     build_rhythmic_meters,
+    build_morphological_inflection,
+    build_constituency_contrasts,
+    build_rhythmic_stress_pairs,
+    build_phonemic_graded,
     build_phonemic_oronyms,
     build_phonemic_pairs,
     build_random_controls,

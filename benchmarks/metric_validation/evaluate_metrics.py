@@ -69,6 +69,9 @@ METRICS: dict[str, tuple[Any, str | None]] = {
 # SelfBLEU is a similarity, not a diversity: lower means more diverse.
 LOWER_IS_DIVERSE = {"SelfBLEU"}
 
+# metric -> per-corpus observed/max_diversity, filled in during scoring.
+HEADROOM: dict[str, list[float]] = {}
+
 # Metrics whose species are tokens rather than documents. The benchmark's ground
 # truth counts *documents* (k concepts, k frames), so an absolute ratio against it
 # is meaningless for these -- a corpus of k concepts contains many more than k
@@ -92,6 +95,7 @@ def score_corpora(benchmark: dict, only: list[str] | None) -> dict[str, dict[str
             continue
 
         per_corpus: dict[str, float] = {}
+        headroom: list[float] = []
         failures = 0
         for corpus in corpora:
             try:
@@ -101,7 +105,15 @@ def score_corpora(benchmark: dict, only: list[str] | None) -> dict[str, dict[str
                 per_corpus[corpus["id"]] = value
             except Exception:
                 failures += 1
+                continue
+            # How much of the achievable ceiling this score reaches.
+            try:
+                if hasattr(metric, "relative_diversity"):
+                    headroom.append(float(metric.relative_diversity(corpus["documents"])))
+            except Exception:
+                pass
         scores[name] = per_corpus
+        HEADROOM[name] = headroom
         note = f" ({failures} failed)" if failures else ""
         print(f"{len(per_corpus)}/{len(corpora)} corpora{note}")
         clear_model_cache()
@@ -114,8 +126,26 @@ def _oriented(name: str, value: float) -> float:
     return -value if name in LOWER_IS_DIVERSE else value
 
 
-def calibration(benchmark: dict, scores: dict[str, dict[str, float]]) -> dict[str, Any]:
-    """Rank agreement and median ratio against expected values at the target level."""
+def calibration(
+    benchmark: dict,
+    scores: dict[str, dict[str, float]],
+    headrooms: dict[str, list[float]] | None = None,
+) -> dict[str, Any]:
+    """Rank agreement, calibration ratio, and headroom against the achievable ceiling.
+
+    ``ratio`` is observed / expected -- how far the score sits below the authored
+    ground truth. ``headroom`` is observed / max_diversity(Z) -- how far it sits
+    below the most any abundance distribution could reach given the similarity
+    matrix the metric actually computed (Leinster & Meckes 2016).
+
+    Reading them together localises the gap. A low ratio with headroom near 1
+    means the diversity index is extracting essentially everything its similarity
+    structure allows, and the shortfall is in that structure -- the embedder or
+    parser is calling these documents more alike than the ground truth says they
+    are. That is a different defect from the index under-counting, and only the
+    pair distinguishes them.
+    """
+    headrooms = headrooms or {}
     out: dict[str, Any] = {}
     for name, per_corpus in scores.items():
         level = METRICS[name][1]
@@ -135,12 +165,14 @@ def calibration(benchmark: dict, scores: dict[str, dict[str, float]]) -> dict[st
         rho, p = spearmanr(observed, expected)
         scale_comparable = name not in LOWER_IS_DIVERSE and name not in TOKEN_UNIT
         ratios = [o / e for o, e in zip(observed, expected) if e > 0] if scale_comparable else []
+        headroom = headrooms.get(name, [])
         out[name] = {
             "level": level,
             "n": len(observed),
             "spearman_vs_expected": round(float(rho), 4),
             "p_value": round(float(p), 6),
             "median_ratio": round(statistics.median(ratios), 4) if ratios else None,
+            "median_headroom": round(statistics.median(headroom), 4) if headroom else None,
             "unit": "token" if name in TOKEN_UNIT else "document",
         }
     return out
@@ -245,7 +277,7 @@ def main() -> None:
             "n_corpora": len(benchmark["corpora"]),
             "n_contrasts": len(benchmark["contrasts"]),
         },
-        "calibration": calibration(benchmark, scores),
+        "calibration": calibration(benchmark, scores, HEADROOM),
         "contrast_accuracy": contrast_accuracy(benchmark, scores),
         "inverse_pair": inverse_pair(benchmark, scores),
         "within_corpus": within_corpus_checks(benchmark, scores),
@@ -269,7 +301,7 @@ def main() -> None:
     print(f"\n{'=' * 74}")
     print("CALIBRATION at each metric's own level")
     print("-" * 74)
-    print(f"  {'metric':24s} {'level':14s} {'rho':>8s} {'ratio':>8s} {'n':>5s}")
+    print(f"  {'metric':24s} {'level':14s} {'rho':>8s} {'ratio':>8s} {'headroom':>9s} {'n':>5s}")
     print(f"  {'':24s} {'':14s} {'':>8s} {'(n/a = token-unit metric;':>8s}")
     print(f"  {'':24s} {'':14s} {'':>8s} {' ground truth counts documents)':>8s}")
     for name, r in results["calibration"].items():
@@ -278,8 +310,10 @@ def main() -> None:
             continue
         ratio = r["median_ratio"]
         cell = f"{ratio:8.3f}" if ratio is not None else f"{'n/a':>8s}"
+        head = r.get("median_headroom")
+        hcell = f"{head:9.3f}" if head is not None else f"{'n/a':>9s}"
         print(f"  {name:24s} {r['level']:14s} {r['spearman_vs_expected']:8.3f} "
-              f"{cell} {r['n']:5d}")
+              f"{cell} {hcell} {r['n']:5d}")
 
     print(f"\n{'=' * 74}")
     print("CONTRAST ACCURACY by level")

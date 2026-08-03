@@ -4,7 +4,6 @@
     "authored": "2026-08-02",
     "caveat": "Hand-authored for this repository. Ground truth is an authored construct and has not been validated by external annotators; see README."
   },
-
   "syntactic_alternations": {
     "_doc": "One proposition realised through n syntactic structures. Semantics is held constant, syntax varies. A syntactic metric must report ~n; a semantic metric must report ~1.",
     "sets": [
@@ -76,7 +75,6 @@
       }
     ]
   },
-
   "syntactic_frames": {
     "_doc": "k syntactic frames x m lexicalisations. Within a frame the structure and the POS sequence are identical while the content differs. A syntactic metric must report ~k; a semantic metric must report ~k*m.",
     "frames": [
@@ -142,7 +140,6 @@
       }
     ]
   },
-
   "morphological_templates": {
     "_doc": "Same content realised with different part-of-speech sequences (nominalisation, adjectival, verbal). Content is held roughly constant while the POS sequence varies. A morphological metric must report ~n; a semantic metric must report ~1.",
     "sets": [
@@ -188,7 +185,6 @@
       }
     ]
   },
-
   "pos_identical_structure_different": {
     "_doc": "Pairs with the same part-of-speech sequence but different grammatical relations (object complement vs ditransitive). A morphological metric should collapse these toward 1; a syntactic metric should separate them. This is the sharpest available test that the two levels are not measuring the same thing. Every pair here was checked to produce genuinely different spaCy dependency parses -- see surface_parse_blind for the ones that do not.",
     "sets": [
@@ -230,33 +226,43 @@
       }
     ]
   },
-
   "surface_parse_blind": {
     "_doc": "Distinctions a surface dependency parse cannot represent. spaCy assigns these pairs byte-identical dependency labels and heads, so control/raising and PP-attachment differences are invisible to any metric built on such a parse. Retained as a recorded limitation rather than a failing test: the expectation is that both syntactic and morphological metrics collapse them to 1.0. Separating them would require semantic role labelling, not a better tree distance.",
     "sets": [
       {
         "id": "easy_eager",
-        "realisations": ["John is easy to please.", "John is eager to please."],
+        "realisations": [
+          "John is easy to please.",
+          "John is eager to please."
+        ],
         "note": "tough-movement vs subject control"
       },
       {
         "id": "ready_chicken",
-        "realisations": ["The chicken is ready to eat.", "The chicken is likely to eat."],
+        "realisations": [
+          "The chicken is ready to eat.",
+          "The chicken is likely to eat."
+        ],
         "note": "control vs raising"
       },
       {
         "id": "pp_attachment",
-        "realisations": ["She watched the man with the telescope.", "She watched the man with the beard."],
+        "realisations": [
+          "She watched the man with the telescope.",
+          "She watched the man with the beard."
+        ],
         "note": "instrument vs modifier PP; spaCy attaches both to the verb"
       },
       {
         "id": "promise_persuade",
-        "realisations": ["I promised him to leave.", "I persuaded him to leave."],
+        "realisations": [
+          "I promised him to leave.",
+          "I persuaded him to leave."
+        ],
         "note": "subject control vs object control"
       }
     ]
   },
-
   "rhythmic_meters": {
     "_doc": "k metrical patterns x m lines. Within a meter the stress contour is fixed while words and content differ. A rhythmic metric must report ~k; a semantic metric must report ~k*m.",
     "meters": [
@@ -302,45 +308,67 @@
       }
     ]
   },
-
   "phonemic_oronyms": {
     "_doc": "Sentence pairs that are near-homophonic but orthographically and semantically distinct. A phonemic metric must collapse these toward 1; a semantic metric must report ~n. Supply is inherently limited: full-sentence homophony is rare in English.",
     "sets": [
       {
         "id": "ice_cream",
-        "realisations": ["I scream for the treat.", "Ice cream for the treat."]
+        "realisations": [
+          "I scream for the treat.",
+          "Ice cream for the treat."
+        ]
       },
       {
         "id": "sons_raise_meat",
-        "realisations": ["The sons raise meat.", "The sun's rays meet."]
+        "realisations": [
+          "The sons raise meat.",
+          "The sun's rays meet."
+        ]
       },
       {
         "id": "four_candles",
-        "realisations": ["He asked for four candles.", "He asked for fork handles."]
+        "realisations": [
+          "He asked for four candles.",
+          "He asked for fork handles."
+        ]
       },
       {
         "id": "mince_pie",
-        "realisations": ["They served mince pies.", "They served mint spies."]
+        "realisations": [
+          "They served mince pies.",
+          "They served mint spies."
+        ]
       },
       {
         "id": "grade_a",
-        "realisations": ["That was a grade A result.", "That was a grey day result."]
+        "realisations": [
+          "That was a grade A result.",
+          "That was a grey day result."
+        ]
       },
       {
         "id": "youth_in_asia",
-        "realisations": ["The debate concerned euthanasia.", "The debate concerned youth in Asia."]
+        "realisations": [
+          "The debate concerned euthanasia.",
+          "The debate concerned youth in Asia."
+        ]
       },
       {
         "id": "an_aim",
-        "realisations": ["She had an aim in mind.", "She had a name in mind."]
+        "realisations": [
+          "She had an aim in mind.",
+          "She had a name in mind."
+        ]
       },
       {
         "id": "stuff_he_needs",
-        "realisations": ["That is the stuff he needs.", "That is the stuff he kneads."]
+        "realisations": [
+          "That is the stuff he needs.",
+          "That is the stuff he kneads."
+        ]
       }
     ]
   },
-
   "phonemic_minimal_pairs": {
     "_doc": "Sets differing in a single phoneme in the head word, holding syntax and POS sequence fixed. A phonemic metric must separate these; the separation should be small relative to phonemically distant sets, giving a graded rather than binary test.",
     "sets": [
@@ -371,6 +399,196 @@
           "The ox brushed through."
         ],
         "note": "control set: same frame, phonemically distant heads"
+      }
+    ]
+  },
+  "morphological_inflection": {
+    "_doc": "k inflectional patterns x m lexicalisations, one syntactic frame throughout. Only the verb's inflection varies within a pattern, so a morphological metric must report ~k. Invisible to UPOS, where every form is VERB -- this family exists to test the fine-grained tagset.",
+    "patterns": [
+      {
+        "id": "present_3sg",
+        "tag": "VBZ",
+        "lexicalisations": [
+          "The worker walks to the site.",
+          "The teacher speaks to the class.",
+          "The engineer drives to the plant.",
+          "The farmer rides to the market."
+        ]
+      },
+      {
+        "id": "simple_past",
+        "tag": "VBD",
+        "lexicalisations": [
+          "The worker walked to the site.",
+          "The teacher spoke to the class.",
+          "The engineer drove to the plant.",
+          "The farmer rode to the market."
+        ]
+      },
+      {
+        "id": "progressive",
+        "tag": "VBG",
+        "lexicalisations": [
+          "The worker is walking to the site.",
+          "The teacher is speaking to the class.",
+          "The engineer is driving to the plant.",
+          "The farmer is riding to the market."
+        ]
+      },
+      {
+        "id": "perfect",
+        "tag": "VBN",
+        "lexicalisations": [
+          "The worker has walked to the site.",
+          "The teacher has spoken to the class.",
+          "The engineer has driven to the plant.",
+          "The farmer has ridden to the market."
+        ]
+      }
+    ]
+  },
+  "constituency_contrasts": {
+    "_doc": "Phrase-structure contrasts, each verified against spaCy+benepar before inclusion. Note the measured result: dependency parsing separates most of these *better* than constituency does. Only coordination scope favours the constituency metric, and NP-internal bracketing is invisible to both parsers. Retained so that claim rests on data.",
+    "sets": [
+      {
+        "id": "coordination_scope",
+        "favours": "constituency",
+        "realisations": [
+          "They hired old men and women.",
+          "They hired old men and old women."
+        ],
+        "note": "shared vs distributed adjective scope; con 0.769, dep 0.875"
+      },
+      {
+        "id": "center_vs_right_branching",
+        "favours": "dependency",
+        "realisations": [
+          "The rat the cat chased died.",
+          "The cat chased the rat that died."
+        ],
+        "note": "con 0.571, dep 0.375"
+      },
+      {
+        "id": "complement_vs_relative",
+        "favours": "dependency",
+        "realisations": [
+          "He knows that the answer is wrong.",
+          "He knows the answer that is wrong."
+        ],
+        "note": "con 0.714, dep 0.375"
+      },
+      {
+        "id": "pp_stacking_depth",
+        "favours": "dependency",
+        "realisations": [
+          "The book on the table in the room vanished.",
+          "The book vanished on the table today."
+        ],
+        "note": "con 0.611, dep 0.400"
+      },
+      {
+        "id": "np_bracketing",
+        "favours": "neither",
+        "realisations": [
+          "She met the French history teacher.",
+          "She met the tall history teacher."
+        ],
+        "note": "both report 1.000: neither parser resolves the bracketing"
+      }
+    ]
+  },
+  "rhythmic_stress_pairs": {
+    "_doc": "English noun/verb stress alternations: the same orthographic word carries different stress depending on category (a REcord / to reCORD). Lexically near-identical, so a rhythmic metric should separate what a lexical one cannot.",
+    "sets": [
+      {
+        "id": "record",
+        "realisations": [
+          "She kept a record of the meeting.",
+          "She had to record the meeting."
+        ]
+      },
+      {
+        "id": "present",
+        "realisations": [
+          "They opened the present at noon.",
+          "They will present the report at noon."
+        ]
+      },
+      {
+        "id": "conduct",
+        "realisations": [
+          "His conduct was under review.",
+          "He will conduct the review."
+        ]
+      },
+      {
+        "id": "permit",
+        "realisations": [
+          "The permit expires in March.",
+          "They permit entry in March."
+        ]
+      },
+      {
+        "id": "contrast",
+        "realisations": [
+          "The contrast was striking.",
+          "They contrast the two designs."
+        ]
+      }
+    ]
+  },
+  "phonemic_graded": {
+    "_doc": "Three tiers of phonological distance at a fixed syntactic frame, so the phonemic metric can be scored on an ordering rather than a binary. tier1 < tier2 < tier3 is the claim; absolute values are not the point.",
+    "tiers": [
+      {
+        "id": "tier1_rhyme",
+        "rank": 1,
+        "realisations": [
+          "The cat sat there.",
+          "The bat sat there.",
+          "The hat sat there.",
+          "The mat sat there."
+        ]
+      },
+      {
+        "id": "tier2_shared_onset",
+        "rank": 2,
+        "realisations": [
+          "The cat sat there.",
+          "The cap sat there.",
+          "The can sat there.",
+          "The cast sat there."
+        ]
+      },
+      {
+        "id": "tier3_distant",
+        "rank": 3,
+        "realisations": [
+          "The cat sat there.",
+          "The wolf sat there.",
+          "The thrush sat there.",
+          "The ox sat there."
+        ]
+      },
+      {
+        "id": "tier1b_rhyme",
+        "rank": 1,
+        "realisations": [
+          "The light was gone.",
+          "The night was gone.",
+          "The sight was gone.",
+          "The might was gone."
+        ]
+      },
+      {
+        "id": "tier3b_distant",
+        "rank": 3,
+        "realisations": [
+          "The light was gone.",
+          "The rumble was gone.",
+          "The archipelago was gone.",
+          "The oaf was gone."
+        ]
       }
     ]
   }

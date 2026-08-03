@@ -100,6 +100,12 @@ from linguistic_diversity import DependencyParse, UniversalLinguisticDiversity
 
 DependencyParse()(corpus)
 
+# The species count is the wrong ceiling: n effective species needs n mutually
+# dissimilar documents. These give the one that actually applies.
+metric = DependencyParse()
+metric.max_diversity(corpus)       # largest value any abundance could reach here
+metric.relative_diversity(corpus)  # diversity as a fraction of that, in (0, 1]
+
 universal = UniversalLinguisticDiversity()
 detailed = universal.get_detailed_scores(corpus)   # {'universal': ..., 'branches': {...}}
 ```
@@ -119,10 +125,13 @@ Reading the results:
   be inferred from which rows are unbolded, because a table that only shows its winners is
   not much use for picking a metric.
 
-Absolute values run low across the board — every metric under-reports against known ground
-truth, by 30% to 65% depending on the metric (see
-[`benchmarks/metric_validation/`](benchmarks/metric_validation/)). Compare corpora with
-these; treat a single number as a lower bound.
+Absolute values run low against the document count, and that comparison is the wrong one.
+*n* effective species is only reachable if all *n* documents are mutually dissimilar; for
+a real corpus the achievable ceiling is far lower. Measured against that ceiling instead,
+every metric here lands at **99% of what its similarity structure allows** (see
+[`benchmarks/metric_validation/`](benchmarks/metric_validation/)). Use
+`max_diversity(corpus)` or `relative_diversity(corpus)` when you need to read a single
+score rather than compare two.
 
 `UniversalLinguisticDiversity` aggregates by geometric mean within a branch, then weighted
 across branches. It enables six of the seven metrics by default; `ConstituencyParse` is

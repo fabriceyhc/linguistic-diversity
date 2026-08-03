@@ -96,7 +96,11 @@ This is not a contradiction — the two ask different questions:
   rank-based, so cosine compression costs it little.
 
 Compressed embeddings systematically under-report absolute diversity (bge-large reports
-~58% of true *k*) while still ranking corpora well. **Pick by intended use:** if you read
+~58% of true *k*) while still ranking corpora well. Note what that number is measuring: on
+[`../metric_validation/`](../metric_validation/) every metric reaches 99% of the ceiling
+its own similarity matrix permits, so a low calibration figure here is a property of the
+**embedder**, not of the diversity index — which is exactly what this benchmark is for,
+but it was previously easy to read the other way. **Pick by intended use:** if you read
 the score as a quantity, calibration matters and mpnet wins; if you compare corpora
 against each other — the common case — human agreement matters and bge-large wins.
 The library ships mpnet and documents bge-large as the switch, so neither choice is
