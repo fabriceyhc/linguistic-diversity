@@ -193,8 +193,8 @@ class TestTreeEditDistanceHelpers:
         as identical, so an intransitive with an adverbial matched a transitive
         with a direct object.
         """
-        from linguistic_diversity.diversities.syntactic import _tree_edit_distance
         from linguistic_diversity import DependencyParse
+        from linguistic_diversity.diversities.syntactic import _tree_edit_distance
 
         metric = DependencyParse({"similarity_type": "tree_edit_distance"})
         intransitive = metric._generate_dependency_tree("She sings beautifully.")
@@ -206,8 +206,8 @@ class TestTreeEditDistanceHelpers:
 
     def test_same_frame_different_words_still_collapses(self):
         """The converse: identical structure must stay identical across lexicalisations."""
-        from linguistic_diversity.diversities.syntactic import _tree_edit_distance
         from linguistic_diversity import DependencyParse
+        from linguistic_diversity.diversities.syntactic import _tree_edit_distance
 
         metric = DependencyParse({"similarity_type": "tree_edit_distance"})
         first = metric._generate_dependency_tree("The tall boy kicked the ball.")
