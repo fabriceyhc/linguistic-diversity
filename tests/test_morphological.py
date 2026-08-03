@@ -100,3 +100,81 @@ class TestPartOfSpeechSequence:
 
         # Similarity should be between 0 and 1
         assert 0 <= similarity <= 1
+
+
+class TestAlignmentSimilarityBounds:
+    """The similarity matrix must be a similarity matrix.
+
+    Biopython's PairwiseAligner defaults to open/extend gap scores of -1, so the
+    raw alignment score of two sequences of different length is negative. Those
+    negatives were being used directly as Z in a similarity-sensitive Hill
+    number, which requires Z in [0, 1]. Scores were also divided by the longest
+    sequence in the *corpus*, so every pairwise similarity moved when an
+    unrelated long document was added.
+    """
+
+    def test_similarities_stay_in_unit_interval(self):
+        """Sequences of very unequal length must not produce negative similarity."""
+        import numpy as np
+
+        metric = PartOfSpeechSequence({"verbose": False})
+        corpus = [
+            "When the rain stopped, the children played happily outside today.",
+            "Birds fly.",
+            "The tall boy kicked the ball.",
+        ]
+        features, _ = metric.extract_features(corpus)
+        Z = metric.calculate_similarities(features)
+
+        assert Z.min() >= 0.0, f"negative similarity: {Z.min()}"
+        assert Z.max() <= 1.0, f"similarity above 1: {Z.max()}"
+        assert np.allclose(Z, Z.T), "similarity matrix is not symmetric"
+        assert np.allclose(np.diag(Z), 1.0), "self-similarity is not 1.0"
+
+    def test_identical_pos_sequences_collapse(self):
+        """One POS template, several lexicalisations, is one species."""
+        metric = PartOfSpeechSequence({"verbose": False})
+        one_template = [
+            "The tall boy kicked the ball.",
+            "A red car struck the fence.",
+            "The old woman watered the garden.",
+            "That young girl painted the wall.",
+        ]
+        assert metric(one_template) == pytest.approx(1.0, abs=0.01)
+
+    def test_does_not_saturate_at_species_count(self):
+        """Many distinct documents must not each count as a whole species.
+
+        Corpus-wide normalisation drove every off-diagonal similarity to ~0 as
+        the corpus grew, so diversity converged on the document count and the
+        metric stopped measuring anything.
+        """
+        metric = PartOfSpeechSequence({"verbose": False})
+        corpus = [
+            f"The {adj} {noun} {verb} the {obj}."
+            for adj in ("tall", "red", "old", "young")
+            for noun in ("boy", "car", "woman", "girl")
+            for verb, obj in (("kicked", "ball"), ("struck", "fence"))
+        ]
+        diversity = metric(corpus)
+        assert (
+            diversity < len(corpus) / 2
+        ), f"diversity {diversity} approaches the species count {len(corpus)}"
+
+    def test_similarity_is_pair_local(self):
+        """Adding an unrelated long document must not change an existing pair."""
+        import numpy as np
+
+        metric = PartOfSpeechSequence({"verbose": False})
+        pair = ["The tall boy kicked the ball.", "Birds fly."]
+        with_extra = pair + [
+            "When the rain stopped yesterday, the tired children finally played outside."
+        ]
+
+        z_pair = metric.calculate_similarities(metric.extract_features(pair)[0])
+        z_extra = metric.calculate_similarities(metric.extract_features(with_extra)[0])
+
+        assert np.isclose(z_pair[0, 1], z_extra[0, 1]), (
+            f"pair similarity changed from {z_pair[0, 1]} to {z_extra[0, 1]} "
+            "when an unrelated document joined the corpus"
+        )

@@ -10,7 +10,59 @@ from typing import Any, Literal, overload
 import numpy as np
 import numpy.typing as npt
 import torch
+from Bio import Align
 from tqdm import tqdm
+
+
+def make_identity_aligner() -> Align.PairwiseAligner:
+    """A global aligner whose score is the length of the longest common subsequence.
+
+    Biopython's defaults are match=1, mismatch=0, open/extend gap=-1, which makes
+    the raw score *negative* whenever two sequences differ in length. Those scores
+    were being used directly as entries of a similarity matrix, and a
+    similarity-sensitive Hill number requires Z in [0, 1].
+
+    Scoring matches only, with free gaps, bounds the score to
+    [0, min(len_a, len_b)] and makes it monotone in shared content.
+    """
+    aligner = Align.PairwiseAligner()
+    aligner.match_score = 1.0
+    aligner.mismatch_score = 0.0
+    aligner.open_gap_score = 0.0
+    aligner.extend_gap_score = 0.0
+    return aligner
+
+
+def normalized_alignment_similarity(aligner: Align.PairwiseAligner, seq1: str, seq2: str) -> float:
+    """Alignment identity of two sequences, in [0, 1].
+
+    Dividing the alignment score by the longer of the two sequences gives 1.0 only
+    for identical sequences and 0.0 when nothing aligns. Normalising by the *pair*
+    is what keeps the value local: a corpus-wide divisor makes every similarity
+    shift whenever an unrelated long document joins the corpus, and drives the
+    off-diagonal toward zero as the corpus grows until diversity saturates at the
+    species count.
+
+    Args:
+        aligner: Aligner to score with, normally from ``make_identity_aligner``.
+        seq1: First sequence.
+        seq2: Second sequence.
+
+    Returns:
+        Similarity in [0, 1].
+    """
+    if not seq1 or not seq2:
+        return 0.0
+    try:
+        score = float(aligner.align(seq1, seq2).score)
+    except (ValueError, IndexError):
+        # Alignment failed (e.g. empty sequences after processing).
+        return 0.0
+    longest = max(len(seq1), len(seq2))
+    if longest == 0:
+        return 0.0
+    # Clamp defensively against a scoring scheme that could exceed the length.
+    return float(min(max(score / longest, 0.0), 1.0))
 
 
 def chunker(seq: Any, size: int) -> Iterator[Any]:

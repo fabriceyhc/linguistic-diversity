@@ -13,12 +13,13 @@ from typing import Any
 import numpy as np
 import numpy.typing as npt
 import spacy
-from Bio import Align
 
 from ..metric import MetricConfig, TextDiversity
 from ..utils import (
     clean_text,
     compute_similarity_matrix_pairwise,
+    make_identity_aligner,
+    normalized_alignment_similarity,
     split_sentences,
     tag_to_alpha,
 )
@@ -80,7 +81,7 @@ class PartOfSpeechSequence(TextDiversity[list[list[str]]]):
         """
         super().__init__(config)
         self.model = _get_spacy_model()
-        self.aligner = Align.PairwiseAligner()
+        self.aligner = make_identity_aligner()
         self.max_len = 0
 
     @classmethod
@@ -95,25 +96,8 @@ class PartOfSpeechSequence(TextDiversity[list[list[str]]]):
         }
 
     def _align_and_score(self, seq1: str, seq2: str) -> float:
-        """Align two sequences and return alignment score.
-
-        Args:
-            seq1: First sequence (string of characters).
-            seq2: Second sequence (string of characters).
-
-        Returns:
-            Alignment score.
-        """
-        # Handle empty sequences
-        if not seq1 or not seq2:
-            return 0.0
-
-        try:
-            alignments = self.aligner.align(seq1, seq2)
-            return float(alignments.score)
-        except (ValueError, IndexError):
-            # Alignment failed (e.g., empty sequences after processing)
-            return 0.0
+        """Similarity of two POS sequences in [0, 1]. See utils for the rationale."""
+        return normalized_alignment_similarity(self.aligner, seq1, seq2)
 
     def extract_features(self, corpus: list[str]) -> tuple[list[list[str]], list[str]]:
         """Extract POS tag sequences from corpus.
@@ -160,17 +144,15 @@ class PartOfSpeechSequence(TextDiversity[list[list[str]]]):
         alpha_features = tag_to_alpha(features)
         string_features = ["".join(seq) for seq in alpha_features]
 
-        # Compute pairwise alignment scores
+        # _align_and_score already returns normalised identity in [0, 1], so the
+        # diagonal is 1.0 (a sequence is identical to itself) and no corpus-wide
+        # rescaling is applied afterwards.
         Z = compute_similarity_matrix_pairwise(
             string_features,
             self._align_and_score,
-            diagonal_val=float(self.max_len),  # Perfect self-alignment
+            diagonal_val=1.0,
             verbose=self.config.verbose,
         )
-
-        # Normalize by max sequence length
-        if self.max_len > 0:
-            Z = Z / self.max_len
 
         return Z
 
@@ -197,15 +179,11 @@ class PartOfSpeechSequence(TextDiversity[list[list[str]]]):
         corpus_strs = string_features[1:]
 
         # Compute similarity scores
-        query_len = len(query_str)
         scores = []
 
         for corpus_str in corpus_strs:
             score = self._align_and_score(query_str, corpus_str)
-            # Normalize by max of the two lengths
-            max_len = max(len(corpus_str), query_len)
-            if max_len > 0:
-                score /= max_len
+            # Already normalised to [0, 1] by the aligner helper.
             scores.append(score)
 
         return np.array(scores, dtype=np.float64)
