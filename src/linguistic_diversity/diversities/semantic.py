@@ -34,6 +34,110 @@ from ..utils import (
 transformers_logging.set_verbosity_error()
 
 
+# Similarity floors measured on REFERENCE_CORPUS, keyed by (metric class, model).
+# Shipping them avoids an encode on first use for the common cases; anything else
+# is calibrated on demand and cached for the process lifetime.
+# Measured on REFERENCE_CORPUS, which is what auto-calibration would compute, so
+# the shipped and on-demand paths agree. Note these run lower than the same
+# encoders' baseline on same-domain text (mpnet 0.053 here against 0.075 on
+# cross-prompt McDiv responses): the reference sentences share no topic, register
+# or length, while responses from one generation setup share style even when their
+# content is unrelated. The lower estimate is the deliberate choice -- it
+# under-corrects, whereas too high a floor would drive genuinely related documents
+# to zero similarity and inflate diversity.
+KNOWN_SIMILARITY_FLOORS: dict[tuple[str, str], float] = {
+    ("DocumentSemantics", "all-mpnet-base-v2"): 0.053,
+    ("DocumentSemantics", "sentence-transformers/all-mpnet-base-v2"): 0.053,
+    ("DocumentSemantics", "all-MiniLM-L6-v2"): 0.058,
+    ("DocumentSemantics", "sentence-transformers/all-MiniLM-L6-v2"): 0.058,
+    ("DocumentSemantics", "BAAI/bge-large-en-v1.5"): 0.351,
+    ("DocumentSemantics", "BAAI/bge-base-en-v1.5"): 0.377,
+    ("TokenSemantics", "bert-base-uncased"): 0.117,
+}
+
+_FLOOR_CACHE: dict[tuple[str, str], float] = {}
+
+
+def clear_floor_cache() -> None:
+    """Forget every auto-calibrated similarity floor."""
+    _FLOOR_CACHE.clear()
+
+
+def _resolve_similarity_floor(metric: Any) -> float | None:
+    """Return the floor to apply, calibrating on the reference corpus if needed.
+
+    Resolution order: an explicit float is used as given; None disables the
+    correction; "auto" consults KNOWN_SIMILARITY_FLOORS, then the process cache,
+    and otherwise measures the encoder's baseline on REFERENCE_CORPUS -- a fixed,
+    shipped set of mutually unrelated sentences, never the corpus being scored.
+
+    The median is used rather than the mean so that a typical unrelated pair lands
+    exactly at zero, and so that a handful of accidentally-related reference pairs
+    cannot drag the estimate.
+    """
+    configured = metric.config.similarity_floor
+    if configured is None:
+        return None
+    if isinstance(configured, (int, float)):
+        return float(configured)
+    if configured != "auto":
+        raise ValueError(f"similarity_floor must be a float, None, or 'auto'; got {configured!r}")
+
+    key = (type(metric).__name__, metric.config.model_name)
+    if key in _FLOOR_CACHE:
+        return _FLOOR_CACHE[key]
+    if key in KNOWN_SIMILARITY_FLOORS:
+        _FLOOR_CACHE[key] = KNOWN_SIMILARITY_FLOORS[key]
+        return _FLOOR_CACHE[key]
+
+    from ..reference import REFERENCE_CORPUS
+
+    # Bypass the floor while measuring it, or this recurses.
+    metric._calibrating = True
+    try:
+        features, _species = metric.extract_features(list(REFERENCE_CORPUS))
+        Z = np.asarray(metric.calculate_similarities(features), dtype=np.float64)
+    except Exception as exc:  # noqa: BLE001 - never let calibration break scoring
+        warnings.warn(
+            f"Could not calibrate a similarity floor for {key[1]!r} ({exc}); "
+            "proceeding without the correction. Scores will be capped below the "
+            "effective-number interpretation. Pass similarity_floor explicitly to "
+            "silence this.",
+            RuntimeWarning,
+            stacklevel=3,
+        )
+        _FLOOR_CACHE[key] = 0.0
+        return 0.0
+    finally:
+        metric._calibrating = False
+
+    off_diagonal = Z[~np.eye(Z.shape[0], dtype=bool)]
+    floor = float(np.clip(np.median(off_diagonal), 0.0, 0.95))
+    _FLOOR_CACHE[key] = floor
+    return floor
+
+
+def _apply_similarity_floor(
+    Z: npt.NDArray[np.float64], floor: float | None
+) -> npt.NDArray[np.float64]:
+    """Rescale so that ``floor`` maps to 0 and 1 stays 1.
+
+    Monotone, so no corpus ordering changes; pinned at both ends, so identical
+    items keep similarity 1 and replication invariance survives; and dependent
+    only on the pair and a constant, so no corpus-level statistic leaks in.
+    """
+    if floor is None:
+        return Z
+    if not 0.0 <= floor < 1.0:
+        raise ValueError(f"similarity_floor must be in [0, 1), got {floor}")
+    if floor == 0.0:
+        return Z
+    rescaled = (Z - floor) / (1.0 - floor)
+    np.clip(rescaled, 0.0, 1.0, out=rescaled)
+    np.fill_diagonal(rescaled, 1.0)
+    return rescaled
+
+
 @dataclass
 class SemanticConfig(MetricConfig):
     """Configuration for semantic diversity metrics."""
@@ -41,6 +145,29 @@ class SemanticConfig(MetricConfig):
     # Similarity computation
     distance_fn: int = faiss.METRIC_INNER_PRODUCT
     scale_dist: str | None = None
+    # Rescale similarity so that "unrelated" maps to 0 rather than to the encoder's
+    # floor:  z' = max(0, (z - floor) / (1 - floor)).
+    #
+    # Sentence encoders do not send unrelated text to orthogonal vectors; they send
+    # it to cosine ~0.11 (mpnet) to ~0.46 (bge-large). Because every document is
+    # slightly similar to every *other* document, that floor accumulates: the
+    # largest diversity any abundance can reach is n / (1 + (n-1)z), which tends to
+    # 1/z as n grows. A floor of 0.46 caps a corpus at ~2.2 effective species
+    # however large it is.
+    #
+    # The floor must be a constant, never estimated from the corpus at hand.
+    # mean_adj subtracted the corpus's own mean and thereby made each pair's
+    # similarity depend on unrelated documents, which cost replication invariance
+    # and left two identical items scoring 0.78. A fixed constant keeps the
+    # transform pair-local, monotone, and fixed at both ends: z=1 maps to 1, and
+    # z<=floor maps to 0.
+    #
+    # "auto" looks the floor up for this (metric, encoder) pair and calibrates it
+    # on REFERENCE_CORPUS if unknown, caching the result. A float sets it
+    # explicitly; None disables the correction and restores pre-1.0.3 behaviour.
+    # See benchmarks/embedder_selection/calibrate_floor.py.
+    similarity_floor: float | str | None = "auto"
+
     power_reg: bool = False
     # Off by default. mean_adj subtracts the off-diagonal mean from every
     # off-diagonal entry, so two *identical* items no longer score 1.0 while the
@@ -490,6 +617,9 @@ class TokenSemantics(TextDiversity[npt.NDArray[np.float64]]):
             postprocess=self.config.scale_dist,
         )
 
+        if not getattr(self, "_calibrating", False):
+            Z = _apply_similarity_floor(Z, _resolve_similarity_floor(self))
+
         # Apply power regularization if requested
         if self.config.power_reg:
             Z = np.power(Z, 2)
@@ -624,6 +754,9 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
             distance_metric=self.config.distance_fn,
             postprocess=self.config.scale_dist,
         )
+
+        if not getattr(self, "_calibrating", False):
+            Z = _apply_similarity_floor(Z, _resolve_similarity_floor(self))
 
         if self.config.power_reg:
             Z = np.power(Z, 2)

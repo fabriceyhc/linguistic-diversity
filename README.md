@@ -60,14 +60,14 @@ semantically_diverse = [
 
 metric = DocumentSemantics()
 print(f"{metric(lexically_diverse):.2f}")     # 1.51
-print(f"{metric(semantically_diverse):.2f}")  # 3.39
+print(f"{metric(semantically_diverse):.2f}")  # 3.75
 ```
 
 Set A is **perfect on every standard lexical measure** — type-token ratio 1.000,
 distinct-1 1.000, distinct-2 1.000, and self-BLEU 0.000, meaning literally zero n-gram
 overlap between its sentences — yet it states one proposition five times. Set B looks
 repetitive to those measures because *run* recurs, but each use is a different sense, so
-it carries ~3.4 distinct meanings out of 5.
+it carries ~3.8 distinct meanings out of 5.
 
 All four lexical baselines ship with the library (`TypeTokenRatio`, `DistinctN`,
 `SelfBLEU`) so you can reproduce the comparison rather than take it on faith. If you are
@@ -86,14 +86,14 @@ documents / 30 words / 30 token species, so ceilings are identical):
 | `DistinctN` (n=1) | Lexical *(baseline)* | unique unigrams / total | **1.000** | 0.767 | 1 |
 | `DistinctN` (n=2) | Lexical *(baseline)* | unique bigrams / total | 1.000 | 1.000 | 1 |
 | `SelfBLEU` | Lexical *(baseline)* | n-gram overlap — *lower* is diverse | **0.000** | 0.049 | 0 |
-| `TokenSemantics` | Semantic | contextualized token embeddings | 2.89 | **3.97** | 30 |
-| `DocumentSemantics` | Semantic | sentence embeddings | 1.51 | **3.39** | 5 |
+| `TokenSemantics` | Semantic | contextualized token embeddings | 3.46 | **5.12** | 30 |
+| `DocumentSemantics` | Semantic | sentence embeddings | 1.56 | **3.75** | 5 |
 | `DependencyParse` | Syntactic | dependency tree structure | 1.38 | **2.91** | 5 |
 | `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.10 | **1.24** | 5 |
-| `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 1.28 | **1.68** | 5 |
+| `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 1.46 | **1.75** | 5 |
 | `Rhythmic` | Phonological | stress and syllable weight | 1.39 | 1.48 | 5 |
-| `Phonemic` | Phonological | phoneme sequences | 1.60 | 1.54 | 5 |
-| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 1.60 | **2.55** | — |
+| `Phonemic` | Phonological | phoneme sequences | 1.60 | 1.53 | 5 |
+| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 1.70 | **2.73** | — |
 
 ```python
 from linguistic_diversity import DependencyParse, UniversalLinguisticDiversity
@@ -112,7 +112,7 @@ detailed = universal.get_detailed_scores(corpus)   # {'universal': ..., 'branche
 
 Reading the results:
 
-- **Document semantics separates the sets most sharply** (1.51 vs 3.39, a 2.2x gap). Reach
+- **Document semantics separates the sets most sharply** (1.56 vs 3.75, a 2.4x gap). Reach
   for it when you care how many distinct *things* a corpus says.
 - **Syntax is an independent signal** (1.38 vs 2.91). Set A leans on one frame without
   repeating it exactly — four distinct POS sequences across five sentences, three of them
@@ -120,18 +120,30 @@ Reading the results:
   corpus can be semantically varied yet syntactically narrow, and only measuring both will
   tell you which.
 - **Several metrics barely separate these two sets** — `ConstituencyParse` 1.10 vs 1.24,
-  `Rhythmic` 1.39 vs 1.48, `Phonemic` 1.60 vs 1.54 the wrong way round. They measure
+  `Rhythmic` 1.39 vs 1.48, `Phonemic` 1.60 vs 1.53 the wrong way round. They measure
   something real; these two sets just do not differ much in it. Stated rather than left to
   be inferred from which rows are unbolded, because a table that only shows its winners is
   not much use for picking a metric.
 
-Absolute values run low against the document count, and that comparison is the wrong one.
-*n* effective species is only reachable if all *n* documents are mutually dissimilar; for
-a real corpus the achievable ceiling is far lower. Measured against that ceiling instead,
-every metric here lands at **99% of what its similarity structure allows** (see
-[`benchmarks/metric_validation/`](benchmarks/metric_validation/)). Use
-`max_diversity(corpus)` or `relative_diversity(corpus)` when you need to read a single
-score rather than compare two.
+### Reading a score as a quantity
+
+*n* effective species is only reachable when all *n* documents are mutually dissimilar,
+and encoders do not make unrelated text dissimilar — they place it at cosine ~0.05 to
+~0.35. Because every document is slightly like every *other* one, that floor accumulates:
+the largest diversity any corpus can reach is `n / (1 + (n-1)z)`, tending to **1/z**. An
+uncorrected floor of 0.35 caps a corpus at about 2.9 effective species however large it is.
+
+So the semantic metrics rescale it away by default, `z' = max(0, (z - z₀) / (1 - z₀))`
+with `z₀` a per-encoder constant — looked up for known encoders, otherwise calibrated once
+against a fixed corpus of mutually unrelated sentences and cached. It is a constant, never
+estimated from the corpus being measured, which is what keeps identical documents at
+similarity 1 and diversity invariant to replication. Pass `similarity_floor=None` for the
+pre-1.0.3 behaviour, or a float to set it yourself.
+
+Measured against the ceiling that actually applies, every metric here lands at **99% of
+what its similarity structure allows** (see
+[`benchmarks/metric_validation/`](benchmarks/metric_validation/)); `max_diversity(corpus)`
+and `relative_diversity(corpus)` expose it directly.
 
 `UniversalLinguisticDiversity` aggregates by geometric mean within a branch, then weighted
 across branches. It enables six of the seven metrics by default; `ConstituencyParse` is

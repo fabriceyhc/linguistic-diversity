@@ -87,11 +87,11 @@ complementary and neither is sufficient alone. Report both.
 
 | Metric | level | ρ vs expected | ratio | headroom | n |
 |---|---|---:|---:|---:|---:|
-| `DocumentSemantics` | semantic | **0.918** | 0.662 | 0.993 | 147 |
+| `DocumentSemantics` | semantic | **0.922** | 0.706 | 0.993 | 147 |
 | `DependencyParse` | syntactic | 0.911 | 0.667 | 0.995 | 110 |
 | `ConstituencyParse` | syntactic | 0.885 | 0.506 | 0.999 | 110 |
 | `Phonemic` | phonemic | 0.874 | 0.372 | 0.995 | 32 |
-| `TokenSemantics` | semantic | 0.819 | *n/a* | 0.846 | 147 |
+| `TokenSemantics` | semantic | 0.840 | *n/a* | 0.844 | 147 |
 | `PartOfSpeechSequence` | morphological | 0.772 | 0.437 | 0.995 | 105 |
 | `Rhythmic` | rhythmic | 0.771 | 0.492 | 0.990 | 50 |
 
@@ -102,7 +102,7 @@ given the similarity matrix the metric actually computed. By Leinster & Meckes
 every order *q*, so it is a property of the similarity structure alone.
 
 Read together they localise the shortfall, and the answer overturns what earlier
-revisions of this file said. Every metric reads 37–67% of ground truth, which
+revisions of this file said. Every metric reads 37–71% of ground truth, which
 looks like systematic under-counting. Every metric is also at **99% of its
 achievable ceiling**. The diversity index is extracting essentially everything
 its similarity structure permits; the gap is that the embedder or parser calls
