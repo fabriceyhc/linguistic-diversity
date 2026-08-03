@@ -257,6 +257,12 @@ TokenSemantics({
 })
 ```
 
+## Development notes
+
+[`research_log.md`](research_log.md) records what was measured and set aside — defects
+found and their shape, theoretical results applied, options tested and rejected, and
+claims made here that later turned out to be wrong.
+
 ## Theory
 
 Hill numbers unify **richness** (how many types) and **similarity** (how alike they are):
