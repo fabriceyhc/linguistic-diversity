@@ -192,3 +192,75 @@ class TestNumericalEdges:
         d = calc(p, Z, 1.0)
         assert np.isfinite(d), f"non-finite diversity {d}"
         assert d == pytest.approx(n, rel=1e-3)
+
+
+class TestMaximumDiversity:
+    """Leinster & Meckes (2016): max over p of D_q is independent of q.
+
+    That makes it a property of the similarity structure alone, and the correct
+    denominator for a relative measure -- the species count is a ceiling only
+    reachable when every species is mutually dissimilar.
+    """
+
+    @staticmethod
+    def _max(Z):
+        from linguistic_diversity.utils import maximum_diversity
+
+        return maximum_diversity(np.asarray(Z, dtype=float))
+
+    @pytest.mark.parametrize("n", [2, 3, 5, 8])
+    def test_distinct_species_ceiling_is_the_species_count(self, n):
+        """Only when Z = I does the species count become reachable."""
+        value, p = self._max(np.eye(n))
+        assert value == pytest.approx(n, rel=1e-6)
+        assert p == pytest.approx(np.full(n, 1.0 / n), abs=1e-6)
+
+    @pytest.mark.parametrize("n", [2, 4, 7])
+    def test_identical_species_ceiling_is_one(self, n):
+        value, _ = self._max(np.ones((n, n)))
+        assert value == pytest.approx(1.0, rel=1e-6)
+
+    @pytest.mark.parametrize("z", [0.0, 0.25, 0.5, 0.9])
+    def test_two_species_ceiling_matches_the_closed_form(self, z):
+        """For a symmetric pair, uniform abundance is already optimal: 2/(1+z)."""
+        value, _ = self._max([[1.0, z], [z, 1.0]])
+        assert value == pytest.approx(2.0 / (1.0 + z), rel=1e-6)
+
+    @pytest.mark.parametrize("seed", range(10))
+    def test_maximum_is_independent_of_q(self, seed):
+        """The theorem itself: one ceiling serves every order."""
+        rng = np.random.default_rng(seed + 900)
+        n = int(rng.integers(3, 8))
+        A = rng.random((n, n)) * 0.7
+        Z = (A + A.T) / 2
+        np.fill_diagonal(Z, 1.0)
+
+        value, p = self._max(Z)
+        for q in (0.0, 0.5, 1.0, 2.0, 3.0):
+            assert calc(p, Z, q) == pytest.approx(
+                value, rel=1e-5
+            ), f"D_{q} at the optimising p is {calc(p, Z, q)}, not {value}"
+
+    @pytest.mark.parametrize("seed", range(10))
+    def test_no_abundance_beats_the_maximum(self, seed):
+        rng = np.random.default_rng(seed + 950)
+        n = int(rng.integers(3, 7))
+        A = rng.random((n, n)) * 0.8
+        Z = (A + A.T) / 2
+        np.fill_diagonal(Z, 1.0)
+        ceiling, _ = self._max(Z)
+
+        for _ in range(60):
+            p = rng.random(n)
+            p /= p.sum()
+            assert calc(p, Z, 1.0) <= ceiling + 1e-6
+
+    def test_ceiling_never_exceeds_the_species_count(self):
+        rng = np.random.default_rng(11)
+        for _ in range(20):
+            n = int(rng.integers(2, 9))
+            A = rng.random((n, n))
+            Z = (A + A.T) / 2
+            np.fill_diagonal(Z, 1.0)
+            value, _ = self._max(Z)
+            assert 1.0 - 1e-6 <= value <= n + 1e-6

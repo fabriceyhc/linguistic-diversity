@@ -12,6 +12,8 @@ from typing import Any, Generic, TypeVar
 import numpy as np
 import numpy.typing as npt
 
+from .utils import maximum_diversity
+
 try:
     from scipy import optimize
 
@@ -637,6 +639,58 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
             D /= len(p)
 
         return float(D)
+
+    def max_diversity(self, corpus: list[str]) -> float:
+        """Highest diversity this corpus's species could reach at any abundance.
+
+        The species count is the wrong ceiling for a similarity-sensitive index: n
+        documents can only reach n effective species if they are mutually
+        dissimilar. This returns the ceiling that actually applies, which is a
+        property of the similarity structure alone and -- by Leinster & Meckes
+        (2016) -- the same for every value of q.
+
+        Args:
+            corpus: List of text documents.
+
+        Returns:
+            Maximum achievable diversity for this corpus's similarity matrix.
+        """
+        if not corpus:
+            return 0.0
+        features, _species = self.extract_features(corpus)
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+        return maximum_diversity(Z)[0]
+
+    def relative_diversity(self, corpus: list[str]) -> float:
+        """Diversity as a fraction of what this corpus could achieve, in (0, 1].
+
+        ``diversity(corpus) / max_diversity(corpus)``. Where the raw score answers
+        "how many effective species are here", this answers "how close is the
+        abundance distribution to the most diverse arrangement of *these* species".
+
+        The two come apart, and the gap is what makes raw scores look
+        under-calibrated: a corpus of near-paraphrases has a low ceiling, so a low
+        raw score against it may be near-optimal rather than poor. Reach for this
+        when comparing corpora whose species differ in how distinguishable they
+        are; reach for the raw score when the effective count is the quantity you
+        want.
+
+        Args:
+            corpus: List of text documents.
+
+        Returns:
+            Diversity relative to the achievable maximum.
+        """
+        if not corpus:
+            return 0.0
+        features, species = self.extract_features(corpus)
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+        p = self.calculate_abundance(species)
+        observed = self._calc_diversity(p, Z, self.config.q)
+        ceiling = maximum_diversity(Z)[0]
+        if ceiling <= 0:
+            return 0.0
+        return float(observed / ceiling)
 
     def similarity(self, corpus: list[str]) -> float:
         """Calculate average similarity across corpus.
