@@ -200,9 +200,9 @@ class TestTreeEditDistanceHelpers:
         intransitive = metric._generate_dependency_tree("She sings beautifully.")
         transitive = metric._generate_dependency_tree("Dogs eat bones.")
 
-        assert _tree_edit_distance(intransitive, transitive) > 0, (
-            "same tree shape with different POS and dependencies compared as identical"
-        )
+        assert (
+            _tree_edit_distance(intransitive, transitive) > 0
+        ), "same tree shape with different POS and dependencies compared as identical"
 
     def test_same_frame_different_words_still_collapses(self):
         """The converse: identical structure must stay identical across lexicalisations."""
@@ -213,6 +213,6 @@ class TestTreeEditDistanceHelpers:
         first = metric._generate_dependency_tree("The tall boy kicked the ball.")
         second = metric._generate_dependency_tree("A red car struck the fence.")
 
-        assert _tree_edit_distance(first, second) == 0, (
-            "one syntactic frame with different words no longer compares as identical"
-        )
+        assert (
+            _tree_edit_distance(first, second) == 0
+        ), "one syntactic frame with different words no longer compares as identical"

@@ -121,8 +121,7 @@ def _get_tree_nodes_dict(tree: nx.DiGraph, source: nx.DiGraph) -> dict[Any, zss.
     # Every node gets a node object first, so a lone root (no edges) still resolves
     # and the caller's nodes_dict[root] lookup cannot raise KeyError.
     nodes_dict: dict[Any, zss.Node] = {
-        node: zss.Node(_zss_label(source, node, parents.get(node)))
-        for node in tree.nodes()
+        node: zss.Node(_zss_label(source, node, parents.get(node))) for node in tree.nodes()
     }
     # zss.simple_distance is an *ordered* tree edit distance, so sibling order is
     # part of the comparison. Sort by token index to make it surface order rather
