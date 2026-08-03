@@ -295,6 +295,14 @@ def compute_similarity_matrix_faiss(
     elif postprocess == "invert":
         Z = 1.0 - Z
 
+    # Cosine similarity is defined on [-1, 1], but a similarity-sensitive Hill
+    # number requires Z on [0, 1]: p_i (Zp)_i^(q-1) is not meaningful when an
+    # entry of Zp is negative. Embeddings that point more than 90 degrees apart
+    # are simply maximally dissimilar, so the negative range clamps to 0 rather
+    # than being rescaled -- rescaling would put orthogonal vectors at 0.5 and
+    # systematically understate diversity.
+    np.clip(Z, 0.0, 1.0, out=Z)
+
     # Ensure diagonal is 1
     np.fill_diagonal(Z, 1.0)
 

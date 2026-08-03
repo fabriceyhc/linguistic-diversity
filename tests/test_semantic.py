@@ -110,14 +110,22 @@ class TestSemanticDefaults:
     """
 
     def test_token_semantics_uses_squared_cosine(self):
-        """TokenSemantics defaults to cosine + power_reg + mean_adj."""
+        """TokenSemantics defaults to cosine + power_reg, without mean_adj.
+
+        mean_adj was on until v1.0.3. Re-ablated on all 600 human-scored McDiv
+        sets, turning it off improved agreement (rho +0.348 -> +0.388) *and*
+        restored replication invariance, which it had been breaking: subtracting
+        the off-diagonal mean left two identical occurrences at 0.78 while the
+        diagonal stayed at 1.0. Both criteria pointed the same way, so it is off.
+        See benchmarks/embedder_selection/ablate_similarity.py.
+        """
         import faiss
 
         config = TokenSemantics._default_config()
         assert config["distance_fn"] == faiss.METRIC_INNER_PRODUCT
         assert config["scale_dist"] is None
         assert config["power_reg"] is True
-        assert config["mean_adj"] is True
+        assert config["mean_adj"] is False
 
     def test_document_semantics_uses_plain_cosine(self):
         """DocumentSemantics defaults to cosine with no squaring or adjustment."""
@@ -127,3 +135,83 @@ class TestSemanticDefaults:
         assert config["distance_fn"] == faiss.METRIC_INNER_PRODUCT
         assert config["scale_dist"] is None
         assert config["mean_adj"] is False
+
+    def test_document_semantics_default_encoder_is_calibration_optimised(self):
+        """The encoder moves every score, so pin it rather than let it drift.
+
+        The two halves of benchmarks/embedder_selection/ disagree about which
+        encoder is best, and the default follows the calibration half: mpnet
+        reports 0.97 of true k against bge-large's 0.58. bge-large wins on human
+        agreement (+0.779 vs +0.581) and is the documented recommendation for
+        *comparing* corpora, but it is not the default -- a score read as a
+        quantity should mean what it says, and mpnet is a third of the size.
+
+        Changing this is a legitimate decision; it just has to be a deliberate
+        one, because it moves every documented DocumentSemantics number.
+        """
+        config = DocumentSemantics._default_config()
+        assert config["model_name"] == "all-mpnet-base-v2"
+
+
+class TestSimilarityRangeAndInvariance:
+    """Z must be a similarity matrix, and identical items must score 1.0.
+
+    Cosine is defined on [-1, 1] while a similarity-sensitive Hill number needs
+    [0, 1]; with all-mpnet-base-v2 about 1.35% of McDiv response pairs land
+    below zero. Separately, mean_adj subtracted the off-diagonal mean from every
+    off-diagonal entry, so an occurrence and its exact replica scored 0.78 while
+    the diagonal stayed 1.0, and diversity was not invariant to replication.
+    """
+
+    def test_cosine_similarities_are_clamped_to_unit_interval(self):
+        import numpy as np
+
+        from linguistic_diversity import DocumentSemantics
+
+        metric = DocumentSemantics({"verbose": False})
+        corpus = [
+            "The tall boy kicked the ball.",
+            "Quantum chromodynamics predicts asymptotic freedom.",
+            "She believes that the plan is sound.",
+            "There was a crack in the ceiling.",
+        ]
+        features, _ = metric.extract_features(corpus)
+        Z = metric.calculate_similarities(features)
+
+        assert Z.min() >= 0.0, f"negative similarity {Z.min()} reached the Hill number"
+        assert Z.max() <= 1.0, f"similarity above 1: {Z.max()}"
+        assert np.allclose(np.diag(Z), 1.0)
+
+    def test_token_semantics_is_replication_invariant(self):
+        """Duplicating a corpus leaves relative abundance, so diversity, unchanged."""
+        from linguistic_diversity import TokenSemantics
+
+        metric = TokenSemantics({"verbose": False})
+        corpus = [
+            "The tall boy kicked the ball.",
+            "When the rain stopped, the children played.",
+            "There was a crack in the ceiling.",
+        ]
+        once, thrice = float(metric(corpus)), float(metric(corpus * 3))
+
+        assert (
+            abs(once - thrice) < 1e-4
+        ), f"diversity moved from {once} to {thrice} when the corpus was tripled"
+
+    def test_identical_tokens_score_one(self):
+        """An occurrence and its exact replica are the same species."""
+        import numpy as np
+
+        from linguistic_diversity import TokenSemantics
+
+        metric = TokenSemantics({"verbose": False})
+        corpus = ["The tall boy kicked the ball.", "Birds fly."]
+        features, species = metric.extract_features(corpus * 2)
+        Z = metric.calculate_similarities(features)
+        half = len(species) // 2
+
+        replicas = np.array([Z[i, i + half] for i in range(half)])
+        assert np.allclose(replicas, 1.0, atol=1e-4), (
+            f"identical token occurrences scored {replicas.min():.4f}..{replicas.max():.4f}, "
+            "not 1.0"
+        )

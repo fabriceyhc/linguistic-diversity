@@ -42,7 +42,11 @@ class SemanticConfig(MetricConfig):
     distance_fn: int = faiss.METRIC_INNER_PRODUCT
     scale_dist: str | None = None
     power_reg: bool = False
-    mean_adj: bool = True
+    # Off by default. mean_adj subtracts the off-diagonal mean from every
+    # off-diagonal entry, so two *identical* items no longer score 1.0 while the
+    # diagonal still does -- which breaks replication invariance. It also scores
+    # worse against human judgments. See benchmarks/embedder_selection/.
+    mean_adj: bool = False
 
     # Feature processing
     remove_stopwords: bool = False
@@ -276,7 +280,9 @@ class TokenSemantics(TextDiversity[npt.NDArray[np.float64]]):
             "use_cuda": True,
             "distance_fn": faiss.METRIC_INNER_PRODUCT,
             "scale_dist": None,
-            "mean_adj": True,
+            # mean_adj is off: it cost both correctness and accuracy. See
+            # benchmarks/embedder_selection/ablate_similarity.py.
+            "mean_adj": False,
             "power_reg": True,
         }
 
@@ -558,6 +564,22 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
 
     @classmethod
     def _default_config(cls) -> dict[str, Any]:
+        # all-mpnet-base-v2 is a deliberate choice, not an oversight, and the two
+        # halves of benchmarks/embedder_selection/ disagree about it.
+        #
+        #   calibration      mpnet 0.97, bge-large 0.58  (is the reported number
+        #                    of concepts numerically right?)
+        #   human agreement  mpnet +0.581, bge-large +0.779  (are corpora ordered
+        #                    the way people order them?)
+        #
+        # The default optimises calibration: a score read as a quantity should
+        # mean what it says, and mpnet is a third of the size. **If you are
+        # comparing corpora against each other -- the more common case -- set
+        # model_name="BAAI/bge-large-en-v1.5", which the benchmark recommends.**
+        #
+        # mpnet's cosines do fall below zero on about 1.35% of McDiv response
+        # pairs, which is why compute_similarity_matrix_faiss clamps to [0, 1];
+        # bge-large never goes below +0.32 and never needs it.
         return {
             "model_name": "all-mpnet-base-v2",
             "batch_size": 32,
