@@ -1,0 +1,184 @@
+{
+  "_meta": {
+    "dataset_sizes": {
+      "McDiv_nuggets": 600,
+      "conTest": 670,
+      "decTest": 609
+    }
+  },
+  "agreement": {
+    "DocumentSemantics": {
+      "McDiv_nuggets": {
+        "spearman": 0.5814,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.6498,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.7779,
+        "n": 609
+      }
+    },
+    "TokenSemantics": {
+      "McDiv_nuggets": {
+        "spearman": 0.3878,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.3045,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.551,
+        "n": 609
+      }
+    },
+    "DependencyParse": {
+      "McDiv_nuggets": {
+        "spearman": 0.2079,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.0813,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.5934,
+        "n": 609
+      }
+    },
+    "PartOfSpeechSequence": {
+      "McDiv_nuggets": {
+        "spearman": 0.1916,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.296,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.6887,
+        "n": 609
+      }
+    },
+    "Rhythmic": {
+      "McDiv_nuggets": {
+        "spearman": 0.151,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.2986,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.5827,
+        "n": 609
+      }
+    },
+    "Phonemic": {
+      "McDiv_nuggets": {
+        "spearman": 0.2133,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.3685,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.6331,
+        "n": 609
+      }
+    },
+    "TypeTokenRatio": {
+      "McDiv_nuggets": {
+        "spearman": 0.3793,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.5138,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.8169,
+        "n": 609
+      }
+    },
+    "DistinctN": {
+      "McDiv_nuggets": {
+        "spearman": 0.3793,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.5138,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.8169,
+        "n": 609
+      }
+    },
+    "SelfBLEU": {
+      "McDiv_nuggets": {
+        "spearman": 0.393,
+        "n": 600
+      },
+      "conTest": {
+        "spearman": 0.5381,
+        "n": 670
+      },
+      "decTest": {
+        "spearman": 0.8183,
+        "n": 609
+      }
+    }
+  },
+  "temperature": {
+    "DocumentSemantics": {
+      "spearman_vs_temperature": 0.5389,
+      "n": 900,
+      "level": "semantic"
+    },
+    "TokenSemantics": {
+      "spearman_vs_temperature": 0.2235,
+      "n": 900,
+      "level": "semantic"
+    },
+    "DependencyParse": {
+      "spearman_vs_temperature": 0.5824,
+      "n": 900,
+      "level": "syntactic"
+    },
+    "PartOfSpeechSequence": {
+      "spearman_vs_temperature": 0.6067,
+      "n": 900,
+      "level": "morphological"
+    },
+    "Rhythmic": {
+      "spearman_vs_temperature": 0.5348,
+      "n": 900,
+      "level": "phonological"
+    },
+    "Phonemic": {
+      "spearman_vs_temperature": 0.5678,
+      "n": 900,
+      "level": "phonological"
+    },
+    "TypeTokenRatio": {
+      "spearman_vs_temperature": 0.7241,
+      "n": 900,
+      "level": "lexical (form)"
+    },
+    "DistinctN": {
+      "spearman_vs_temperature": 0.7241,
+      "n": 900,
+      "level": "lexical (form)"
+    },
+    "SelfBLEU": {
+      "spearman_vs_temperature": 0.6634,
+      "n": 900,
+      "level": "lexical (form)"
+    }
+  }
+}
