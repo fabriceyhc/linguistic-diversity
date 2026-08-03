@@ -591,5 +591,146 @@
         ]
       }
     ]
+  },
+  "abundance_themes": {
+    "_doc": "Themes for the skewed-abundance families. Each theme is a set of paraphrases of one proposition, so within a theme documents are near-identical and across themes they are unrelated. Under that construction the true diversity at order q is exactly the Hill number of the theme weight vector, which makes skewed abundance testable against a closed form rather than an authored guess.",
+    "themes": [
+      {
+        "id": "shipping_delay",
+        "paraphrases": [
+          "Your order has been delayed and will arrive next week.",
+          "The shipment is running late and should land next week.",
+          "Delivery is delayed; expect the package next week."
+        ]
+      },
+      {
+        "id": "password_reset",
+        "paraphrases": [
+          "Click the link in the email to reset your password.",
+          "Follow the emailed link to set a new password.",
+          "Use the link we sent to choose a new password."
+        ]
+      },
+      {
+        "id": "refund_policy",
+        "paraphrases": [
+          "Refunds are issued within thirty days of purchase.",
+          "You can claim a refund up to thirty days after buying.",
+          "Purchases may be refunded for thirty days."
+        ]
+      },
+      {
+        "id": "server_outage",
+        "paraphrases": [
+          "The service was unavailable for two hours this morning.",
+          "There was a two-hour outage earlier today.",
+          "Our systems were down for two hours this morning."
+        ]
+      },
+      {
+        "id": "account_closure",
+        "paraphrases": [
+          "Your account will be closed at the end of the month.",
+          "We will shut the account down at month end.",
+          "The account is scheduled for closure this month."
+        ]
+      },
+      {
+        "id": "invoice_query",
+        "paraphrases": [
+          "The invoice covers services rendered in March.",
+          "This bill is for work carried out during March.",
+          "You are being charged for March's services."
+        ]
+      },
+      {
+        "id": "feature_request",
+        "paraphrases": [
+          "We have logged your suggestion for the development team.",
+          "Your feature idea has been passed to engineering.",
+          "The team has recorded your request for a new feature."
+        ]
+      },
+      {
+        "id": "subscription_renewal",
+        "paraphrases": [
+          "Your subscription renews automatically each year.",
+          "The plan will auto-renew on its annual date.",
+          "Renewal happens automatically every twelve months."
+        ]
+      }
+    ],
+    "profiles": [
+      {
+        "id": "uniform",
+        "note": "even coverage; the flat-profile control",
+        "weights": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "id": "zipf",
+        "note": "Zipfian topic frequency, the usual shape of a real corpus",
+        "weights": [
+          1,
+          0.5,
+          0.333,
+          0.25,
+          0.2,
+          0.167,
+          0.143,
+          0.125
+        ]
+      },
+      {
+        "id": "heavy_head",
+        "note": "one boilerplate response dominating, as in scraped or templated data",
+        "weights": [
+          50,
+          3,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "id": "long_tail",
+        "note": "two common cases and a tail of rare ones",
+        "weights": [
+          20,
+          15,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "id": "near_degenerate",
+        "note": "a single case is effectively the whole corpus",
+        "weights": [
+          200,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    ]
   }
 }
