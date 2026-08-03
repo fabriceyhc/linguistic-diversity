@@ -168,6 +168,10 @@ answers a different question:
 - [`benchmarks/human_agreement/`](benchmarks/human_agreement/) — agreement with graded human
   diversity judgments on three datasets, and what sampling temperature actually moves
   (form 0.66–0.72, structure 0.57–0.61, content 0.22–0.54).
+- [`benchmarks/vendi_comparison/`](benchmarks/vendi_comparison/) — this library's index
+  against the Vendi Score on one shared similarity matrix. **Vendi wins on both human
+  agreement and calibration**; what survives the comparison is the multi-level
+  instrumentation, not the choice of index.
 
 ## Large corpora
 
