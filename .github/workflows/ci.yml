@@ -56,10 +56,13 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
-        # macOS runners are scarce on public repos and were queueing until the
-        # platform killed them. The package is pure Python, so the OS-specific
-        # risk is in path handling and the spaCy/NLTK downloads - one macOS job
-        # covers that. Linux and Windows still run the full version matrix.
+        # macOS is covered on one interpreter rather than four. The package is
+        # pure Python, so the OS-specific risk is path handling and the
+        # spaCy/NLTK downloads, which a single job exercises; Linux and Windows
+        # keep the full version matrix, so interpreter coverage is unchanged.
+        # This also lowers exposure to macOS runner availability, which has been
+        # intermittent - jobs that completed in under two minutes one hour were
+        # unschedulable the next. Restore the versions by deleting this block.
         exclude:
           - os: macos-latest
             python-version: "3.10"
