@@ -1,0 +1,377 @@
+{
+  "_meta": {
+    "purpose": "Seed constructions for per-level metric validation. Each family fixes some linguistic levels and varies exactly one, so ground truth is known at every level rather than only at the level under test.",
+    "authored": "2026-08-02",
+    "caveat": "Hand-authored for this repository. Ground truth is an authored construct and has not been validated by external annotators; see README."
+  },
+
+  "syntactic_alternations": {
+    "_doc": "One proposition realised through n syntactic structures. Semantics is held constant, syntax varies. A syntactic metric must report ~n; a semantic metric must report ~1.",
+    "sets": [
+      {
+        "id": "chef_meal",
+        "proposition": "the chef prepared the meal",
+        "realisations": [
+          "The chef prepared the meal.",
+          "The meal was prepared by the chef.",
+          "It was the chef who prepared the meal.",
+          "What the chef prepared was the meal.",
+          "The meal, the chef prepared."
+        ]
+      },
+      {
+        "id": "storm_roof",
+        "proposition": "the storm damaged the roof",
+        "realisations": [
+          "The storm damaged the roof.",
+          "The roof was damaged by the storm.",
+          "It was the storm that damaged the roof.",
+          "What damaged the roof was the storm.",
+          "The roof, the storm damaged."
+        ]
+      },
+      {
+        "id": "letter_brother",
+        "proposition": "I sent the letter to my brother",
+        "realisations": [
+          "I sent the letter to my brother.",
+          "I sent my brother the letter.",
+          "The letter was sent to my brother by me.",
+          "My brother was sent the letter by me.",
+          "It was my brother that I sent the letter to."
+        ]
+      },
+      {
+        "id": "company_engineers",
+        "proposition": "the company hired new engineers",
+        "realisations": [
+          "The company hired new engineers.",
+          "New engineers were hired by the company.",
+          "It was new engineers that the company hired.",
+          "What the company hired was new engineers.",
+          "New engineers, the company hired."
+        ]
+      },
+      {
+        "id": "team_bridge",
+        "proposition": "the team built the bridge quickly",
+        "realisations": [
+          "The team built the bridge quickly.",
+          "The bridge was built quickly by the team.",
+          "Quickly, the team built the bridge.",
+          "It was quickly that the team built the bridge.",
+          "What the team did was build the bridge quickly."
+        ]
+      },
+      {
+        "id": "student_answer",
+        "proposition": "the student knew the answer",
+        "realisations": [
+          "The student knew the answer.",
+          "The answer was known to the student.",
+          "It was the student who knew the answer.",
+          "What the student knew was the answer.",
+          "The answer, the student knew."
+        ]
+      }
+    ]
+  },
+
+  "syntactic_frames": {
+    "_doc": "k syntactic frames x m lexicalisations. Within a frame the structure and the POS sequence are identical while the content differs. A syntactic metric must report ~k; a semantic metric must report ~k*m.",
+    "frames": [
+      {
+        "id": "svo_adj_subject",
+        "pattern": "DET ADJ NOUN VERB DET NOUN",
+        "lexicalisations": [
+          "The tall boy kicked the ball.",
+          "A red car struck the fence.",
+          "The old woman watered the garden.",
+          "That young girl painted the wall."
+        ]
+      },
+      {
+        "id": "adverbial_clause",
+        "pattern": "SCONJ DET NOUN VERB PUNCT DET NOUN VERB",
+        "lexicalisations": [
+          "When the rain stopped, the children played.",
+          "After the meeting ended, the manager left.",
+          "Because the road flooded, the bus stopped.",
+          "Before the show started, the crowd cheered."
+        ]
+      },
+      {
+        "id": "complement_clause",
+        "pattern": "PRON VERB SCONJ DET NOUN AUX ADJ",
+        "lexicalisations": [
+          "She believes that the plan is sound.",
+          "He knows that the answer is wrong.",
+          "They think that the price is high.",
+          "I doubt that the story is true."
+        ]
+      },
+      {
+        "id": "pp_modified_subject",
+        "pattern": "DET NOUN ADP DET NOUN AUX VERB",
+        "lexicalisations": [
+          "The book on the table was missing.",
+          "The keys in the drawer were stolen.",
+          "The painting in the hall was damaged.",
+          "The letter on the desk was opened."
+        ]
+      },
+      {
+        "id": "imperative_coordination",
+        "pattern": "VERB DET NOUN CCONJ VERB DET NOUN",
+        "lexicalisations": [
+          "Open the door and close the window.",
+          "Take the money and leave the room.",
+          "Read the book and write the essay.",
+          "Boil the water and add the salt."
+        ]
+      },
+      {
+        "id": "existential",
+        "pattern": "PRON VERB DET NOUN ADP DET NOUN",
+        "lexicalisations": [
+          "There was a crack in the ceiling.",
+          "There is a stain on the carpet.",
+          "There was a gap in the fence.",
+          "There is a knot in the rope."
+        ]
+      }
+    ]
+  },
+
+  "morphological_templates": {
+    "_doc": "Same content realised with different part-of-speech sequences (nominalisation, adjectival, verbal). Content is held roughly constant while the POS sequence varies. A morphological metric must report ~n; a semantic metric must report ~1.",
+    "sets": [
+      {
+        "id": "refuse_offer",
+        "gloss": "refusing the offer",
+        "realisations": [
+          "He refused the offer.",
+          "His refusal of the offer was final.",
+          "The offer was refused by him.",
+          "He was refusing the offer."
+        ]
+      },
+      {
+        "id": "destroy_city",
+        "gloss": "the destruction of the city",
+        "realisations": [
+          "The army destroyed the city.",
+          "The army's destruction of the city was total.",
+          "The city was destroyed by the army.",
+          "The city lay destroyed by the army."
+        ]
+      },
+      {
+        "id": "arrive_train",
+        "gloss": "the train arriving",
+        "realisations": [
+          "The train arrived.",
+          "The arrival of the train was late.",
+          "The train was arriving.",
+          "The train had arrived."
+        ]
+      },
+      {
+        "id": "decide_committee",
+        "gloss": "the committee deciding",
+        "realisations": [
+          "The committee decided.",
+          "The committee's decision was unanimous.",
+          "A decision was reached by the committee.",
+          "The committee had been deciding."
+        ]
+      }
+    ]
+  },
+
+  "pos_identical_structure_different": {
+    "_doc": "Pairs with the same part-of-speech sequence but different grammatical relations (object complement vs ditransitive). A morphological metric should collapse these toward 1; a syntactic metric should separate them. This is the sharpest available test that the two levels are not measuring the same thing. Every pair here was checked to produce genuinely different spaCy dependency parses -- see surface_parse_blind for the ones that do not.",
+    "sets": [
+      {
+        "id": "elect_vs_give",
+        "pattern": "PRON VERB PRON NOUN",
+        "realisations": [
+          "They elected him president.",
+          "They gave him money."
+        ],
+        "note": "object complement (oprd) vs ditransitive (dative)"
+      },
+      {
+        "id": "call_vs_give",
+        "pattern": "PRON VERB DET NOUN DET NOUN",
+        "realisations": [
+          "He gave the boy the book.",
+          "He called the boy a liar."
+        ],
+        "note": "double object vs object complement"
+      },
+      {
+        "id": "consider_vs_send",
+        "pattern": "PRON VERB PRON DET NOUN",
+        "realisations": [
+          "I consider him a friend.",
+          "I sent him a letter."
+        ],
+        "note": "object complement vs ditransitive"
+      },
+      {
+        "id": "paint_vs_leave",
+        "pattern": "DET NOUN VERB DET NOUN ADJ",
+        "realisations": [
+          "The men painted the house red.",
+          "The men left the house today."
+        ],
+        "note": "resultative complement vs temporal adjunct"
+      }
+    ]
+  },
+
+  "surface_parse_blind": {
+    "_doc": "Distinctions a surface dependency parse cannot represent. spaCy assigns these pairs byte-identical dependency labels and heads, so control/raising and PP-attachment differences are invisible to any metric built on such a parse. Retained as a recorded limitation rather than a failing test: the expectation is that both syntactic and morphological metrics collapse them to 1.0. Separating them would require semantic role labelling, not a better tree distance.",
+    "sets": [
+      {
+        "id": "easy_eager",
+        "realisations": ["John is easy to please.", "John is eager to please."],
+        "note": "tough-movement vs subject control"
+      },
+      {
+        "id": "ready_chicken",
+        "realisations": ["The chicken is ready to eat.", "The chicken is likely to eat."],
+        "note": "control vs raising"
+      },
+      {
+        "id": "pp_attachment",
+        "realisations": ["She watched the man with the telescope.", "She watched the man with the beard."],
+        "note": "instrument vs modifier PP; spaCy attaches both to the verb"
+      },
+      {
+        "id": "promise_persuade",
+        "realisations": ["I promised him to leave.", "I persuaded him to leave."],
+        "note": "subject control vs object control"
+      }
+    ]
+  },
+
+  "rhythmic_meters": {
+    "_doc": "k metrical patterns x m lines. Within a meter the stress contour is fixed while words and content differ. A rhythmic metric must report ~k; a semantic metric must report ~k*m.",
+    "meters": [
+      {
+        "id": "iambic",
+        "pattern": "unstressed-STRESSED",
+        "lines": [
+          "The clock upon the wall was slow.",
+          "A bird beneath the bridge has flown.",
+          "The road beyond the hill was long.",
+          "A light within the room was dim."
+        ]
+      },
+      {
+        "id": "trochaic",
+        "pattern": "STRESSED-unstressed",
+        "lines": [
+          "Tiger tiger burning bright.",
+          "Double double toil and trouble.",
+          "Peter picked a peck quickly.",
+          "Water falling over boulders."
+        ]
+      },
+      {
+        "id": "dactylic",
+        "pattern": "STRESSED-unstressed-unstressed",
+        "lines": [
+          "This is the forest primeval.",
+          "Cannon to right of them thundered.",
+          "Merrily onward the travellers wandered.",
+          "Half of the company faltered and scattered."
+        ]
+      },
+      {
+        "id": "anapestic",
+        "pattern": "unstressed-unstressed-STRESSED",
+        "lines": [
+          "And the sheen of their spears was like stars.",
+          "It was late in the night when he came.",
+          "In the blink of an eye it was gone.",
+          "On the edge of the world there is light."
+        ]
+      }
+    ]
+  },
+
+  "phonemic_oronyms": {
+    "_doc": "Sentence pairs that are near-homophonic but orthographically and semantically distinct. A phonemic metric must collapse these toward 1; a semantic metric must report ~n. Supply is inherently limited: full-sentence homophony is rare in English.",
+    "sets": [
+      {
+        "id": "ice_cream",
+        "realisations": ["I scream for the treat.", "Ice cream for the treat."]
+      },
+      {
+        "id": "sons_raise_meat",
+        "realisations": ["The sons raise meat.", "The sun's rays meet."]
+      },
+      {
+        "id": "four_candles",
+        "realisations": ["He asked for four candles.", "He asked for fork handles."]
+      },
+      {
+        "id": "mince_pie",
+        "realisations": ["They served mince pies.", "They served mint spies."]
+      },
+      {
+        "id": "grade_a",
+        "realisations": ["That was a grade A result.", "That was a grey day result."]
+      },
+      {
+        "id": "youth_in_asia",
+        "realisations": ["The debate concerned euthanasia.", "The debate concerned youth in Asia."]
+      },
+      {
+        "id": "an_aim",
+        "realisations": ["She had an aim in mind.", "She had a name in mind."]
+      },
+      {
+        "id": "stuff_he_needs",
+        "realisations": ["That is the stuff he needs.", "That is the stuff he kneads."]
+      }
+    ]
+  },
+
+  "phonemic_minimal_pairs": {
+    "_doc": "Sets differing in a single phoneme in the head word, holding syntax and POS sequence fixed. A phonemic metric must separate these; the separation should be small relative to phonemically distant sets, giving a graded rather than binary test.",
+    "sets": [
+      {
+        "id": "at_rhymes",
+        "realisations": [
+          "The cat sat there.",
+          "The bat sat there.",
+          "The hat sat there.",
+          "The mat sat there."
+        ]
+      },
+      {
+        "id": "ight_rhymes",
+        "realisations": [
+          "The light was gone.",
+          "The night was gone.",
+          "The sight was gone.",
+          "The might was gone."
+        ]
+      },
+      {
+        "id": "distant_controls",
+        "realisations": [
+          "The cat sat there.",
+          "The wolf slept nearby.",
+          "The thrush glimpsed movement.",
+          "The ox brushed through."
+        ],
+        "note": "control set: same frame, phonemically distant heads"
+      }
+    ]
+  }
+}

@@ -1,0 +1,3418 @@
+{
+  "_meta": {
+    "random_seed": 20260802,
+    "n_corpora": 116,
+    "n_contrasts": 138,
+    "levels": [
+      "semantic",
+      "syntactic",
+      "morphological",
+      "rhythmic",
+      "phonemic"
+    ],
+    "source": "constructions.json",
+    "scoring": "Two scores per metric. Calibration: does it report the expected value at its own level? Discriminance: does it stay flat at levels the corpus holds constant, and satisfy the paired contrasts?"
+  },
+  "corpora": [
+    {
+      "id": "alt-chef_meal-n2",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The chef prepared the meal.",
+        "The meal was prepared by the chef."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic realisations of one proposition: the chef prepared the meal"
+    },
+    {
+      "id": "alt-chef_meal-n3",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The meal was prepared by the chef.",
+        "What the chef prepared was the meal.",
+        "It was the chef who prepared the meal."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic realisations of one proposition: the chef prepared the meal"
+    },
+    {
+      "id": "alt-chef_meal-n4",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The chef prepared the meal.",
+        "What the chef prepared was the meal.",
+        "It was the chef who prepared the meal.",
+        "The meal was prepared by the chef."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic realisations of one proposition: the chef prepared the meal"
+    },
+    {
+      "id": "alt-chef_meal-n5",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The chef prepared the meal.",
+        "The meal was prepared by the chef.",
+        "What the chef prepared was the meal.",
+        "The meal, the chef prepared.",
+        "It was the chef who prepared the meal."
+      ],
+      "n_documents": 5,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 5.0,
+        "morphological": 5.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "5 syntactic realisations of one proposition: the chef prepared the meal"
+    },
+    {
+      "id": "alt-storm_roof-n2",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "It was the storm that damaged the roof.",
+        "The roof was damaged by the storm."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic realisations of one proposition: the storm damaged the roof"
+    },
+    {
+      "id": "alt-storm_roof-n3",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "It was the storm that damaged the roof.",
+        "The roof, the storm damaged.",
+        "The storm damaged the roof."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic realisations of one proposition: the storm damaged the roof"
+    },
+    {
+      "id": "alt-storm_roof-n4",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The roof, the storm damaged.",
+        "The roof was damaged by the storm.",
+        "What damaged the roof was the storm.",
+        "The storm damaged the roof."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic realisations of one proposition: the storm damaged the roof"
+    },
+    {
+      "id": "alt-storm_roof-n5",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The roof was damaged by the storm.",
+        "What damaged the roof was the storm.",
+        "The roof, the storm damaged.",
+        "The storm damaged the roof.",
+        "It was the storm that damaged the roof."
+      ],
+      "n_documents": 5,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 5.0,
+        "morphological": 5.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "5 syntactic realisations of one proposition: the storm damaged the roof"
+    },
+    {
+      "id": "alt-letter_brother-n2",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "I sent the letter to my brother.",
+        "I sent my brother the letter."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic realisations of one proposition: I sent the letter to my brother"
+    },
+    {
+      "id": "alt-letter_brother-n3",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "It was my brother that I sent the letter to.",
+        "My brother was sent the letter by me.",
+        "The letter was sent to my brother by me."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic realisations of one proposition: I sent the letter to my brother"
+    },
+    {
+      "id": "alt-letter_brother-n4",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "My brother was sent the letter by me.",
+        "I sent my brother the letter.",
+        "It was my brother that I sent the letter to.",
+        "I sent the letter to my brother."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic realisations of one proposition: I sent the letter to my brother"
+    },
+    {
+      "id": "alt-letter_brother-n5",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "My brother was sent the letter by me.",
+        "It was my brother that I sent the letter to.",
+        "I sent my brother the letter.",
+        "The letter was sent to my brother by me.",
+        "I sent the letter to my brother."
+      ],
+      "n_documents": 5,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 5.0,
+        "morphological": 5.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "5 syntactic realisations of one proposition: I sent the letter to my brother"
+    },
+    {
+      "id": "alt-company_engineers-n2",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "New engineers were hired by the company.",
+        "What the company hired was new engineers."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic realisations of one proposition: the company hired new engineers"
+    },
+    {
+      "id": "alt-company_engineers-n3",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "New engineers, the company hired.",
+        "New engineers were hired by the company.",
+        "It was new engineers that the company hired."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic realisations of one proposition: the company hired new engineers"
+    },
+    {
+      "id": "alt-company_engineers-n4",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "New engineers, the company hired.",
+        "The company hired new engineers.",
+        "What the company hired was new engineers.",
+        "It was new engineers that the company hired."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic realisations of one proposition: the company hired new engineers"
+    },
+    {
+      "id": "alt-company_engineers-n5",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The company hired new engineers.",
+        "It was new engineers that the company hired.",
+        "New engineers, the company hired.",
+        "New engineers were hired by the company.",
+        "What the company hired was new engineers."
+      ],
+      "n_documents": 5,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 5.0,
+        "morphological": 5.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "5 syntactic realisations of one proposition: the company hired new engineers"
+    },
+    {
+      "id": "alt-team_bridge-n2",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "It was quickly that the team built the bridge.",
+        "What the team did was build the bridge quickly."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic realisations of one proposition: the team built the bridge quickly"
+    },
+    {
+      "id": "alt-team_bridge-n3",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "What the team did was build the bridge quickly.",
+        "The team built the bridge quickly.",
+        "The bridge was built quickly by the team."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic realisations of one proposition: the team built the bridge quickly"
+    },
+    {
+      "id": "alt-team_bridge-n4",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "Quickly, the team built the bridge.",
+        "The team built the bridge quickly.",
+        "The bridge was built quickly by the team.",
+        "It was quickly that the team built the bridge."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic realisations of one proposition: the team built the bridge quickly"
+    },
+    {
+      "id": "alt-team_bridge-n5",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "It was quickly that the team built the bridge.",
+        "What the team did was build the bridge quickly.",
+        "Quickly, the team built the bridge.",
+        "The bridge was built quickly by the team.",
+        "The team built the bridge quickly."
+      ],
+      "n_documents": 5,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 5.0,
+        "morphological": 5.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "5 syntactic realisations of one proposition: the team built the bridge quickly"
+    },
+    {
+      "id": "alt-student_answer-n2",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The answer was known to the student.",
+        "The student knew the answer."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic realisations of one proposition: the student knew the answer"
+    },
+    {
+      "id": "alt-student_answer-n3",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "It was the student who knew the answer.",
+        "The student knew the answer.",
+        "The answer was known to the student."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic realisations of one proposition: the student knew the answer"
+    },
+    {
+      "id": "alt-student_answer-n4",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The student knew the answer.",
+        "The answer, the student knew.",
+        "What the student knew was the answer.",
+        "The answer was known to the student."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic realisations of one proposition: the student knew the answer"
+    },
+    {
+      "id": "alt-student_answer-n5",
+      "family": "syntactic_alternations",
+      "target_level": "syntactic",
+      "documents": [
+        "The answer was known to the student.",
+        "It was the student who knew the answer.",
+        "The answer, the student knew.",
+        "The student knew the answer.",
+        "What the student knew was the answer."
+      ],
+      "n_documents": 5,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 5.0,
+        "morphological": 5.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "5 syntactic realisations of one proposition: the student knew the answer"
+    },
+    {
+      "id": "frame-k1-m2-0",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "Because the road flooded, the bus stopped.",
+        "After the meeting ended, the manager left."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k1-m2-1",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "The old woman watered the garden.",
+        "That young girl painted the wall."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k1-m2-2",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "She believes that the plan is sound.",
+        "I doubt that the story is true."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k1-m3-0",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "Open the door and close the window.",
+        "Take the money and leave the room.",
+        "Boil the water and add the salt."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k1-m3-1",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "The book on the table was missing.",
+        "The keys in the drawer were stolen.",
+        "The letter on the desk was opened."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k1-m3-2",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "There was a crack in the ceiling.",
+        "There is a stain on the carpet.",
+        "There is a knot in the rope."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k2-m2-0",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "That young girl painted the wall.",
+        "The book on the table was missing.",
+        "The tall boy kicked the ball.",
+        "The painting in the hall was damaged."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k2-m2-1",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "Boil the water and add the salt.",
+        "There is a stain on the carpet.",
+        "There was a gap in the fence.",
+        "Read the book and write the essay."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k2-m2-2",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "There is a stain on the carpet.",
+        "They think that the price is high.",
+        "There is a knot in the rope.",
+        "He knows that the answer is wrong."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k2-m3-0",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "After the meeting ended, the manager left.",
+        "That young girl painted the wall.",
+        "A red car struck the fence.",
+        "The old woman watered the garden.",
+        "Before the show started, the crowd cheered.",
+        "Because the road flooded, the bus stopped."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k2-m3-1",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "Read the book and write the essay.",
+        "There is a knot in the rope.",
+        "Open the door and close the window.",
+        "There is a stain on the carpet.",
+        "There was a gap in the fence.",
+        "Take the money and leave the room."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k2-m3-2",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "Because the road flooded, the bus stopped.",
+        "Boil the water and add the salt.",
+        "Before the show started, the crowd cheered.",
+        "Read the book and write the essay.",
+        "When the rain stopped, the children played.",
+        "Take the money and leave the room."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k3-m2-0",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "The old woman watered the garden.",
+        "There was a gap in the fence.",
+        "There is a stain on the carpet.",
+        "That young girl painted the wall.",
+        "When the rain stopped, the children played.",
+        "Because the road flooded, the bus stopped."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k3-m2-1",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "The old woman watered the garden.",
+        "There was a crack in the ceiling.",
+        "They think that the price is high.",
+        "She believes that the plan is sound.",
+        "That young girl painted the wall.",
+        "There is a stain on the carpet."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k3-m2-2",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "I doubt that the story is true.",
+        "After the meeting ended, the manager left.",
+        "There is a knot in the rope.",
+        "They think that the price is high.",
+        "When the rain stopped, the children played.",
+        "There was a crack in the ceiling."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k3-m3-0",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "Before the show started, the crowd cheered.",
+        "He knows that the answer is wrong.",
+        "The old woman watered the garden.",
+        "A red car struck the fence.",
+        "After the meeting ended, the manager left.",
+        "When the rain stopped, the children played.",
+        "That young girl painted the wall.",
+        "I doubt that the story is true.",
+        "She believes that the plan is sound."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k3-m3-1",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "I doubt that the story is true.",
+        "Take the money and leave the room.",
+        "Boil the water and add the salt.",
+        "He knows that the answer is wrong.",
+        "Because the road flooded, the bus stopped.",
+        "When the rain stopped, the children played.",
+        "They think that the price is high.",
+        "Before the show started, the crowd cheered.",
+        "Read the book and write the essay."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k3-m3-2",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "Boil the water and add the salt.",
+        "After the meeting ended, the manager left.",
+        "When the rain stopped, the children played.",
+        "The tall boy kicked the ball.",
+        "Read the book and write the essay.",
+        "Take the money and leave the room.",
+        "Before the show started, the crowd cheered.",
+        "The old woman watered the garden.",
+        "A red car struck the fence."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k4-m2-0",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "That young girl painted the wall.",
+        "There is a knot in the rope.",
+        "They think that the price is high.",
+        "The tall boy kicked the ball.",
+        "There is a stain on the carpet.",
+        "Because the road flooded, the bus stopped.",
+        "After the meeting ended, the manager left.",
+        "She believes that the plan is sound."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k4-m2-1",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "The tall boy kicked the ball.",
+        "The book on the table was missing.",
+        "There was a crack in the ceiling.",
+        "The keys in the drawer were stolen.",
+        "There was a gap in the fence.",
+        "Before the show started, the crowd cheered.",
+        "A red car struck the fence.",
+        "When the rain stopped, the children played."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k4-m2-2",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "There is a stain on the carpet.",
+        "The letter on the desk was opened.",
+        "I doubt that the story is true.",
+        "That young girl painted the wall.",
+        "The keys in the drawer were stolen.",
+        "They think that the price is high.",
+        "A red car struck the fence.",
+        "There was a crack in the ceiling."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic frames x 2 lexicalisations each"
+    },
+    {
+      "id": "frame-k4-m3-0",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "He knows that the answer is wrong.",
+        "I doubt that the story is true.",
+        "Boil the water and add the salt.",
+        "There is a stain on the carpet.",
+        "Open the door and close the window.",
+        "There was a crack in the ceiling.",
+        "Before the show started, the crowd cheered.",
+        "Take the money and leave the room.",
+        "When the rain stopped, the children played.",
+        "She believes that the plan is sound.",
+        "There was a gap in the fence.",
+        "After the meeting ended, the manager left."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k4-m3-1",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "There was a crack in the ceiling.",
+        "When the rain stopped, the children played.",
+        "I doubt that the story is true.",
+        "There is a knot in the rope.",
+        "After the meeting ended, the manager left.",
+        "That young girl painted the wall.",
+        "She believes that the plan is sound.",
+        "He knows that the answer is wrong.",
+        "Because the road flooded, the bus stopped.",
+        "A red car struck the fence.",
+        "The old woman watered the garden.",
+        "There is a stain on the carpet."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "frame-k4-m3-2",
+      "family": "syntactic_frames",
+      "target_level": "syntactic",
+      "documents": [
+        "There was a crack in the ceiling.",
+        "Read the book and write the essay.",
+        "That young girl painted the wall.",
+        "Boil the water and add the salt.",
+        "Take the money and leave the room.",
+        "There is a knot in the rope.",
+        "He knows that the answer is wrong.",
+        "There is a stain on the carpet.",
+        "The tall boy kicked the ball.",
+        "I doubt that the story is true.",
+        "The old woman watered the garden.",
+        "They think that the price is high."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 syntactic frames x 3 lexicalisations each"
+    },
+    {
+      "id": "morph-refuse_offer",
+      "family": "morphological_templates",
+      "target_level": "morphological",
+      "documents": [
+        "The offer was refused by him.",
+        "He refused the offer.",
+        "His refusal of the offer was final.",
+        "He was refusing the offer."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 morphological realisations of: refusing the offer"
+    },
+    {
+      "id": "morph-destroy_city",
+      "family": "morphological_templates",
+      "target_level": "morphological",
+      "documents": [
+        "The city lay destroyed by the army.",
+        "The army destroyed the city.",
+        "The city was destroyed by the army.",
+        "The army's destruction of the city was total."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 morphological realisations of: the destruction of the city"
+    },
+    {
+      "id": "morph-arrive_train",
+      "family": "morphological_templates",
+      "target_level": "morphological",
+      "documents": [
+        "The train was arriving.",
+        "The train had arrived.",
+        "The train arrived.",
+        "The arrival of the train was late."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 morphological realisations of: the train arriving"
+    },
+    {
+      "id": "morph-decide_committee",
+      "family": "morphological_templates",
+      "target_level": "morphological",
+      "documents": [
+        "The committee had been deciding.",
+        "The committee decided.",
+        "The committee's decision was unanimous.",
+        "A decision was reached by the committee."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 1.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 morphological realisations of: the committee deciding"
+    },
+    {
+      "id": "posid-elect_vs_give",
+      "family": "pos_identical_structure_different",
+      "target_level": "syntactic",
+      "documents": [
+        "They gave him money.",
+        "They elected him president."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "identical POS sequence (PRON VERB PRON NOUN), differing structure: object complement (oprd) vs ditransitive (dative)"
+    },
+    {
+      "id": "posid-call_vs_give",
+      "family": "pos_identical_structure_different",
+      "target_level": "syntactic",
+      "documents": [
+        "He called the boy a liar.",
+        "He gave the boy the book."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "identical POS sequence (PRON VERB DET NOUN DET NOUN), differing structure: double object vs object complement"
+    },
+    {
+      "id": "posid-consider_vs_send",
+      "family": "pos_identical_structure_different",
+      "target_level": "syntactic",
+      "documents": [
+        "I sent him a letter.",
+        "I consider him a friend."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "identical POS sequence (PRON VERB PRON DET NOUN), differing structure: object complement vs ditransitive"
+    },
+    {
+      "id": "posid-paint_vs_leave",
+      "family": "pos_identical_structure_different",
+      "target_level": "syntactic",
+      "documents": [
+        "The men left the house today.",
+        "The men painted the house red."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "identical POS sequence (DET NOUN VERB DET NOUN ADJ), differing structure: resultative complement vs temporal adjunct"
+    },
+    {
+      "id": "blind-easy_eager",
+      "family": "surface_parse_blind",
+      "target_level": "known_limitation",
+      "documents": [
+        "John is eager to please.",
+        "John is easy to please."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "invisible to a surface parse: tough-movement vs subject control"
+    },
+    {
+      "id": "blind-ready_chicken",
+      "family": "surface_parse_blind",
+      "target_level": "known_limitation",
+      "documents": [
+        "The chicken is ready to eat.",
+        "The chicken is likely to eat."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "invisible to a surface parse: control vs raising"
+    },
+    {
+      "id": "blind-pp_attachment",
+      "family": "surface_parse_blind",
+      "target_level": "known_limitation",
+      "documents": [
+        "She watched the man with the telescope.",
+        "She watched the man with the beard."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "invisible to a surface parse: instrument vs modifier PP; spaCy attaches both to the verb"
+    },
+    {
+      "id": "blind-promise_persuade",
+      "family": "surface_parse_blind",
+      "target_level": "known_limitation",
+      "documents": [
+        "I persuaded him to leave.",
+        "I promised him to leave."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "invisible to a surface parse: subject control vs object control"
+    },
+    {
+      "id": "meter-k1-m2-0",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "And the sheen of their spears was like stars.",
+        "It was late in the night when he came."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 1.0,
+        "phonemic": null
+      },
+      "rationale": "1 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k1-m2-1",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "Peter picked a peck quickly.",
+        "Tiger tiger burning bright."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 1.0,
+        "phonemic": null
+      },
+      "rationale": "1 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k1-m2-2",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "And the sheen of their spears was like stars.",
+        "It was late in the night when he came."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 1.0,
+        "phonemic": null
+      },
+      "rationale": "1 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k1-m3-0",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "And the sheen of their spears was like stars.",
+        "It was late in the night when he came.",
+        "On the edge of the world there is light."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 1.0,
+        "phonemic": null
+      },
+      "rationale": "1 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k1-m3-1",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "A light within the room was dim.",
+        "The clock upon the wall was slow.",
+        "A bird beneath the bridge has flown."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 1.0,
+        "phonemic": null
+      },
+      "rationale": "1 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k1-m3-2",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "The clock upon the wall was slow.",
+        "A light within the room was dim.",
+        "The road beyond the hill was long."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 1.0,
+        "phonemic": null
+      },
+      "rationale": "1 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k2-m2-0",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "Double double toil and trouble.",
+        "Water falling over boulders.",
+        "The road beyond the hill was long.",
+        "A light within the room was dim."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "2 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k2-m2-1",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "This is the forest primeval.",
+        "The clock upon the wall was slow.",
+        "A bird beneath the bridge has flown.",
+        "Merrily onward the travellers wandered."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "2 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k2-m2-2",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "Double double toil and trouble.",
+        "In the blink of an eye it was gone.",
+        "And the sheen of their spears was like stars.",
+        "Tiger tiger burning bright."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "2 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k2-m3-0",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "A light within the room was dim.",
+        "A bird beneath the bridge has flown.",
+        "In the blink of an eye it was gone.",
+        "The clock upon the wall was slow.",
+        "On the edge of the world there is light.",
+        "It was late in the night when he came."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "2 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k2-m3-1",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "Half of the company faltered and scattered.",
+        "This is the forest primeval.",
+        "In the blink of an eye it was gone.",
+        "On the edge of the world there is light.",
+        "Cannon to right of them thundered.",
+        "It was late in the night when he came."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "2 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k2-m3-2",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "In the blink of an eye it was gone.",
+        "And the sheen of their spears was like stars.",
+        "A light within the room was dim.",
+        "The road beyond the hill was long.",
+        "A bird beneath the bridge has flown.",
+        "It was late in the night when he came."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "2 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k3-m2-0",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "This is the forest primeval.",
+        "The road beyond the hill was long.",
+        "A bird beneath the bridge has flown.",
+        "Cannon to right of them thundered.",
+        "Water falling over boulders.",
+        "Tiger tiger burning bright."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 3.0,
+        "phonemic": null
+      },
+      "rationale": "3 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k3-m2-1",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "A light within the room was dim.",
+        "Half of the company faltered and scattered.",
+        "Merrily onward the travellers wandered.",
+        "Water falling over boulders.",
+        "The road beyond the hill was long.",
+        "Double double toil and trouble."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 3.0,
+        "phonemic": null
+      },
+      "rationale": "3 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k3-m2-2",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "The clock upon the wall was slow.",
+        "Tiger tiger burning bright.",
+        "Double double toil and trouble.",
+        "Cannon to right of them thundered.",
+        "Half of the company faltered and scattered.",
+        "The road beyond the hill was long."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 3.0,
+        "phonemic": null
+      },
+      "rationale": "3 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k3-m3-0",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "Half of the company faltered and scattered.",
+        "Tiger tiger burning bright.",
+        "A light within the room was dim.",
+        "Double double toil and trouble.",
+        "This is the forest primeval.",
+        "The clock upon the wall was slow.",
+        "The road beyond the hill was long.",
+        "Peter picked a peck quickly.",
+        "Cannon to right of them thundered."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 3.0,
+        "phonemic": null
+      },
+      "rationale": "3 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k3-m3-1",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "Half of the company faltered and scattered.",
+        "This is the forest primeval.",
+        "On the edge of the world there is light.",
+        "Merrily onward the travellers wandered.",
+        "In the blink of an eye it was gone.",
+        "A light within the room was dim.",
+        "The clock upon the wall was slow.",
+        "The road beyond the hill was long.",
+        "And the sheen of their spears was like stars."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 3.0,
+        "phonemic": null
+      },
+      "rationale": "3 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k3-m3-2",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "This is the forest primeval.",
+        "The road beyond the hill was long.",
+        "On the edge of the world there is light.",
+        "And the sheen of their spears was like stars.",
+        "In the blink of an eye it was gone.",
+        "A bird beneath the bridge has flown.",
+        "Half of the company faltered and scattered.",
+        "A light within the room was dim.",
+        "Merrily onward the travellers wandered."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 3.0,
+        "phonemic": null
+      },
+      "rationale": "3 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k4-m2-0",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "And the sheen of their spears was like stars.",
+        "The road beyond the hill was long.",
+        "A light within the room was dim.",
+        "Peter picked a peck quickly.",
+        "Half of the company faltered and scattered.",
+        "In the blink of an eye it was gone.",
+        "Tiger tiger burning bright.",
+        "Merrily onward the travellers wandered."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 4.0,
+        "phonemic": null
+      },
+      "rationale": "4 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k4-m2-1",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "A light within the room was dim.",
+        "Cannon to right of them thundered.",
+        "It was late in the night when he came.",
+        "The road beyond the hill was long.",
+        "Water falling over boulders.",
+        "Merrily onward the travellers wandered.",
+        "And the sheen of their spears was like stars.",
+        "Double double toil and trouble."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 4.0,
+        "phonemic": null
+      },
+      "rationale": "4 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k4-m2-2",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "In the blink of an eye it was gone.",
+        "Half of the company faltered and scattered.",
+        "A bird beneath the bridge has flown.",
+        "Water falling over boulders.",
+        "The road beyond the hill was long.",
+        "Double double toil and trouble.",
+        "This is the forest primeval.",
+        "It was late in the night when he came."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 4.0,
+        "phonemic": null
+      },
+      "rationale": "4 metrical patterns x 2 lines each"
+    },
+    {
+      "id": "meter-k4-m3-0",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "Water falling over boulders.",
+        "The clock upon the wall was slow.",
+        "The road beyond the hill was long.",
+        "A light within the room was dim.",
+        "It was late in the night when he came.",
+        "Double double toil and trouble.",
+        "This is the forest primeval.",
+        "Peter picked a peck quickly.",
+        "On the edge of the world there is light.",
+        "Cannon to right of them thundered.",
+        "Half of the company faltered and scattered.",
+        "In the blink of an eye it was gone."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 4.0,
+        "phonemic": null
+      },
+      "rationale": "4 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k4-m3-1",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "It was late in the night when he came.",
+        "Peter picked a peck quickly.",
+        "Water falling over boulders.",
+        "The clock upon the wall was slow.",
+        "And the sheen of their spears was like stars.",
+        "A light within the room was dim.",
+        "On the edge of the world there is light.",
+        "Tiger tiger burning bright.",
+        "The road beyond the hill was long.",
+        "This is the forest primeval.",
+        "Half of the company faltered and scattered.",
+        "Cannon to right of them thundered."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 4.0,
+        "phonemic": null
+      },
+      "rationale": "4 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "meter-k4-m3-2",
+      "family": "rhythmic_meters",
+      "target_level": "rhythmic",
+      "documents": [
+        "A light within the room was dim.",
+        "Half of the company faltered and scattered.",
+        "The road beyond the hill was long.",
+        "A bird beneath the bridge has flown.",
+        "On the edge of the world there is light.",
+        "Cannon to right of them thundered.",
+        "Double double toil and trouble.",
+        "And the sheen of their spears was like stars.",
+        "Merrily onward the travellers wandered.",
+        "In the blink of an eye it was gone.",
+        "Tiger tiger burning bright.",
+        "Peter picked a peck quickly."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 4.0,
+        "phonemic": null
+      },
+      "rationale": "4 metrical patterns x 3 lines each"
+    },
+    {
+      "id": "oronym-ice_cream",
+      "family": "phonemic_oronyms",
+      "target_level": "phonemic",
+      "documents": [
+        "Ice cream for the treat.",
+        "I scream for the treat."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 1.0
+      },
+      "rationale": "2 near-homophonic sentences with unrelated meanings"
+    },
+    {
+      "id": "oronym-sons_raise_meat",
+      "family": "phonemic_oronyms",
+      "target_level": "phonemic",
+      "documents": [
+        "The sons raise meat.",
+        "The sun's rays meet."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 1.0
+      },
+      "rationale": "2 near-homophonic sentences with unrelated meanings"
+    },
+    {
+      "id": "oronym-four_candles",
+      "family": "phonemic_oronyms",
+      "target_level": "phonemic",
+      "documents": [
+        "He asked for four candles.",
+        "He asked for fork handles."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 1.0
+      },
+      "rationale": "2 near-homophonic sentences with unrelated meanings"
+    },
+    {
+      "id": "oronym-mince_pie",
+      "family": "phonemic_oronyms",
+      "target_level": "phonemic",
+      "documents": [
+        "They served mint spies.",
+        "They served mince pies."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 1.0
+      },
+      "rationale": "2 near-homophonic sentences with unrelated meanings"
+    },
+    {
+      "id": "oronym-grade_a",
+      "family": "phonemic_oronyms",
+      "target_level": "phonemic",
+      "documents": [
+        "That was a grey day result.",
+        "That was a grade A result."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 1.0
+      },
+      "rationale": "2 near-homophonic sentences with unrelated meanings"
+    },
+    {
+      "id": "oronym-youth_in_asia",
+      "family": "phonemic_oronyms",
+      "target_level": "phonemic",
+      "documents": [
+        "The debate concerned euthanasia.",
+        "The debate concerned youth in Asia."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 1.0
+      },
+      "rationale": "2 near-homophonic sentences with unrelated meanings"
+    },
+    {
+      "id": "oronym-an_aim",
+      "family": "phonemic_oronyms",
+      "target_level": "phonemic",
+      "documents": [
+        "She had an aim in mind.",
+        "She had a name in mind."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 1.0
+      },
+      "rationale": "2 near-homophonic sentences with unrelated meanings"
+    },
+    {
+      "id": "oronym-stuff_he_needs",
+      "family": "phonemic_oronyms",
+      "target_level": "phonemic",
+      "documents": [
+        "That is the stuff he kneads.",
+        "That is the stuff he needs."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 1.0
+      },
+      "rationale": "2 near-homophonic sentences with unrelated meanings"
+    },
+    {
+      "id": "phon-at_rhymes",
+      "family": "phonemic_minimal_pairs",
+      "target_level": "phonemic",
+      "documents": [
+        "The hat sat there.",
+        "The cat sat there.",
+        "The mat sat there.",
+        "The bat sat there."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": null,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 4.0
+      },
+      "rationale": "4 sentences differing in one phoneme"
+    },
+    {
+      "id": "phon-ight_rhymes",
+      "family": "phonemic_minimal_pairs",
+      "target_level": "phonemic",
+      "documents": [
+        "The night was gone.",
+        "The light was gone.",
+        "The sight was gone.",
+        "The might was gone."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": null,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 4.0
+      },
+      "rationale": "4 sentences differing in one phoneme"
+    },
+    {
+      "id": "phon-distant_controls",
+      "family": "phonemic_minimal_pairs",
+      "target_level": "phonemic",
+      "documents": [
+        "The thrush glimpsed movement.",
+        "The cat sat there.",
+        "The wolf slept nearby.",
+        "The ox brushed through."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": null,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": 4.0
+      },
+      "rationale": "control set: same frame, phonemically distant heads"
+    },
+    {
+      "id": "random-n2-0",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "That young girl painted the wall.",
+        "The city was destroyed by the army."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": 2.0,
+        "phonemic": 2.0
+      },
+      "rationale": "2 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n2-1",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "Tiger tiger burning bright.",
+        "They think that the price is high."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": 2.0,
+        "phonemic": 2.0
+      },
+      "rationale": "2 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n2-2",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "After the meeting ended, the manager left.",
+        "Peter picked a peck quickly."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": 2.0,
+        "rhythmic": 2.0,
+        "phonemic": 2.0
+      },
+      "rationale": "2 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n3-0",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "The city lay destroyed by the army.",
+        "And the sheen of their spears was like stars.",
+        "There is a stain on the carpet."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": 3.0,
+        "phonemic": 3.0
+      },
+      "rationale": "3 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n3-1",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "The keys in the drawer were stolen.",
+        "There is a knot in the rope.",
+        "The city was destroyed by the army."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": 3.0,
+        "phonemic": 3.0
+      },
+      "rationale": "3 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n3-2",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "The arrival of the train was late.",
+        "The city lay destroyed by the army.",
+        "That young girl painted the wall."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 3.0,
+        "morphological": 3.0,
+        "rhythmic": 3.0,
+        "phonemic": 3.0
+      },
+      "rationale": "3 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n4-0",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "There was a gap in the fence.",
+        "The book on the table was missing.",
+        "In the blink of an eye it was gone.",
+        "Cannon to right of them thundered."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": 4.0,
+        "phonemic": 4.0
+      },
+      "rationale": "4 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n4-1",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "She believes that the plan is sound.",
+        "They think that the price is high.",
+        "That young girl painted the wall.",
+        "A decision was reached by the committee."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": 4.0,
+        "phonemic": 4.0
+      },
+      "rationale": "4 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n4-2",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "Boil the water and add the salt.",
+        "And the sheen of their spears was like stars.",
+        "The book on the table was missing.",
+        "Read the book and write the essay."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 4.0,
+        "morphological": 4.0,
+        "rhythmic": 4.0,
+        "phonemic": 4.0
+      },
+      "rationale": "4 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n6-0",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "He was refusing the offer.",
+        "Before the show started, the crowd cheered.",
+        "The road beyond the hill was long.",
+        "This is the forest primeval.",
+        "After the meeting ended, the manager left.",
+        "Peter picked a peck quickly."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 6.0,
+        "morphological": 6.0,
+        "rhythmic": 6.0,
+        "phonemic": 6.0
+      },
+      "rationale": "6 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n6-1",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "A decision was reached by the committee.",
+        "Merrily onward the travellers wandered.",
+        "Open the door and close the window.",
+        "Cannon to right of them thundered.",
+        "The committee had been deciding.",
+        "The committee's decision was unanimous."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 6.0,
+        "morphological": 6.0,
+        "rhythmic": 6.0,
+        "phonemic": 6.0
+      },
+      "rationale": "6 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n6-2",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "The city was destroyed by the army.",
+        "They think that the price is high.",
+        "He knows that the answer is wrong.",
+        "He was refusing the offer.",
+        "The committee's decision was unanimous.",
+        "The letter on the desk was opened."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 6.0,
+        "morphological": 6.0,
+        "rhythmic": 6.0,
+        "phonemic": 6.0
+      },
+      "rationale": "6 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n8-0",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "The train was arriving.",
+        "There was a gap in the fence.",
+        "Read the book and write the essay.",
+        "He knows that the answer is wrong.",
+        "The committee's decision was unanimous.",
+        "He was refusing the offer.",
+        "And the sheen of their spears was like stars.",
+        "A light within the room was dim."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 8.0,
+        "morphological": 8.0,
+        "rhythmic": 8.0,
+        "phonemic": 8.0
+      },
+      "rationale": "8 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n8-1",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "The arrival of the train was late.",
+        "And the sheen of their spears was like stars.",
+        "The letter on the desk was opened.",
+        "Half of the company faltered and scattered.",
+        "The road beyond the hill was long.",
+        "There was a crack in the ceiling.",
+        "Before the show started, the crowd cheered.",
+        "Peter picked a peck quickly."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 8.0,
+        "morphological": 8.0,
+        "rhythmic": 8.0,
+        "phonemic": 8.0
+      },
+      "rationale": "8 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n8-2",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "The train arrived.",
+        "He was refusing the offer.",
+        "I doubt that the story is true.",
+        "His refusal of the offer was final.",
+        "The offer was refused by him.",
+        "The tall boy kicked the ball.",
+        "The painting in the hall was damaged.",
+        "The committee decided."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 8.0,
+        "morphological": 8.0,
+        "rhythmic": 8.0,
+        "phonemic": 8.0
+      },
+      "rationale": "8 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n9-0",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "The committee decided.",
+        "The offer was refused by him.",
+        "On the edge of the world there is light.",
+        "He refused the offer.",
+        "The city was destroyed by the army.",
+        "Because the road flooded, the bus stopped.",
+        "Take the money and leave the room.",
+        "Double double toil and trouble.",
+        "The committee's decision was unanimous."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 9.0,
+        "morphological": 9.0,
+        "rhythmic": 9.0,
+        "phonemic": 9.0
+      },
+      "rationale": "9 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n9-1",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "Because the road flooded, the bus stopped.",
+        "After the meeting ended, the manager left.",
+        "I doubt that the story is true.",
+        "Open the door and close the window.",
+        "The city was destroyed by the army.",
+        "On the edge of the world there is light.",
+        "They think that the price is high.",
+        "A light within the room was dim.",
+        "The committee decided."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 9.0,
+        "morphological": 9.0,
+        "rhythmic": 9.0,
+        "phonemic": 9.0
+      },
+      "rationale": "9 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n9-2",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "On the edge of the world there is light.",
+        "This is the forest primeval.",
+        "There was a gap in the fence.",
+        "Read the book and write the essay.",
+        "A red car struck the fence.",
+        "Boil the water and add the salt.",
+        "The offer was refused by him.",
+        "A bird beneath the bridge has flown.",
+        "He knows that the answer is wrong."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 9.0,
+        "morphological": 9.0,
+        "rhythmic": 9.0,
+        "phonemic": 9.0
+      },
+      "rationale": "9 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n12-0",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "A light within the room was dim.",
+        "He knows that the answer is wrong.",
+        "And the sheen of their spears was like stars.",
+        "The tall boy kicked the ball.",
+        "They think that the price is high.",
+        "A bird beneath the bridge has flown.",
+        "There is a knot in the rope.",
+        "Take the money and leave the room.",
+        "Half of the company faltered and scattered.",
+        "The road beyond the hill was long.",
+        "The arrival of the train was late.",
+        "Tiger tiger burning bright."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 12.0,
+        "morphological": 12.0,
+        "rhythmic": 12.0,
+        "phonemic": 12.0
+      },
+      "rationale": "12 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n12-1",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "Double double toil and trouble.",
+        "Half of the company faltered and scattered.",
+        "The train arrived.",
+        "A bird beneath the bridge has flown.",
+        "In the blink of an eye it was gone.",
+        "Before the show started, the crowd cheered.",
+        "There was a crack in the ceiling.",
+        "This is the forest primeval.",
+        "Because the road flooded, the bus stopped.",
+        "The painting in the hall was damaged.",
+        "The old woman watered the garden.",
+        "The city was destroyed by the army."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 12.0,
+        "morphological": 12.0,
+        "rhythmic": 12.0,
+        "phonemic": 12.0
+      },
+      "rationale": "12 unrelated sentences drawn at random: diversity ceiling"
+    },
+    {
+      "id": "random-n12-2",
+      "family": "random_controls",
+      "target_level": "ceiling",
+      "documents": [
+        "It was late in the night when he came.",
+        "A decision was reached by the committee.",
+        "A bird beneath the bridge has flown.",
+        "Tiger tiger burning bright.",
+        "Because the road flooded, the bus stopped.",
+        "Before the show started, the crowd cheered.",
+        "The offer was refused by him.",
+        "The train had arrived.",
+        "The committee's decision was unanimous.",
+        "The old woman watered the garden.",
+        "The city was destroyed by the army.",
+        "The army destroyed the city."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 12.0,
+        "morphological": 12.0,
+        "rhythmic": 12.0,
+        "phonemic": 12.0
+      },
+      "rationale": "12 unrelated sentences drawn at random: diversity ceiling"
+    }
+  ],
+  "contrasts": [
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-0",
+      "lesser": "alt-chef_meal-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n2",
+      "lesser": "frame-k1-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-1",
+      "lesser": "alt-chef_meal-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n2",
+      "lesser": "frame-k1-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-2",
+      "lesser": "alt-chef_meal-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n2",
+      "lesser": "frame-k1-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-0",
+      "lesser": "alt-storm_roof-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n2",
+      "lesser": "frame-k1-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-1",
+      "lesser": "alt-storm_roof-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n2",
+      "lesser": "frame-k1-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-2",
+      "lesser": "alt-storm_roof-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n2",
+      "lesser": "frame-k1-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-0",
+      "lesser": "alt-letter_brother-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n2",
+      "lesser": "frame-k1-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-1",
+      "lesser": "alt-letter_brother-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n2",
+      "lesser": "frame-k1-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-2",
+      "lesser": "alt-letter_brother-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n2",
+      "lesser": "frame-k1-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-0",
+      "lesser": "alt-company_engineers-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n2",
+      "lesser": "frame-k1-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-1",
+      "lesser": "alt-company_engineers-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n2",
+      "lesser": "frame-k1-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-2",
+      "lesser": "alt-company_engineers-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n2",
+      "lesser": "frame-k1-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-0",
+      "lesser": "alt-team_bridge-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n2",
+      "lesser": "frame-k1-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-1",
+      "lesser": "alt-team_bridge-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n2",
+      "lesser": "frame-k1-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-2",
+      "lesser": "alt-team_bridge-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n2",
+      "lesser": "frame-k1-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-0",
+      "lesser": "alt-student_answer-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n2",
+      "lesser": "frame-k1-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-1",
+      "lesser": "alt-student_answer-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n2",
+      "lesser": "frame-k1-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m2-2",
+      "lesser": "alt-student_answer-n2",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n2",
+      "lesser": "frame-k1-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-0",
+      "lesser": "alt-chef_meal-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n3",
+      "lesser": "frame-k1-m3-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-1",
+      "lesser": "alt-chef_meal-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n3",
+      "lesser": "frame-k1-m3-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-2",
+      "lesser": "alt-chef_meal-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n3",
+      "lesser": "frame-k1-m3-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-0",
+      "lesser": "alt-storm_roof-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n3",
+      "lesser": "frame-k1-m3-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-1",
+      "lesser": "alt-storm_roof-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n3",
+      "lesser": "frame-k1-m3-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-2",
+      "lesser": "alt-storm_roof-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n3",
+      "lesser": "frame-k1-m3-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-0",
+      "lesser": "alt-letter_brother-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n3",
+      "lesser": "frame-k1-m3-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-1",
+      "lesser": "alt-letter_brother-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n3",
+      "lesser": "frame-k1-m3-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-2",
+      "lesser": "alt-letter_brother-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n3",
+      "lesser": "frame-k1-m3-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-0",
+      "lesser": "alt-company_engineers-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n3",
+      "lesser": "frame-k1-m3-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-1",
+      "lesser": "alt-company_engineers-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n3",
+      "lesser": "frame-k1-m3-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-2",
+      "lesser": "alt-company_engineers-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n3",
+      "lesser": "frame-k1-m3-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-0",
+      "lesser": "alt-team_bridge-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n3",
+      "lesser": "frame-k1-m3-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-1",
+      "lesser": "alt-team_bridge-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n3",
+      "lesser": "frame-k1-m3-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-2",
+      "lesser": "alt-team_bridge-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n3",
+      "lesser": "frame-k1-m3-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-0",
+      "lesser": "alt-student_answer-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n3",
+      "lesser": "frame-k1-m3-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-1",
+      "lesser": "alt-student_answer-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n3",
+      "lesser": "frame-k1-m3-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k1-m3-2",
+      "lesser": "alt-student_answer-n3",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n3",
+      "lesser": "frame-k1-m3-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-0",
+      "lesser": "alt-chef_meal-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n4",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-1",
+      "lesser": "alt-chef_meal-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n4",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-2",
+      "lesser": "alt-chef_meal-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-chef_meal-n4",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-0",
+      "lesser": "alt-storm_roof-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n4",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-1",
+      "lesser": "alt-storm_roof-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n4",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-2",
+      "lesser": "alt-storm_roof-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-storm_roof-n4",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-0",
+      "lesser": "alt-letter_brother-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n4",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-1",
+      "lesser": "alt-letter_brother-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n4",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-2",
+      "lesser": "alt-letter_brother-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-letter_brother-n4",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-0",
+      "lesser": "alt-company_engineers-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n4",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-1",
+      "lesser": "alt-company_engineers-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n4",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-2",
+      "lesser": "alt-company_engineers-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-company_engineers-n4",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-0",
+      "lesser": "alt-team_bridge-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n4",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-1",
+      "lesser": "alt-team_bridge-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n4",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-2",
+      "lesser": "alt-team_bridge-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-team_bridge-n4",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-0",
+      "lesser": "alt-student_answer-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n4",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-1",
+      "lesser": "alt-student_answer-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n4",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "semantic",
+      "kind": "inverse_pair",
+      "greater": "frame-k2-m2-2",
+      "lesser": "alt-student_answer-n4",
+      "rationale": "distinct propositions vs one proposition restated"
+    },
+    {
+      "level": "syntactic",
+      "kind": "inverse_pair",
+      "greater": "alt-student_answer-n4",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n structures vs n lexicalisations of few structures"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-refuse_offer",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-refuse_offer",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-refuse_offer",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-destroy_city",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-destroy_city",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-destroy_city",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-arrive_train",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-arrive_train",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-arrive_train",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-decide_committee",
+      "lesser": "frame-k2-m2-0",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-decide_committee",
+      "lesser": "frame-k2-m2-1",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "morphological",
+      "kind": "inverse_pair",
+      "greater": "morph-decide_committee",
+      "lesser": "frame-k2-m2-2",
+      "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates"
+    },
+    {
+      "level": "phonemic",
+      "kind": "inverse_pair",
+      "greater": "phon-distant_controls",
+      "lesser": "phon-at_rhymes",
+      "rationale": "phonemically distant heads vs single-phoneme minimal pairs"
+    },
+    {
+      "level": "phonemic",
+      "kind": "inverse_pair",
+      "greater": "phon-distant_controls",
+      "lesser": "phon-ight_rhymes",
+      "rationale": "phonemically distant heads vs single-phoneme minimal pairs"
+    },
+    {
+      "level": "__within_corpus__",
+      "corpus": "posid-elect_vs_give",
+      "greater_level": "syntactic",
+      "lesser_level": "morphological",
+      "rationale": "identical POS sequence, differing dependency structure"
+    },
+    {
+      "level": "__within_corpus__",
+      "corpus": "posid-call_vs_give",
+      "greater_level": "syntactic",
+      "lesser_level": "morphological",
+      "rationale": "identical POS sequence, differing dependency structure"
+    },
+    {
+      "level": "__within_corpus__",
+      "corpus": "posid-consider_vs_send",
+      "greater_level": "syntactic",
+      "lesser_level": "morphological",
+      "rationale": "identical POS sequence, differing dependency structure"
+    },
+    {
+      "level": "__within_corpus__",
+      "corpus": "posid-paint_vs_leave",
+      "greater_level": "syntactic",
+      "lesser_level": "morphological",
+      "rationale": "identical POS sequence, differing dependency structure"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n2-0",
+      "lesser": "alt-chef_meal-n2",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=2"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n2-0",
+      "lesser": "alt-storm_roof-n2",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=2"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n2-0",
+      "lesser": "alt-letter_brother-n2",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=2"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n3-0",
+      "lesser": "alt-chef_meal-n3",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=3"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n3-0",
+      "lesser": "alt-storm_roof-n3",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=3"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n3-0",
+      "lesser": "alt-letter_brother-n3",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=3"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n4-0",
+      "lesser": "alt-chef_meal-n4",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=4"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n4-0",
+      "lesser": "alt-storm_roof-n4",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=4"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n4-0",
+      "lesser": "alt-letter_brother-n4",
+      "rationale": "random ceiling vs semantically compressed syntactic_alternations at n=4"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n4-0",
+      "lesser": "morph-refuse_offer",
+      "rationale": "random ceiling vs semantically compressed morphological_templates at n=4"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n4-0",
+      "lesser": "morph-destroy_city",
+      "rationale": "random ceiling vs semantically compressed morphological_templates at n=4"
+    },
+    {
+      "level": "semantic",
+      "kind": "ceiling",
+      "greater": "random-n4-0",
+      "lesser": "morph-arrive_train",
+      "rationale": "random ceiling vs semantically compressed morphological_templates at n=4"
+    }
+  ]
+}
