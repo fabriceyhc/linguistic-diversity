@@ -31,6 +31,7 @@ from typing import Any
 from scipy.stats import spearmanr
 
 from linguistic_diversity import (
+    ConstituencyParse,
     DependencyParse,
     DistinctN,
     DocumentSemantics,
@@ -38,6 +39,7 @@ from linguistic_diversity import (
     Phonemic,
     Rhythmic,
     SelfBLEU,
+    TokenSemantics,
     TypeTokenRatio,
     clear_model_cache,
 )
@@ -51,7 +53,11 @@ DEFAULT_OUT = HERE / "output" / "results.json"
 # benchmark is that they respond to everything.
 METRICS: dict[str, tuple[Any, str | None]] = {
     "DocumentSemantics": (lambda: DocumentSemantics({"verbose": False}), "semantic"),
+    "TokenSemantics": (lambda: TokenSemantics({"verbose": False}), "semantic"),
     "DependencyParse": (lambda: DependencyParse({"verbose": False}), "syntactic"),
+    # Needs the [syntactic] extra (benepar). Skipped with a note when absent
+    # rather than silently dropped -- an unscored metric must be visible.
+    "ConstituencyParse": (lambda: ConstituencyParse({"verbose": False}), "syntactic"),
     "PartOfSpeechSequence": (lambda: PartOfSpeechSequence({"verbose": False}), "morphological"),
     "Rhythmic": (lambda: Rhythmic({"verbose": False}), "rhythmic"),
     "Phonemic": (lambda: Phonemic({"verbose": False}), "phonemic"),
@@ -62,6 +68,12 @@ METRICS: dict[str, tuple[Any, str | None]] = {
 
 # SelfBLEU is a similarity, not a diversity: lower means more diverse.
 LOWER_IS_DIVERSE = {"SelfBLEU"}
+
+# Metrics whose species are tokens rather than documents. The benchmark's ground
+# truth counts *documents* (k concepts, k frames), so an absolute ratio against it
+# is meaningless for these -- a corpus of k concepts contains many more than k
+# token species. Rank agreement still applies; the magnitude does not.
+TOKEN_UNIT = {"TokenSemantics"}
 
 
 def score_corpora(benchmark: dict, only: list[str] | None) -> dict[str, dict[str, float]]:
@@ -121,13 +133,15 @@ def calibration(benchmark: dict, scores: dict[str, dict[str, float]]) -> dict[st
             out[name] = {"level": level, "n": len(observed), "note": "insufficient variation"}
             continue
         rho, p = spearmanr(observed, expected)
-        ratios = [o / e for o, e in zip(observed, expected) if e > 0 and name not in LOWER_IS_DIVERSE]
+        scale_comparable = name not in LOWER_IS_DIVERSE and name not in TOKEN_UNIT
+        ratios = [o / e for o, e in zip(observed, expected) if e > 0] if scale_comparable else []
         out[name] = {
             "level": level,
             "n": len(observed),
             "spearman_vs_expected": round(float(rho), 4),
             "p_value": round(float(p), 6),
             "median_ratio": round(statistics.median(ratios), 4) if ratios else None,
+            "unit": "token" if name in TOKEN_UNIT else "document",
         }
     return out
 
@@ -256,13 +270,16 @@ def main() -> None:
     print("CALIBRATION at each metric's own level")
     print("-" * 74)
     print(f"  {'metric':24s} {'level':14s} {'rho':>8s} {'ratio':>8s} {'n':>5s}")
+    print(f"  {'':24s} {'':14s} {'':>8s} {'(n/a = token-unit metric;':>8s}")
+    print(f"  {'':24s} {'':14s} {'':>8s} {' ground truth counts documents)':>8s}")
     for name, r in results["calibration"].items():
         if "spearman_vs_expected" not in r:
             print(f"  {name:24s} {r['level']:14s} {r.get('note', '')}")
             continue
         ratio = r["median_ratio"]
+        cell = f"{ratio:8.3f}" if ratio is not None else f"{'n/a':>8s}"
         print(f"  {name:24s} {r['level']:14s} {r['spearman_vs_expected']:8.3f} "
-              f"{ratio if ratio is not None else float('nan'):8.3f} {r['n']:5d}")
+              f"{cell} {r['n']:5d}")
 
     print(f"\n{'=' * 74}")
     print("CONTRAST ACCURACY by level")

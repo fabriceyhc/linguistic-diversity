@@ -10,7 +10,7 @@ cannot express: **discriminant validity**.
 
 ```bash
 python build_benchmark.py      # 116 corpora, 138 contrasts, deterministic
-python evaluate_metrics.py     # scores 8 metrics, writes output/results.json
+python evaluate_metrics.py     # scores all 10 metrics, writes output/results.json
 ```
 
 ## The design
@@ -54,13 +54,23 @@ metrics → 1.0, structural metrics → 0.0, uninformative → 0.5.
 | `TypeTokenRatio` | *(baseline)* | 1.000 | 54 |
 | `DistinctN` | *(baseline)* | 1.000 | 54 |
 | `SelfBLEU` | *(baseline)* | 0.944 | 54 |
-| `Phonemic` | phonemic | 0.259 | 54 |
+| `TokenSemantics` | semantic | 0.833 | 54 |
+| `Phonemic` | phonemic | 0.389 | 54 |
 | `DependencyParse` | syntactic | **0.000** | 54 |
+| `ConstituencyParse` | syntactic | **0.000** | 54 |
 | `PartOfSpeechSequence` | morphological | **0.000** | 54 |
-| `Rhythmic` | rhythmic | **0.000** | 54 |
+| `Rhythmic` | rhythmic | 0.315 | 54 |
 
-The separation is total: every structural metric is at the floor, the semantic metric at
-the ceiling. Nothing sits near 0.5.
+The syntactic and morphological metrics sit at the floor and the semantic metric at the
+ceiling — a total separation. The two phonological metrics land at 0.32–0.39, nearer the
+uninformative midpoint: they lean structural but do not resolve form from content the way
+the parse-based metrics do.
+
+The alignment-similarity fix in v1.0.3 moved these numbers. Before it,
+`PartOfSpeechSequence`, `Rhythmic` and `Phonemic` all produced *negative* similarities and
+saturated on larger corpora, which made them look more sharply structural than they are.
+The ratios below dropped for the same reason: the previous figures were flattered by
+invalid negatives inflating diversity toward the truth.
 
 **But the lexical baselines tie with `DocumentSemantics` at 1.000.** This benchmark does
 not indict them, because its alternations vary vocabulary as well as structure (a passive
@@ -75,9 +85,23 @@ complementary and neither is sufficient alone. Report both.
 |---|---|---:|---:|---:|
 | `DocumentSemantics` | semantic | **0.963** | 0.705 | 113 |
 | `DependencyParse` | syntactic | 0.959 | **0.986** | 81 |
-| `PartOfSpeechSequence` | morphological | 0.929 | 0.626 | 81 |
-| `Phonemic` | phonemic | 0.887 | 0.547 | 32 |
-| `Rhythmic` | rhythmic | 0.792 | 0.900 | 45 |
+| `ConstituencyParse` | syntactic | 0.953 | 0.981 | 81 |
+| `Phonemic` | phonemic | 0.889 | 0.363 | 32 |
+| `PartOfSpeechSequence` | morphological | 0.877 | 0.419 | 81 |
+| `TokenSemantics` | semantic | 0.839 | *n/a* | 113 |
+| `Rhythmic` | rhythmic | 0.769 | 0.448 | 45 |
+
+`TokenSemantics` has no ratio because its species are **tokens** while the benchmark's
+ground truth counts documents — a corpus of *k* concepts contains far more than *k* token
+species, so an absolute comparison is meaningless (it reads 3.3x if computed anyway). Its
+rank agreement is meaningful and is the weakest of the two semantic metrics, as is its
+inverse-pair rate (0.833 vs 1.000). If you want one semantic metric, `DocumentSemantics`
+is the better instrument.
+
+`ConstituencyParse` is validated here for the first time. It was entirely non-functional
+before v1.0.2, and now tracks `DependencyParse` almost exactly — at roughly 20x the
+runtime, since it needs benepar. Prefer `DependencyParse` unless you specifically need
+phrase structure.
 
 `DependencyParse` is the best-*scaled* metric in the library on this benchmark — it
 recovers the true number of syntactic frames almost exactly (ratio 0.986).
