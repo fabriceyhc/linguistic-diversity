@@ -4,7 +4,23 @@ Which sentence embedder should back `DocumentSemantics`? This use case answers t
 against human diversity judgments, with a synthetic calibration benchmark as a
 secondary probe.
 
-**Recommendation: `BAAI/bge-large-en-v1.5`.**
+**Recommendation: `BAAI/bge-large-en-v1.5` — but it is deliberately not the shipped
+default.** The two halves of this benchmark disagree, and the disagreement is the finding
+(see [below](#the-two-benchmarks-measure-different-things)):
+
+| | shipped default `all-mpnet-base-v2` | recommended `BAAI/bge-large-en-v1.5` |
+|---|---|---|
+| calibration (1.0 = perfect) | **0.97** | 0.58 |
+| human agreement (McDiv ρ) | +0.581 | **+0.779** |
+| parameters | **110M** | 335M |
+| negative cosines on McDiv | 1.35% of pairs | **none** (min +0.32) |
+
+The default optimises **calibration**, because a score read as a quantity should mean what
+it says. Set `model_name="BAAI/bge-large-en-v1.5"` when you are **comparing corpora
+against each other**, which is the more common case and what the ρ column measures.
+
+This was previously stated as a flat recommendation, which read as though the library
+simply shipped the wrong default. It does not; the two are optimising different things.
 
 ## Headline result
 
@@ -83,6 +99,8 @@ Compressed embeddings systematically under-report absolute diversity (bge-large 
 ~58% of true *k*) while still ranking corpora well. **Pick by intended use:** if you read
 the score as a quantity, calibration matters and mpnet wins; if you compare corpora
 against each other — the common case — human agreement matters and bge-large wins.
+The library ships mpnet and documents bge-large as the switch, so neither choice is
+silent. `DocumentSemantics._default_config` carries the same table.
 
 Where the two disagree, prefer McDiv: it is human ground truth at 600 sets, whereas the
 synthetic ground truth is an authored construct.

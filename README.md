@@ -60,7 +60,7 @@ semantically_diverse = [
 
 metric = DocumentSemantics()
 print(f"{metric(lexically_diverse):.2f}")     # 1.51
-print(f"{metric(semantically_diverse):.2f}")  # 3.41
+print(f"{metric(semantically_diverse):.2f}")  # 3.39
 ```
 
 Set A is **perfect on every standard lexical measure** — type-token ratio 1.000,
@@ -86,14 +86,14 @@ documents / 30 words / 30 token species, so ceilings are identical):
 | `DistinctN` (n=1) | Lexical *(baseline)* | unique unigrams / total | **1.000** | 0.767 | 1 |
 | `DistinctN` (n=2) | Lexical *(baseline)* | unique bigrams / total | 1.000 | 1.000 | 1 |
 | `SelfBLEU` | Lexical *(baseline)* | n-gram overlap — *lower* is diverse | **0.000** | 0.049 | 0 |
-| `TokenSemantics` | Semantic | contextualized token embeddings | 12.33 | **14.68** | 30 |
-| `DocumentSemantics` | Semantic | sentence embeddings | 1.51 | **3.41** | 5 |
-| `DependencyParse` | Syntactic | dependency tree structure | 1.47 | **4.66** | 5 |
-| `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.65 | **2.85** | 5 |
-| `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 1.28 | **2.36** | 5 |
-| `Rhythmic` | Phonological | stress and syllable weight | 1.75 | 2.00 | 5 |
-| `Phonemic` | Phonological | phoneme sequences | 2.20 | 2.16 | 5 |
-| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 2.22 | **4.14** | — |
+| `TokenSemantics` | Semantic | contextualized token embeddings | 2.89 | **3.97** | 30 |
+| `DocumentSemantics` | Semantic | sentence embeddings | 1.51 | **3.39** | 5 |
+| `DependencyParse` | Syntactic | dependency tree structure | 2.41 | **4.75** | 5 |
+| `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.57 | **2.66** | 5 |
+| `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 1.28 | **1.68** | 5 |
+| `Rhythmic` | Phonological | stress and syllable weight | 1.39 | 1.48 | 5 |
+| `Phonemic` | Phonological | phoneme sequences | 1.60 | 1.54 | 5 |
+| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 1.89 | **2.95** | — |
 
 ```python
 from linguistic_diversity import DependencyParse, UniversalLinguisticDiversity
@@ -106,11 +106,17 @@ detailed = universal.get_detailed_scores(corpus)   # {'universal': ..., 'branche
 
 Reading the results:
 
-- **Document semantics separates the sets most sharply** (1.51 vs 3.41). Reach for it when
-  you care how many distinct *things* a corpus says.
-- **Syntax is an independent signal**, and here the strongest one (1.47 vs 4.66). Set A
-  repeats one frame (`DET ADJ NOUN VERB DET NOUN`) five times — a corpus can be
-  semantically varied yet syntactically monotonous, and only measuring both will tell you.
+- **Document semantics separates the sets most sharply** (1.51 vs 3.39, a 2.2x gap). Reach
+  for it when you care how many distinct *things* a corpus says.
+- **Syntax is an independent signal** (2.41 vs 4.75). Set A leans on one frame without
+  repeating it exactly — four distinct POS sequences across five sentences, three of them
+  `DET ADJ NOUN VERB · NOUN` — so it is syntactically narrow rather than monotonous. A
+  corpus can be semantically varied yet syntactically narrow, and only measuring both will
+  tell you which.
+- **The phonological metrics barely separate these sets at all** (1.39 vs 1.48; 1.60 vs
+  1.54, the wrong way round). They are measuring something real, but not something these
+  two sets differ in. Reported here rather than omitted, because a metrics table that only
+  shows its winners is not much use for choosing one.
 
 `UniversalLinguisticDiversity` aggregates by geometric mean within a branch, then weighted
 across branches. It enables six of the seven metrics by default; `ConstituencyParse` is
@@ -120,10 +126,18 @@ opt-in via `use_constituency_parse: True`. Presets: `balanced`, `semantic_focus`
 [`examples/all_metrics.py`](examples/all_metrics.py), or work through it interactively in
 [`examples/demo.ipynb`](examples/demo.ipynb) ([open in Colab](https://colab.research.google.com/github/fabriceyhc/linguistic-diversity/blob/main/examples/demo.ipynb)).
 
-Each metric's default distance and similarity settings were chosen by measurement, not
-assumption — see [`benchmarks/embedder_selection/`](benchmarks/embedder_selection/),
-which scores embedders against corpora with known ground-truth diversity and 600
-human-judged response sets.
+Each metric's defaults were chosen by measurement, not assumption, and each benchmark
+answers a different question:
+
+- [`benchmarks/embedder_selection/`](benchmarks/embedder_selection/) — which encoder should
+  back `DocumentSemantics`, scored against 600 human-judged response sets.
+- [`benchmarks/metric_validation/`](benchmarks/metric_validation/) — does each metric
+  respond to the linguistic level it claims and stay flat on the others?
+- [`benchmarks/length_robustness/`](benchmarks/length_robustness/) — does a score move when
+  only corpus size or document length changes? (Hill numbers: exactly invariant to
+  replication. Type-token ratio, distinct-*n*, Self-BLEU and compression ratio: not.)
+- [`benchmarks/metamorphic/`](benchmarks/metamorphic/) — properties that must hold for any
+  corpus, checked without ground truth.
 
 ## Large corpora
 
