@@ -75,14 +75,20 @@ Note the tagger is `averaged_perceptron_tagger_eng` on modern NLTK. The older
 empty phoneme strings rather than raising — so the symptom is a silently wrong score,
 not an error.
 
-## macOS hangs on the first model load
+## macOS hangs inside the similarity computation
 
-On Apple silicon, constructing a semantic metric can hang indefinitely instead of
-raising. The process sits at 100% CPU with no output and does not respond to Ctrl-C,
-because it is stuck below Python in native code.
+On Apple silicon, scoring a semantic metric can hang indefinitely instead of raising.
+The model loads normally; the process then wedges in faiss and does not respond to
+Ctrl-C, because it is stuck below Python in native code. A stack dump shows:
 
-The likely cause is two OpenMP runtimes in one process. Both wheels bundle their own
-copy:
+```
+faiss/swigfaiss.py, line 2919 in search
+linguistic_diversity/utils.py in compute_similarity_matrix_faiss
+linguistic_diversity/diversities/semantic.py in calculate_similarities
+```
+
+`search` is the OpenMP-parallel part of faiss, and it deadlocks because two OpenMP
+runtimes are loaded into one process. Both wheels bundle their own copy:
 
 ```
 torch/lib/libomp.dylib          (torch, macosx_arm64)
@@ -90,9 +96,7 @@ faiss/.dylibs/libomp.dylib      (faiss-cpu, macosx_arm64)
 ```
 
 Linux resolves this to a single shared `libgomp` and Windows does not use OpenMP the
-same way, which fits the observation that only macOS hangs. This has not been confirmed
-against a stack trace, so treat it as the leading explanation rather than a diagnosis.
-Working around it:
+same way, which is why only macOS hangs. Working around it:
 
 ```bash
 export OMP_NUM_THREADS=1        # serialises the OpenMP regions
