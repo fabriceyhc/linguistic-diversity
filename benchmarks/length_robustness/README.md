@@ -24,7 +24,7 @@ Drift is (max − min) across the sweep, relative to the baseline score. Zero is
 | Metric | drift | ρ vs size | j=1 | j=2 | j=3 | j=4 | j=6 |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | `DocumentSemantics` | **0.000** | 0.039 | 3.781 | 3.781 | 3.781 | 3.781 | 3.781 |
-| `DependencyParse` | **0.000** | 0.048 | 2.126 | 2.126 | 2.126 | 2.126 | 2.126 |
+| `DependencyParse` | **0.000** | −0.030 | 1.526 | 1.526 | 1.526 | 1.526 | 1.526 |
 | `PartOfSpeechSequence` | **0.000** | −0.010 | 1.203 | 1.203 | 1.203 | 1.203 | 1.203 |
 | `Rhythmic` | **0.000** | −0.030 | 1.300 | 1.300 | 1.300 | 1.300 | 1.300 |
 | `Phonemic` | **0.000** | 0.000 | 1.444 | 1.444 | 1.444 | 1.444 | 1.444 |
@@ -55,11 +55,11 @@ The number of distinct propositions stays *k* while mean document length grows.
 
 | Metric | drift | ρ vs length | t=0 | t=1 | t=2 | t=4 | t=8 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| `DependencyParse` | **0.000** | 0.000 | 2.126 | 2.126 | 2.126 | 2.126 | 2.126 |
 | `PartOfSpeechSequence` | 0.151 | −0.879 | 1.203 | 1.098 | 1.065 | 1.039 | 1.021 |
 | `Rhythmic` | 0.207 | −0.981 | 1.300 | 1.142 | 1.093 | 1.055 | 1.030 |
 | `Phonemic` | 0.278 | −0.973 | 1.444 | 1.209 | 1.137 | 1.079 | 1.043 |
 | `TokenSemantics` | 0.325 | 0.039 | 14.21 | 15.12 | 18.55 | 16.44 | 13.93 |
+| `DependencyParse` | 0.316 | −0.953 | 1.526 | 1.220 | 1.139 | 1.080 | 1.044 |
 | `DocumentSemantics` | 0.539 | −0.679 | 3.781 | 2.357 | 1.870 | 1.818 | 1.741 |
 | `TypeTokenRatio` | 0.862 | −0.981 | 0.691 | 0.425 | 0.284 | 0.171 | 0.095 |
 | `DistinctN` | 0.862 | −0.981 | 0.691 | 0.425 | 0.284 | 0.171 | 0.095 |
@@ -71,8 +71,7 @@ content at once: the padded documents genuinely do share more material, so for a
 similarity-sensitive metric some decline is defensible rather than a defect. Only the
 surface metrics have no defence, and they again drift hardest.
 
-`DependencyParse` is exactly flat because identical appended text adds an identical subtree
-to every parse, leaving all pairwise distances unchanged. `DocumentSemantics` halves,
+`DocumentSemantics` halves,
 which is the largest move among the Hill-number metrics — worth knowing if you compare
 corpora whose documents carry boilerplate (headers, disclaimers, templated preambles).
 
@@ -91,27 +90,31 @@ true full-corpus value than simply scoring *m* documents?
 | | | 20 | 5.55 | 6.84 | 0.228 | **0.049** | asymptotic |
 | | | 30 | 5.60 | 7.66 | 0.221 | **0.065** | asymptotic |
 | | | 40 | 6.58 | 6.60 | 0.085 | 0.082 | asymptotic |
-| `DependencyParse` | 29.36 | 10 | 9.16 | 27.66 | 0.688 | **0.058** | power_law |
-| | | 20 | 14.06 | 49.37 | 0.521 | 0.681 | power_law |
-| | | 30 | 17.19 | 48.88 | 0.414 | 0.665 | power_law |
-| | | 40 | 21.95 | 31.31 | 0.253 | **0.066** | power_law |
+| `DependencyParse` | 3.37 | 10 | 2.47 | 4.31 | 0.267 | 0.277 | power_law |
+| | | 20 | 2.89 | 3.13 | 0.143 | **0.071** | asymptotic |
+| | | 30 | 3.29 | 3.21 | 0.023 | 0.048 | asymptotic |
+| | | 40 | 2.98 | 3.09 | 0.117 | **0.082** | asymptotic |
 | `TokenSemantics` | 28.26 | 10 | 18.05 | 46.02 | 0.362 | 0.628 | power_law |
 | | | 20 | 21.61 | 38.81 | 0.236 | 0.373 | power_law |
 | | | 30 | 25.09 | 35.03 | 0.112 | 0.239 | power_law |
 | | | 40 | 25.52 | 31.40 | 0.097 | 0.111 | power_law |
 
-**The result is mixed, and the pattern is the fitted model.** Every accurate extrapolation
-came from an `asymptotic` fit; every badly wrong one came from `power_law`, which
-systematically overshoots — up to 49.4 against a truth of 29.4. `DocumentSemantics` at
-budgets ≥ 20 picks asymptotic and cuts error from 22% to 5%, a real win. `TokenSemantics`
-picks power_law at every budget and extrapolation is *worse than raw subsampling every
-time*. `DependencyParse` alternates between excellent and badly wrong on the same fit
-family.
+**The pattern is the fitted model.** Every accurate extrapolation came from an
+`asymptotic` fit; every badly wrong one from `power_law`, which systematically overshoots.
+`DocumentSemantics` at budgets ≥ 20 picks asymptotic and cuts error from 22% to 5%.
+`TokenSemantics` picks power_law at every budget and does *worse than raw subsampling every
+time*.
 
-So extrapolation is not a general solution as shipped. **Model selection is the weak
-link**, and the honest guidance is: check `result.model` and treat a `power_law` fit as
-unreliable. Forcing the asymptotic family, or penalising unbounded fits during selection,
-is the obvious next thing to try.
+`DependencyParse` used to sit in the second group, alternating between excellent and badly
+wrong. That turned out to be a symptom rather than a cause: while it was saturating at the
+species count it grew linearly in corpus size, so the curve fitter reasonably chose an
+unbounded family. With the similarity fixed it selects `asymptotic` at every budget and
+lands within 1-2%. One of the two extrapolation failures was the saturation bug wearing a
+different hat.
+
+Extrapolation is still not a general solution as shipped — `TokenSemantics` remains a real
+failure. **Check `result.model` and treat a `power_law` fit as unreliable.** Penalising
+unbounded fits during selection is the obvious next thing to try.
 
 `PartOfSpeechSequence`, `Rhythmic` and `Phonemic` all reported exactly 86.000 — the raw
 species count — when this study was first run: every off-diagonal similarity had collapsed

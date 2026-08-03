@@ -44,43 +44,43 @@
     "summary": {
       "DocumentSemantics": {
         "drift": 0.0,
-        "spearman_vs_level": 0.0392,
-        "p_value": 0.85233,
-        "baseline": 3.781,
+        "spearman_vs_level": 0.0863,
+        "p_value": 0.681592,
+        "baseline": 3.7704,
         "by_level": {
-          "1.0": 3.781,
-          "2.0": 3.781,
-          "3.0": 3.781,
-          "4.0": 3.781,
-          "6.0": 3.781
+          "1.0": 3.7704,
+          "2.0": 3.7704,
+          "3.0": 3.7704,
+          "4.0": 3.7704,
+          "6.0": 3.7704
         },
         "n": 25
       },
       "TokenSemantics": {
-        "drift": 0.1514,
-        "spearman_vs_level": 0.659,
-        "p_value": 0.000341,
-        "baseline": 14.206,
+        "drift": 0.0,
+        "spearman_vs_level": 0.0431,
+        "p_value": 0.837745,
+        "baseline": 5.0173,
         "by_level": {
-          "1.0": 14.206,
-          "2.0": 15.4284,
-          "3.0": 15.8795,
-          "4.0": 16.1147,
-          "6.0": 16.357
+          "1.0": 5.0173,
+          "2.0": 5.0173,
+          "3.0": 5.0173,
+          "4.0": 5.0173,
+          "6.0": 5.0173
         },
         "n": 25
       },
       "DependencyParse": {
         "drift": 0.0,
-        "spearman_vs_level": 0.0479,
-        "p_value": 0.820156,
-        "baseline": 2.1263,
+        "spearman_vs_level": -0.0297,
+        "p_value": 0.888085,
+        "baseline": 1.5263,
         "by_level": {
-          "1.0": 2.1263,
-          "2.0": 2.1263,
-          "3.0": 2.1263,
-          "4.0": 2.1263,
-          "6.0": 2.1263
+          "1.0": 1.5263,
+          "2.0": 1.5263,
+          "3.0": 1.5263,
+          "4.0": 1.5263,
+          "6.0": 1.5263
         },
         "n": 25
       },
@@ -209,12 +209,12 @@
     },
     "summary": {
       "DocumentSemantics": {
-        "drift": 0.5395,
+        "drift": 0.5382,
         "spearman_vs_level": -0.6786,
         "p_value": 0.000193,
-        "baseline": 3.781,
+        "baseline": 3.7704,
         "by_level": {
-          "0.0": 3.781,
+          "0.0": 3.7704,
           "1.0": 2.3574,
           "2.0": 1.8701,
           "4.0": 1.8177,
@@ -223,30 +223,30 @@
         "n": 25
       },
       "TokenSemantics": {
-        "drift": 0.3251,
-        "spearman_vs_level": 0.0392,
-        "p_value": 0.85233,
-        "baseline": 14.206,
+        "drift": 0.1712,
+        "spearman_vs_level": -0.859,
+        "p_value": 0.0,
+        "baseline": 5.0173,
         "by_level": {
-          "0.0": 14.206,
-          "1.0": 15.121,
-          "2.0": 18.5503,
-          "4.0": 16.4428,
-          "8.0": 13.9321
+          "0.0": 5.0173,
+          "1.0": 4.68,
+          "2.0": 4.5619,
+          "4.0": 4.1583,
+          "8.0": 4.2965
         },
         "n": 25
       },
       "DependencyParse": {
-        "drift": 0.0,
-        "spearman_vs_level": 0.0,
-        "p_value": 1.0,
-        "baseline": 2.1263,
+        "drift": 0.3162,
+        "spearman_vs_level": -0.9531,
+        "p_value": 0.0,
+        "baseline": 1.5263,
         "by_level": {
-          "0.0": 2.1263,
-          "1.0": 2.1263,
-          "2.0": 2.1263,
-          "4.0": 2.1263,
-          "8.0": 2.1263
+          "0.0": 1.5263,
+          "1.0": 1.2199,
+          "2.0": 1.1393,
+          "4.0": 1.0804,
+          "8.0": 1.0436
         },
         "n": 25
       },
@@ -352,119 +352,119 @@
   },
   "extrapolation": {
     "DocumentSemantics": {
-      "truth": 7.19,
+      "truth": 6.967,
       "n_full": 86,
       "saturated": false,
       "budgets": [
         {
           "budget": 10,
-          "raw_subsample": 4.644,
-          "extrapolated": 15.211,
-          "model": "power_law",
-          "raw_error": 0.354,
-          "extrap_error": 1.115
+          "raw_subsample": 4.565,
+          "extrapolated": 7.021,
+          "model": "asymptotic",
+          "raw_error": 0.345,
+          "extrap_error": 0.008
         },
         {
           "budget": 20,
-          "raw_subsample": 5.55,
-          "extrapolated": 6.839,
+          "raw_subsample": 5.356,
+          "extrapolated": 6.697,
           "model": "asymptotic",
-          "raw_error": 0.228,
-          "extrap_error": 0.049
+          "raw_error": 0.231,
+          "extrap_error": 0.039
         },
         {
           "budget": 30,
-          "raw_subsample": 5.604,
-          "extrapolated": 7.658,
+          "raw_subsample": 5.495,
+          "extrapolated": 7.346,
           "model": "asymptotic",
-          "raw_error": 0.221,
-          "extrap_error": 0.065
+          "raw_error": 0.211,
+          "extrap_error": 0.054
         },
         {
           "budget": 40,
-          "raw_subsample": 6.578,
-          "extrapolated": 6.598,
+          "raw_subsample": 6.412,
+          "extrapolated": 6.45,
           "model": "asymptotic",
-          "raw_error": 0.085,
-          "extrap_error": 0.082
+          "raw_error": 0.08,
+          "extrap_error": 0.074
         }
       ]
     },
     "TokenSemantics": {
-      "truth": 28.264,
+      "truth": 6.587,
       "n_full": 86,
       "saturated": false,
       "budgets": [
         {
           "budget": 10,
-          "raw_subsample": 16.664,
-          "extrapolated": 46.02,
-          "model": "power_law",
-          "raw_error": 0.41,
-          "extrap_error": 0.628
+          "raw_subsample": 5.576,
+          "extrapolated": 11.509,
+          "model": "asymptotic",
+          "raw_error": 0.153,
+          "extrap_error": 0.747
         },
         {
           "budget": 20,
-          "raw_subsample": 21.996,
-          "extrapolated": 38.81,
-          "model": "power_law",
-          "raw_error": 0.222,
-          "extrap_error": 0.373
+          "raw_subsample": 6.16,
+          "extrapolated": 6.953,
+          "model": "asymptotic",
+          "raw_error": 0.065,
+          "extrap_error": 0.056
         },
         {
           "budget": 30,
-          "raw_subsample": 24.294,
-          "extrapolated": 35.029,
-          "model": "power_law",
-          "raw_error": 0.14,
-          "extrap_error": 0.239
+          "raw_subsample": 6.345,
+          "extrapolated": 6.76,
+          "model": "asymptotic",
+          "raw_error": 0.037,
+          "extrap_error": 0.026
         },
         {
           "budget": 40,
-          "raw_subsample": 25.628,
-          "extrapolated": 31.404,
-          "model": "power_law",
-          "raw_error": 0.093,
-          "extrap_error": 0.111
+          "raw_subsample": 6.383,
+          "extrapolated": 6.589,
+          "model": "asymptotic",
+          "raw_error": 0.031,
+          "extrap_error": 0.0
         }
       ]
     },
     "DependencyParse": {
-      "truth": 29.363,
+      "truth": 3.37,
       "n_full": 86,
       "saturated": false,
       "budgets": [
         {
           "budget": 10,
-          "raw_subsample": 6.757,
-          "extrapolated": 27.659,
+          "raw_subsample": 2.468,
+          "extrapolated": 4.305,
           "model": "power_law",
-          "raw_error": 0.77,
-          "extrap_error": 0.058
+          "raw_error": 0.267,
+          "extrap_error": 0.277
         },
         {
           "budget": 20,
-          "raw_subsample": 14.48,
-          "extrapolated": 49.365,
-          "model": "power_law",
-          "raw_error": 0.507,
-          "extrap_error": 0.681
+          "raw_subsample": 2.888,
+          "extrapolated": 3.129,
+          "model": "asymptotic",
+          "raw_error": 0.143,
+          "extrap_error": 0.071
         },
         {
           "budget": 30,
-          "raw_subsample": 16.938,
-          "extrapolated": 48.884,
-          "model": "power_law",
-          "raw_error": 0.423,
-          "extrap_error": 0.665
+          "raw_subsample": 3.291,
+          "extrapolated": 3.209,
+          "model": "asymptotic",
+          "raw_error": 0.023,
+          "extrap_error": 0.048
         },
         {
           "budget": 40,
-          "raw_subsample": 19.337,
-          "extrapolated": 31.31,
-          "model": "power_law",
-          "raw_error": 0.341,
-          "extrap_error": 0.066
+          "raw_subsample": 2.976,
+          "extrapolated": 3.094,
+          "model": "asymptotic",
+          "raw_error": 0.117,
+          "extrap_error": 0.082
         }
       ]
     },

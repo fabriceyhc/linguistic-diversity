@@ -88,12 +88,12 @@ documents / 30 words / 30 token species, so ceilings are identical):
 | `SelfBLEU` | Lexical *(baseline)* | n-gram overlap — *lower* is diverse | **0.000** | 0.049 | 0 |
 | `TokenSemantics` | Semantic | contextualized token embeddings | 2.89 | **3.97** | 30 |
 | `DocumentSemantics` | Semantic | sentence embeddings | 1.51 | **3.39** | 5 |
-| `DependencyParse` | Syntactic | dependency tree structure | 2.41 | **4.75** | 5 |
-| `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.57 | **2.66** | 5 |
+| `DependencyParse` | Syntactic | dependency tree structure | 1.38 | **2.91** | 5 |
+| `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.10 | **1.24** | 5 |
 | `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 1.28 | **1.68** | 5 |
 | `Rhythmic` | Phonological | stress and syllable weight | 1.39 | 1.48 | 5 |
 | `Phonemic` | Phonological | phoneme sequences | 1.60 | 1.54 | 5 |
-| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 1.89 | **2.95** | — |
+| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 1.60 | **2.55** | — |
 
 ```python
 from linguistic_diversity import DependencyParse, UniversalLinguisticDiversity
@@ -108,15 +108,21 @@ Reading the results:
 
 - **Document semantics separates the sets most sharply** (1.51 vs 3.39, a 2.2x gap). Reach
   for it when you care how many distinct *things* a corpus says.
-- **Syntax is an independent signal** (2.41 vs 4.75). Set A leans on one frame without
+- **Syntax is an independent signal** (1.38 vs 2.91). Set A leans on one frame without
   repeating it exactly — four distinct POS sequences across five sentences, three of them
   `DET ADJ NOUN VERB · NOUN` — so it is syntactically narrow rather than monotonous. A
   corpus can be semantically varied yet syntactically narrow, and only measuring both will
   tell you which.
-- **The phonological metrics barely separate these sets at all** (1.39 vs 1.48; 1.60 vs
-  1.54, the wrong way round). They are measuring something real, but not something these
-  two sets differ in. Reported here rather than omitted, because a metrics table that only
-  shows its winners is not much use for choosing one.
+- **Several metrics barely separate these two sets** — `ConstituencyParse` 1.10 vs 1.24,
+  `Rhythmic` 1.39 vs 1.48, `Phonemic` 1.60 vs 1.54 the wrong way round. They measure
+  something real; these two sets just do not differ much in it. Stated rather than left to
+  be inferred from which rows are unbolded, because a table that only shows its winners is
+  not much use for picking a metric.
+
+Absolute values run low across the board — every metric under-reports against known ground
+truth, by 30% to 65% depending on the metric (see
+[`benchmarks/metric_validation/`](benchmarks/metric_validation/)). Compare corpora with
+these; treat a single number as a lower bound.
 
 `UniversalLinguisticDiversity` aggregates by geometric mean within a branch, then weighted
 across branches. It enables six of the seven metrics by default; `ConstituencyParse` is
@@ -138,6 +144,9 @@ answers a different question:
   replication. Type-token ratio, distinct-*n*, Self-BLEU and compression ratio: not.)
 - [`benchmarks/metamorphic/`](benchmarks/metamorphic/) — properties that must hold for any
   corpus, checked without ground truth.
+- [`benchmarks/human_agreement/`](benchmarks/human_agreement/) — agreement with graded human
+  diversity judgments on three datasets, and what sampling temperature actually moves
+  (form 0.66–0.72, structure 0.57–0.61, content 0.22–0.54).
 
 ## Large corpora
 

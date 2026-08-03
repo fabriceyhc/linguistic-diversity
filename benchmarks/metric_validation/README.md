@@ -54,7 +54,7 @@ metrics → 1.0, structural metrics → 0.0, uninformative → 0.5.
 | `TypeTokenRatio` | *(baseline)* | 1.000 | 54 |
 | `DistinctN` | *(baseline)* | 1.000 | 54 |
 | `SelfBLEU` | *(baseline)* | 0.944 | 54 |
-| `TokenSemantics` | semantic | 0.833 | 54 |
+| `TokenSemantics` | semantic | 1.000 | 54 |
 | `Phonemic` | phonemic | 0.389 | 54 |
 | `DependencyParse` | syntactic | **0.000** | 54 |
 | `ConstituencyParse` | syntactic | **0.000** | 54 |
@@ -83,9 +83,10 @@ complementary and neither is sufficient alone. Report both.
 
 | Metric | level | ρ vs expected | median ratio | n |
 |---|---|---:|---:|---:|
-| `DocumentSemantics` | semantic | **0.963** | 0.705 | 113 |
-| `DependencyParse` | syntactic | 0.959 | **0.986** | 81 |
-| `ConstituencyParse` | syntactic | 0.953 | 0.981 | 81 |
+| `DocumentSemantics` | semantic | **0.965** | **0.695** | 113 |
+| `TokenSemantics` | semantic | 0.916 | *n/a* | 113 |
+| `DependencyParse` | syntactic | 0.906 | 0.573 | 81 |
+| `ConstituencyParse` | syntactic | 0.872 | 0.432 | 81 |
 | `Phonemic` | phonemic | 0.889 | 0.363 | 32 |
 | `PartOfSpeechSequence` | morphological | 0.877 | 0.419 | 81 |
 | `TokenSemantics` | semantic | 0.839 | *n/a* | 113 |
@@ -103,10 +104,16 @@ before v1.0.2, and now tracks `DependencyParse` almost exactly — at roughly 20
 runtime, since it needs benepar. Prefer `DependencyParse` unless you specifically need
 phrase structure.
 
-`DependencyParse` is the best-*scaled* metric in the library on this benchmark — it
-recovers the true number of syntactic frames almost exactly (ratio 0.986).
-`DocumentSemantics` ranks best but under-reports magnitude by ~30%, consistent with the
-embedding-compression effect documented in the embedder-selection benchmark.
+Every metric ranks well (ρ 0.77–0.97) and every one under-reports magnitude (ratio
+0.36–0.70). The two are separate properties and the gap between them is the honest state
+of the art here: use these to *compare* corpora, and treat the absolute number as a lower
+bound.
+
+`DependencyParse` read 0.986 before v1.0.3 and now reads 0.573. That earlier figure was an
+artefact: `exp(-edit_distance)` drove every off-diagonal entry to ~0, and a similarity
+matrix that is nearly the identity reports nearly the species count — which happened to be
+close to the true *k* on these small constructed corpora, and was catastrophically wrong on
+real text. See [`../length_robustness/`](../length_robustness/).
 
 ### Morphology vs syntax
 
