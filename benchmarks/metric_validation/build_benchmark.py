@@ -14,6 +14,7 @@ discriminant validity regardless of how well it tracks its own axis.
 Usage:
     python build_benchmark.py [--out output/benchmark.json]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -75,18 +76,20 @@ def build_syntactic_alternations(seed: dict, rng: random.Random) -> list[dict]:
         available = len(s["realisations"])
         for n in range(2, available + 1):
             docs = rng.sample(s["realisations"], n)
-            corpora.append(_record(
-                corpus_id=f"alt-{s['id']}-n{n}",
-                family="syntactic_alternations",
-                target_level="syntactic",
-                documents=docs,
-                # Meaning is held constant, so a semantic metric should collapse to ~1.
-                # POS sequences differ across alternations, so morphology moves too --
-                # this family separates syntax from semantics, not syntax from morphology.
-                expected={"semantic": 1.0, "syntactic": float(n), "morphological": float(n)},
-                rationale=f"{n} syntactic realisations of one proposition: {s['proposition']}",
-                rng=rng,
-            ))
+            corpora.append(
+                _record(
+                    corpus_id=f"alt-{s['id']}-n{n}",
+                    family="syntactic_alternations",
+                    target_level="syntactic",
+                    documents=docs,
+                    # Meaning is held constant, so a semantic metric should collapse to ~1.
+                    # POS sequences differ across alternations, so morphology moves too --
+                    # this family separates syntax from semantics, not syntax from morphology.
+                    expected={"semantic": 1.0, "syntactic": float(n), "morphological": float(n)},
+                    rationale=f"{n} syntactic realisations of one proposition: {s['proposition']}",
+                    rng=rng,
+                )
+            )
     return corpora
 
 
@@ -103,22 +106,24 @@ def build_syntactic_frames(seed: dict, rng: random.Random) -> list[dict]:
                 docs = []
                 for frame in picked:
                     docs.extend(rng.sample(frame["lexicalisations"], m))
-                corpora.append(_record(
-                    corpus_id=f"frame-k{k}-m{m}-{draw}",
-                    family="syntactic_frames",
-                    target_level="syntactic",
-                    documents=docs,
-                    # Structure and POS sequence are shared within a frame, so both
-                    # syntax and morphology should report k. Every sentence means
-                    # something different, so semantics should report k*m.
-                    expected={
-                        "semantic": float(k * m),
-                        "syntactic": float(k),
-                        "morphological": float(k),
-                    },
-                    rationale=f"{k} syntactic frames x {m} lexicalisations each",
-                    rng=rng,
-                ))
+                corpora.append(
+                    _record(
+                        corpus_id=f"frame-k{k}-m{m}-{draw}",
+                        family="syntactic_frames",
+                        target_level="syntactic",
+                        documents=docs,
+                        # Structure and POS sequence are shared within a frame, so both
+                        # syntax and morphology should report k. Every sentence means
+                        # something different, so semantics should report k*m.
+                        expected={
+                            "semantic": float(k * m),
+                            "syntactic": float(k),
+                            "morphological": float(k),
+                        },
+                        rationale=f"{k} syntactic frames x {m} lexicalisations each",
+                        rng=rng,
+                    )
+                )
     return corpora
 
 
@@ -127,15 +132,17 @@ def build_morphological_templates(seed: dict, rng: random.Random) -> list[dict]:
     corpora = []
     for s in seed["morphological_templates"]["sets"]:
         n = len(s["realisations"])
-        corpora.append(_record(
-            corpus_id=f"morph-{s['id']}",
-            family="morphological_templates",
-            target_level="morphological",
-            documents=s["realisations"],
-            expected={"semantic": 1.0, "morphological": float(n), "syntactic": float(n)},
-            rationale=f"{n} morphological realisations of: {s['gloss']}",
-            rng=rng,
-        ))
+        corpora.append(
+            _record(
+                corpus_id=f"morph-{s['id']}",
+                family="morphological_templates",
+                target_level="morphological",
+                documents=s["realisations"],
+                expected={"semantic": 1.0, "morphological": float(n), "syntactic": float(n)},
+                rationale=f"{n} morphological realisations of: {s['gloss']}",
+                rng=rng,
+            )
+        )
     return corpora
 
 
@@ -148,15 +155,17 @@ def build_pos_identical(seed: dict, rng: random.Random) -> list[dict]:
     corpora = []
     for s in seed["pos_identical_structure_different"]["sets"]:
         n = len(s["realisations"])
-        corpora.append(_record(
-            corpus_id=f"posid-{s['id']}",
-            family="pos_identical_structure_different",
-            target_level="syntactic",
-            documents=s["realisations"],
-            expected={"semantic": float(n), "syntactic": float(n), "morphological": 1.0},
-            rationale=f"identical POS sequence ({s['pattern']}), differing structure: {s['note']}",
-            rng=rng,
-        ))
+        corpora.append(
+            _record(
+                corpus_id=f"posid-{s['id']}",
+                family="pos_identical_structure_different",
+                target_level="syntactic",
+                documents=s["realisations"],
+                expected={"semantic": float(n), "syntactic": float(n), "morphological": 1.0},
+                rationale=f"identical POS sequence ({s['pattern']}), differing structure: {s['note']}",
+                rng=rng,
+            )
+        )
     return corpora
 
 
@@ -170,15 +179,115 @@ def build_surface_parse_blind(seed: dict, rng: random.Random) -> list[dict]:
     corpora = []
     for s in seed["surface_parse_blind"]["sets"]:
         n = len(s["realisations"])
-        corpora.append(_record(
-            corpus_id=f"blind-{s['id']}",
-            family="surface_parse_blind",
-            target_level="known_limitation",
-            documents=s["realisations"],
-            expected={"semantic": float(n), "syntactic": 1.0, "morphological": 1.0},
-            rationale=f"invisible to a surface parse: {s['note']}",
-            rng=rng,
-        ))
+        corpora.append(
+            _record(
+                corpus_id=f"blind-{s['id']}",
+                family="surface_parse_blind",
+                target_level="known_limitation",
+                documents=s["realisations"],
+                expected={"semantic": float(n), "syntactic": 1.0, "morphological": 1.0},
+                rationale=f"invisible to a surface parse: {s['note']}",
+                rng=rng,
+            )
+        )
+    return corpora
+
+
+def build_morphological_inflection(seed: dict, rng: random.Random) -> list[dict]:
+    """k inflectional patterns x m lexicalisations, one syntactic frame throughout.
+
+    The family the fine-grained tagset exists for: under UPOS every pattern here
+    is VERB and the whole family collapses to 1.
+    """
+    patterns = seed["morphological_inflection"]["patterns"]
+    corpora = []
+    for k in K_VALUES:
+        if k > len(patterns):
+            continue
+        for m in M_VALUES:
+            for draw in range(DRAWS_PER_CELL):
+                picked = rng.sample(patterns, k)
+                docs = []
+                for pattern in picked:
+                    docs.extend(rng.sample(pattern["lexicalisations"], m))
+                corpora.append(
+                    _record(
+                        corpus_id=f"infl-k{k}-m{m}-{draw}",
+                        family="morphological_inflection",
+                        target_level="morphological",
+                        documents=docs,
+                        # One frame throughout, so syntax stays at ~1 while morphology
+                        # tracks the number of inflectional patterns.
+                        expected={
+                            "morphological": float(k),
+                            "syntactic": 1.0,
+                            "semantic": float(k * m),
+                        },
+                        rationale=f"{k} inflectional patterns x {m} lexicalisations, one frame",
+                        rng=rng,
+                    )
+                )
+    return corpora
+
+
+def build_constituency_contrasts(seed: dict, rng: random.Random) -> list[dict]:
+    """Phrase-structure contrasts, annotated with which parser actually sees them."""
+    corpora = []
+    for s in seed["constituency_contrasts"]["sets"]:
+        n = len(s["realisations"])
+        blind = s["favours"] == "neither"
+        corpora.append(
+            _record(
+                corpus_id=f"const-{s['id']}",
+                family="constituency_contrasts",
+                target_level="syntactic",
+                documents=s["realisations"],
+                expected={"syntactic": 1.0 if blind else float(n), "semantic": float(n)},
+                rationale=f"favours {s['favours']}: {s['note']}",
+                rng=rng,
+            )
+        )
+    return corpora
+
+
+def build_rhythmic_stress_pairs(seed: dict, rng: random.Random) -> list[dict]:
+    """Noun/verb stress alternations: near-identical words, different stress."""
+    corpora = []
+    for s in seed["rhythmic_stress_pairs"]["sets"]:
+        n = len(s["realisations"])
+        corpora.append(
+            _record(
+                corpus_id=f"stress-{s['id']}",
+                family="rhythmic_stress_pairs",
+                target_level="rhythmic",
+                documents=s["realisations"],
+                expected={"rhythmic": float(n), "semantic": float(n)},
+                rationale=f"stress alternation on '{s['id']}'",
+                rng=rng,
+            )
+        )
+    return corpora
+
+
+def build_phonemic_graded(seed: dict, rng: random.Random) -> list[dict]:
+    """Three tiers of phonological distance at a fixed frame, scored as an ordering."""
+    corpora = []
+    for tier in seed["phonemic_graded"]["tiers"]:
+        n = len(tier["realisations"])
+        corpora.append(
+            _record(
+                corpus_id=f"graded-{tier['id']}",
+                family="phonemic_graded",
+                target_level="phonemic",
+                documents=tier["realisations"],
+                # No absolute target: the claim is the ordering between tiers, which
+                # the contrast list carries.
+                expected={},
+                rationale=f"phonological distance tier {tier['rank']}",
+                rng=rng,
+            )
+        )
+        corpora[-1]["tier_rank"] = tier["rank"]
     return corpora
 
 
@@ -195,15 +304,17 @@ def build_rhythmic_meters(seed: dict, rng: random.Random) -> list[dict]:
                 docs = []
                 for meter in picked:
                     docs.extend(rng.sample(meter["lines"], m))
-                corpora.append(_record(
-                    corpus_id=f"meter-k{k}-m{m}-{draw}",
-                    family="rhythmic_meters",
-                    target_level="rhythmic",
-                    documents=docs,
-                    expected={"rhythmic": float(k), "semantic": float(k * m)},
-                    rationale=f"{k} metrical patterns x {m} lines each",
-                    rng=rng,
-                ))
+                corpora.append(
+                    _record(
+                        corpus_id=f"meter-k{k}-m{m}-{draw}",
+                        family="rhythmic_meters",
+                        target_level="rhythmic",
+                        documents=docs,
+                        expected={"rhythmic": float(k), "semantic": float(k * m)},
+                        rationale=f"{k} metrical patterns x {m} lines each",
+                        rng=rng,
+                    )
+                )
     return corpora
 
 
@@ -212,15 +323,17 @@ def build_phonemic_oronyms(seed: dict, rng: random.Random) -> list[dict]:
     corpora = []
     for s in seed["phonemic_oronyms"]["sets"]:
         n = len(s["realisations"])
-        corpora.append(_record(
-            corpus_id=f"oronym-{s['id']}",
-            family="phonemic_oronyms",
-            target_level="phonemic",
-            documents=s["realisations"],
-            expected={"phonemic": 1.0, "semantic": float(n)},
-            rationale=f"{n} near-homophonic sentences with unrelated meanings",
-            rng=rng,
-        ))
+        corpora.append(
+            _record(
+                corpus_id=f"oronym-{s['id']}",
+                family="phonemic_oronyms",
+                target_level="phonemic",
+                documents=s["realisations"],
+                expected={"phonemic": 1.0, "semantic": float(n)},
+                rationale=f"{n} near-homophonic sentences with unrelated meanings",
+                rng=rng,
+            )
+        )
     return corpora
 
 
@@ -233,15 +346,17 @@ def build_phonemic_pairs(seed: dict, rng: random.Random) -> list[dict]:
     corpora = []
     for s in seed["phonemic_minimal_pairs"]["sets"]:
         n = len(s["realisations"])
-        corpora.append(_record(
-            corpus_id=f"phon-{s['id']}",
-            family="phonemic_minimal_pairs",
-            target_level="phonemic",
-            documents=s["realisations"],
-            expected={"phonemic": float(n)},
-            rationale=s.get("note", f"{n} sentences differing in one phoneme"),
-            rng=rng,
-        ))
+        corpora.append(
+            _record(
+                corpus_id=f"phon-{s['id']}",
+                family="phonemic_minimal_pairs",
+                target_level="phonemic",
+                documents=s["realisations"],
+                expected={"phonemic": float(n)},
+                rationale=s.get("note", f"{n} sentences differing in one phoneme"),
+                rng=rng,
+            )
+        )
     return corpora
 
 
@@ -274,34 +389,42 @@ def build_contrasts(corpora: list[dict]) -> list[dict]:
     for size, alts in sorted(alts_by_size.items()):
         for alt in alts:
             for frame in frames_by_size.get(size, [])[:MAX_PAIRS_PER_CORPUS]:
-                contrasts.append({
-                    "level": "semantic",
-                    "kind": "inverse_pair",
-                    "greater": frame["id"],
-                    "lesser": alt["id"],
-                    "rationale": "distinct propositions vs one proposition restated",
-                })
-                contrasts.append({
-                    "level": "syntactic",
-                    "kind": "inverse_pair",
-                    "greater": alt["id"],
-                    "lesser": frame["id"],
-                    "rationale": "n structures vs n lexicalisations of few structures",
-                })
+                contrasts.append(
+                    {
+                        "level": "semantic",
+                        "kind": "inverse_pair",
+                        "greater": frame["id"],
+                        "lesser": alt["id"],
+                        "rationale": "distinct propositions vs one proposition restated",
+                    }
+                )
+                contrasts.append(
+                    {
+                        "level": "syntactic",
+                        "kind": "inverse_pair",
+                        "greater": alt["id"],
+                        "lesser": frame["id"],
+                        "rationale": "n structures vs n lexicalisations of few structures",
+                    }
+                )
 
     # Morphology must rank n distinct POS realisations above n lexicalisations
     # sharing few POS templates, at a matched document count.
     for size, morphs in sorted(morphs_by_size.items()):
         for morph in morphs:
             for frame in frames_by_size.get(size, [])[:MAX_PAIRS_PER_CORPUS]:
-                if (frame["expected"]["morphological"] or 0) < (morph["expected"]["morphological"] or 0):
-                    contrasts.append({
-                        "level": "morphological",
-                        "kind": "inverse_pair",
-                        "greater": morph["id"],
-                        "lesser": frame["id"],
-                        "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates",
-                    })
+                if (frame["expected"]["morphological"] or 0) < (
+                    morph["expected"]["morphological"] or 0
+                ):
+                    contrasts.append(
+                        {
+                            "level": "morphological",
+                            "kind": "inverse_pair",
+                            "greater": morph["id"],
+                            "lesser": frame["id"],
+                            "rationale": "n distinct POS sequences vs n lexicalisations of few POS templates",
+                        }
+                    )
 
     # Phonemics must rank phonemically distant sentences above minimal pairs,
     # holding the frame and document count fixed.
@@ -309,24 +432,28 @@ def build_contrasts(corpora: list[dict]) -> list[dict]:
     if control:
         for cid in ("phon-at_rhymes", "phon-ight_rhymes"):
             if cid in by_id and by_id[cid]["n_documents"] == control["n_documents"]:
-                contrasts.append({
-                    "level": "phonemic",
-                    "kind": "inverse_pair",
-                    "greater": control["id"],
-                    "lesser": cid,
-                    "rationale": "phonemically distant heads vs single-phoneme minimal pairs",
-                })
+                contrasts.append(
+                    {
+                        "level": "phonemic",
+                        "kind": "inverse_pair",
+                        "greater": control["id"],
+                        "lesser": cid,
+                        "rationale": "phonemically distant heads vs single-phoneme minimal pairs",
+                    }
+                )
 
     # Within a POS-identical corpus, syntax must exceed morphology.
     for c in corpora:
         if c["family"] == "pos_identical_structure_different":
-            contrasts.append({
-                "level": "__within_corpus__",
-                "corpus": c["id"],
-                "greater_level": "syntactic",
-                "lesser_level": "morphological",
-                "rationale": "identical POS sequence, differing dependency structure",
-            })
+            contrasts.append(
+                {
+                    "level": "__within_corpus__",
+                    "corpus": c["id"],
+                    "greater_level": "syntactic",
+                    "lesser_level": "morphological",
+                    "rationale": "identical POS sequence, differing dependency structure",
+                }
+            )
 
     # Every controlled family must fall below the random ceiling at matched size.
     # This is the check that a metric is measuring diversity rather than counting
@@ -343,13 +470,32 @@ def build_contrasts(corpora: list[dict]) -> list[dict]:
                 if (member["expected"]["semantic"] or 0) >= member["n_documents"]:
                     continue
                 for ctrl in randoms_by_size.get(size, [])[:1]:
-                    contrasts.append({
-                        "level": "semantic",
-                        "kind": "ceiling",
-                        "greater": ctrl["id"],
-                        "lesser": member["id"],
-                        "rationale": f"random ceiling vs semantically compressed {family} at n={size}",
-                    })
+                    contrasts.append(
+                        {
+                            "level": "semantic",
+                            "kind": "ceiling",
+                            "greater": ctrl["id"],
+                            "lesser": member["id"],
+                            "rationale": f"random ceiling vs semantically compressed {family} at n={size}",
+                        }
+                    )
+
+    # Graded phonological distance: a higher tier must score higher than a lower
+    # one at the same frame and size. An ordering, not a calibration target --
+    # absolute phonemic values are not interpretable on their own.
+    graded = [c for c in corpora if c["family"] == "phonemic_graded"]
+    for hi in graded:
+        for lo in graded:
+            if hi["tier_rank"] > lo["tier_rank"] and hi["n_documents"] == lo["n_documents"]:
+                contrasts.append(
+                    {
+                        "level": "phonemic",
+                        "kind": "graded",
+                        "greater": hi["id"],
+                        "lesser": lo["id"],
+                        "rationale": f"tier {hi['tier_rank']} vs tier {lo['tier_rank']}",
+                    }
+                )
 
     return contrasts
 
@@ -380,17 +526,19 @@ def build_random_controls(seed: dict, rng: random.Random) -> list[dict]:
             continue
         for draw in range(DRAWS_PER_CELL):
             docs = rng.sample(pool, n)
-            corpora.append(_record(
-                corpus_id=f"random-n{n}-{draw}",
-                family="random_controls",
-                target_level="ceiling",
-                documents=docs,
-                # Unrelated sentences: every level should be near its maximum, so
-                # expectations are n across the board.
-                expected={level: float(n) for level in LEVELS},
-                rationale=f"{n} unrelated sentences drawn at random: diversity ceiling",
-                rng=rng,
-            ))
+            corpora.append(
+                _record(
+                    corpus_id=f"random-n{n}-{draw}",
+                    family="random_controls",
+                    target_level="ceiling",
+                    documents=docs,
+                    # Unrelated sentences: every level should be near its maximum, so
+                    # expectations are n across the board.
+                    expected={level: float(n) for level in LEVELS},
+                    rationale=f"{n} unrelated sentences drawn at random: diversity ceiling",
+                    rng=rng,
+                )
+            )
     return corpora
 
 
@@ -401,6 +549,10 @@ BUILDERS = (
     build_pos_identical,
     build_surface_parse_blind,
     build_rhythmic_meters,
+    build_morphological_inflection,
+    build_constituency_contrasts,
+    build_rhythmic_stress_pairs,
+    build_phonemic_graded,
     build_phonemic_oronyms,
     build_phonemic_pairs,
     build_random_controls,
@@ -424,22 +576,27 @@ def main() -> None:
     contrasts = build_contrasts(corpora)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps({
-        "_meta": {
-            "random_seed": args.random_seed,
-            "n_corpora": len(corpora),
-            "n_contrasts": len(contrasts),
-            "levels": list(LEVELS),
-            "source": args.seed_data.name,
-            "scoring": (
-                "Two scores per metric. Calibration: does it report the expected "
-                "value at its own level? Discriminance: does it stay flat at levels "
-                "the corpus holds constant, and satisfy the paired contrasts?"
-            ),
-        },
-        "corpora": corpora,
-        "contrasts": contrasts,
-    }, indent=2))
+    args.out.write_text(
+        json.dumps(
+            {
+                "_meta": {
+                    "random_seed": args.random_seed,
+                    "n_corpora": len(corpora),
+                    "n_contrasts": len(contrasts),
+                    "levels": list(LEVELS),
+                    "source": args.seed_data.name,
+                    "scoring": (
+                        "Two scores per metric. Calibration: does it report the expected "
+                        "value at its own level? Discriminance: does it stay flat at levels "
+                        "the corpus holds constant, and satisfy the paired contrasts?"
+                    ),
+                },
+                "corpora": corpora,
+                "contrasts": contrasts,
+            },
+            indent=2,
+        )
+    )
 
     by_family: dict[str, int] = defaultdict(int)
     for c in corpora:

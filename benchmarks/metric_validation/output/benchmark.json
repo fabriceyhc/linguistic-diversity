@@ -1,8 +1,8 @@
 {
   "_meta": {
     "random_seed": 20260802,
-    "n_corpora": 116,
-    "n_contrasts": 138,
+    "n_corpora": 155,
+    "n_contrasts": 146,
     "levels": [
       "semantic",
       "syntactic",
@@ -1775,12 +1775,831 @@
       "rationale": "4 metrical patterns x 3 lines each"
     },
     {
+      "id": "infl-k1-m2-0",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The teacher spoke to the class.",
+        "The engineer drove to the plant."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k1-m2-1",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The teacher spoke to the class.",
+        "The farmer rode to the market."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k1-m2-2",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The farmer rode to the market.",
+        "The engineer drove to the plant."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k1-m3-0",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The farmer has ridden to the market.",
+        "The teacher has spoken to the class.",
+        "The engineer has driven to the plant."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k1-m3-1",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The worker walks to the site.",
+        "The farmer rides to the market.",
+        "The teacher speaks to the class."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k1-m3-2",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The engineer has driven to the plant.",
+        "The farmer has ridden to the market.",
+        "The teacher has spoken to the class."
+      ],
+      "n_documents": 3,
+      "expected": {
+        "semantic": 3.0,
+        "syntactic": 1.0,
+        "morphological": 1.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "1 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k2-m2-0",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The engineer is driving to the plant.",
+        "The teacher is speaking to the class.",
+        "The worker walks to the site.",
+        "The farmer rides to the market."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 1.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k2-m2-1",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The engineer is driving to the plant.",
+        "The worker walked to the site.",
+        "The worker is walking to the site.",
+        "The engineer drove to the plant."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 1.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k2-m2-2",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The farmer has ridden to the market.",
+        "The farmer rode to the market.",
+        "The teacher has spoken to the class.",
+        "The engineer drove to the plant."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": 4.0,
+        "syntactic": 1.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k2-m3-0",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The teacher speaks to the class.",
+        "The worker walks to the site.",
+        "The farmer is riding to the market.",
+        "The engineer is driving to the plant.",
+        "The engineer drives to the plant.",
+        "The worker is walking to the site."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 1.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k2-m3-1",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The teacher has spoken to the class.",
+        "The worker walked to the site.",
+        "The teacher spoke to the class.",
+        "The engineer has driven to the plant.",
+        "The farmer rode to the market.",
+        "The worker has walked to the site."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 1.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k2-m3-2",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The teacher has spoken to the class.",
+        "The engineer drove to the plant.",
+        "The engineer has driven to the plant.",
+        "The farmer rode to the market.",
+        "The worker has walked to the site.",
+        "The teacher spoke to the class."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 1.0,
+        "morphological": 2.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "2 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k3-m2-0",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The worker walks to the site.",
+        "The teacher speaks to the class.",
+        "The farmer rode to the market.",
+        "The teacher has spoken to the class.",
+        "The worker walked to the site.",
+        "The farmer has ridden to the market."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 1.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k3-m2-1",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The worker is walking to the site.",
+        "The teacher is speaking to the class.",
+        "The worker walks to the site.",
+        "The engineer has driven to the plant.",
+        "The teacher has spoken to the class.",
+        "The engineer drives to the plant."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 1.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k3-m2-2",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The farmer has ridden to the market.",
+        "The worker is walking to the site.",
+        "The engineer drove to the plant.",
+        "The farmer is riding to the market.",
+        "The farmer rode to the market.",
+        "The teacher has spoken to the class."
+      ],
+      "n_documents": 6,
+      "expected": {
+        "semantic": 6.0,
+        "syntactic": 1.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k3-m3-0",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The farmer has ridden to the market.",
+        "The teacher speaks to the class.",
+        "The farmer rode to the market.",
+        "The worker has walked to the site.",
+        "The teacher has spoken to the class.",
+        "The engineer drove to the plant.",
+        "The farmer rides to the market.",
+        "The worker walked to the site.",
+        "The worker walks to the site."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 1.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k3-m3-1",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The teacher has spoken to the class.",
+        "The farmer rides to the market.",
+        "The engineer drives to the plant.",
+        "The farmer has ridden to the market.",
+        "The worker has walked to the site.",
+        "The teacher spoke to the class.",
+        "The engineer drove to the plant.",
+        "The farmer rode to the market.",
+        "The teacher speaks to the class."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 1.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k3-m3-2",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The teacher spoke to the class.",
+        "The engineer is driving to the plant.",
+        "The engineer drives to the plant.",
+        "The worker walks to the site.",
+        "The farmer is riding to the market.",
+        "The farmer rode to the market.",
+        "The worker walked to the site.",
+        "The farmer rides to the market.",
+        "The worker is walking to the site."
+      ],
+      "n_documents": 9,
+      "expected": {
+        "semantic": 9.0,
+        "syntactic": 1.0,
+        "morphological": 3.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "3 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k4-m2-0",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The worker walks to the site.",
+        "The worker has walked to the site.",
+        "The farmer rode to the market.",
+        "The worker is walking to the site.",
+        "The engineer drives to the plant.",
+        "The farmer is riding to the market.",
+        "The teacher spoke to the class.",
+        "The farmer has ridden to the market."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 1.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k4-m2-1",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The farmer rides to the market.",
+        "The teacher is speaking to the class.",
+        "The worker has walked to the site.",
+        "The farmer has ridden to the market.",
+        "The farmer is riding to the market.",
+        "The teacher speaks to the class.",
+        "The farmer rode to the market.",
+        "The teacher spoke to the class."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 1.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k4-m2-2",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The teacher is speaking to the class.",
+        "The farmer has ridden to the market.",
+        "The engineer is driving to the plant.",
+        "The farmer rides to the market.",
+        "The farmer rode to the market.",
+        "The engineer drives to the plant.",
+        "The teacher has spoken to the class.",
+        "The worker walked to the site."
+      ],
+      "n_documents": 8,
+      "expected": {
+        "semantic": 8.0,
+        "syntactic": 1.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 inflectional patterns x 2 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k4-m3-0",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The engineer drives to the plant.",
+        "The farmer is riding to the market.",
+        "The teacher is speaking to the class.",
+        "The worker walks to the site.",
+        "The farmer has ridden to the market.",
+        "The farmer rides to the market.",
+        "The engineer has driven to the plant.",
+        "The farmer rode to the market.",
+        "The engineer drove to the plant.",
+        "The engineer is driving to the plant.",
+        "The teacher has spoken to the class.",
+        "The worker walked to the site."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 1.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k4-m3-1",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The farmer is riding to the market.",
+        "The engineer is driving to the plant.",
+        "The worker has walked to the site.",
+        "The farmer has ridden to the market.",
+        "The worker walked to the site.",
+        "The engineer drives to the plant.",
+        "The worker is walking to the site.",
+        "The farmer rides to the market.",
+        "The teacher spoke to the class.",
+        "The engineer has driven to the plant.",
+        "The worker walks to the site.",
+        "The engineer drove to the plant."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 1.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "infl-k4-m3-2",
+      "family": "morphological_inflection",
+      "target_level": "morphological",
+      "documents": [
+        "The engineer drives to the plant.",
+        "The farmer is riding to the market.",
+        "The engineer has driven to the plant.",
+        "The teacher is speaking to the class.",
+        "The teacher spoke to the class.",
+        "The worker is walking to the site.",
+        "The farmer rides to the market.",
+        "The farmer has ridden to the market.",
+        "The farmer rode to the market.",
+        "The worker walks to the site.",
+        "The worker has walked to the site.",
+        "The worker walked to the site."
+      ],
+      "n_documents": 12,
+      "expected": {
+        "semantic": 12.0,
+        "syntactic": 1.0,
+        "morphological": 4.0,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "4 inflectional patterns x 3 lexicalisations, one frame"
+    },
+    {
+      "id": "const-coordination_scope",
+      "family": "constituency_contrasts",
+      "target_level": "syntactic",
+      "documents": [
+        "They hired old men and old women.",
+        "They hired old men and women."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "favours constituency: shared vs distributed adjective scope; con 0.769, dep 0.875"
+    },
+    {
+      "id": "const-center_vs_right_branching",
+      "family": "constituency_contrasts",
+      "target_level": "syntactic",
+      "documents": [
+        "The rat the cat chased died.",
+        "The cat chased the rat that died."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "favours dependency: con 0.571, dep 0.375"
+    },
+    {
+      "id": "const-complement_vs_relative",
+      "family": "constituency_contrasts",
+      "target_level": "syntactic",
+      "documents": [
+        "He knows the answer that is wrong.",
+        "He knows that the answer is wrong."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "favours dependency: con 0.714, dep 0.375"
+    },
+    {
+      "id": "const-pp_stacking_depth",
+      "family": "constituency_contrasts",
+      "target_level": "syntactic",
+      "documents": [
+        "The book on the table in the room vanished.",
+        "The book vanished on the table today."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 2.0,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "favours dependency: con 0.611, dep 0.400"
+    },
+    {
+      "id": "const-np_bracketing",
+      "family": "constituency_contrasts",
+      "target_level": "syntactic",
+      "documents": [
+        "She met the tall history teacher.",
+        "She met the French history teacher."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": 1.0,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "favours neither: both report 1.000: neither parser resolves the bracketing"
+    },
+    {
+      "id": "stress-record",
+      "family": "rhythmic_stress_pairs",
+      "target_level": "rhythmic",
+      "documents": [
+        "She kept a record of the meeting.",
+        "She had to record the meeting."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "stress alternation on 'record'"
+    },
+    {
+      "id": "stress-present",
+      "family": "rhythmic_stress_pairs",
+      "target_level": "rhythmic",
+      "documents": [
+        "They will present the report at noon.",
+        "They opened the present at noon."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "stress alternation on 'present'"
+    },
+    {
+      "id": "stress-conduct",
+      "family": "rhythmic_stress_pairs",
+      "target_level": "rhythmic",
+      "documents": [
+        "He will conduct the review.",
+        "His conduct was under review."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "stress alternation on 'conduct'"
+    },
+    {
+      "id": "stress-permit",
+      "family": "rhythmic_stress_pairs",
+      "target_level": "rhythmic",
+      "documents": [
+        "They permit entry in March.",
+        "The permit expires in March."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "stress alternation on 'permit'"
+    },
+    {
+      "id": "stress-contrast",
+      "family": "rhythmic_stress_pairs",
+      "target_level": "rhythmic",
+      "documents": [
+        "They contrast the two designs.",
+        "The contrast was striking."
+      ],
+      "n_documents": 2,
+      "expected": {
+        "semantic": 2.0,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": 2.0,
+        "phonemic": null
+      },
+      "rationale": "stress alternation on 'contrast'"
+    },
+    {
+      "id": "graded-tier1_rhyme",
+      "family": "phonemic_graded",
+      "target_level": "phonemic",
+      "documents": [
+        "The mat sat there.",
+        "The hat sat there.",
+        "The cat sat there.",
+        "The bat sat there."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": null,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "phonological distance tier 1",
+      "tier_rank": 1
+    },
+    {
+      "id": "graded-tier2_shared_onset",
+      "family": "phonemic_graded",
+      "target_level": "phonemic",
+      "documents": [
+        "The cap sat there.",
+        "The cast sat there.",
+        "The can sat there.",
+        "The cat sat there."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": null,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "phonological distance tier 2",
+      "tier_rank": 2
+    },
+    {
+      "id": "graded-tier3_distant",
+      "family": "phonemic_graded",
+      "target_level": "phonemic",
+      "documents": [
+        "The thrush sat there.",
+        "The ox sat there.",
+        "The wolf sat there.",
+        "The cat sat there."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": null,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "phonological distance tier 3",
+      "tier_rank": 3
+    },
+    {
+      "id": "graded-tier1b_rhyme",
+      "family": "phonemic_graded",
+      "target_level": "phonemic",
+      "documents": [
+        "The sight was gone.",
+        "The might was gone.",
+        "The night was gone.",
+        "The light was gone."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": null,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "phonological distance tier 1",
+      "tier_rank": 1
+    },
+    {
+      "id": "graded-tier3b_distant",
+      "family": "phonemic_graded",
+      "target_level": "phonemic",
+      "documents": [
+        "The rumble was gone.",
+        "The light was gone.",
+        "The oaf was gone.",
+        "The archipelago was gone."
+      ],
+      "n_documents": 4,
+      "expected": {
+        "semantic": null,
+        "syntactic": null,
+        "morphological": null,
+        "rhythmic": null,
+        "phonemic": null
+      },
+      "rationale": "phonological distance tier 3",
+      "tier_rank": 3
+    },
+    {
       "id": "oronym-ice_cream",
       "family": "phonemic_oronyms",
       "target_level": "phonemic",
       "documents": [
-        "Ice cream for the treat.",
-        "I scream for the treat."
+        "I scream for the treat.",
+        "Ice cream for the treat."
       ],
       "n_documents": 2,
       "expected": {
@@ -1815,8 +2634,8 @@
       "family": "phonemic_oronyms",
       "target_level": "phonemic",
       "documents": [
-        "He asked for four candles.",
-        "He asked for fork handles."
+        "He asked for fork handles.",
+        "He asked for four candles."
       ],
       "n_documents": 2,
       "expected": {
@@ -1833,8 +2652,8 @@
       "family": "phonemic_oronyms",
       "target_level": "phonemic",
       "documents": [
-        "They served mint spies.",
-        "They served mince pies."
+        "They served mince pies.",
+        "They served mint spies."
       ],
       "n_documents": 2,
       "expected": {
@@ -1851,8 +2670,8 @@
       "family": "phonemic_oronyms",
       "target_level": "phonemic",
       "documents": [
-        "That was a grey day result.",
-        "That was a grade A result."
+        "That was a grade A result.",
+        "That was a grey day result."
       ],
       "n_documents": 2,
       "expected": {
@@ -1869,8 +2688,8 @@
       "family": "phonemic_oronyms",
       "target_level": "phonemic",
       "documents": [
-        "The debate concerned euthanasia.",
-        "The debate concerned youth in Asia."
+        "The debate concerned youth in Asia.",
+        "The debate concerned euthanasia."
       ],
       "n_documents": 2,
       "expected": {
@@ -1905,8 +2724,8 @@
       "family": "phonemic_oronyms",
       "target_level": "phonemic",
       "documents": [
-        "That is the stuff he kneads.",
-        "That is the stuff he needs."
+        "That is the stuff he needs.",
+        "That is the stuff he kneads."
       ],
       "n_documents": 2,
       "expected": {
@@ -1924,9 +2743,9 @@
       "target_level": "phonemic",
       "documents": [
         "The hat sat there.",
-        "The cat sat there.",
+        "The bat sat there.",
         "The mat sat there.",
-        "The bat sat there."
+        "The cat sat there."
       ],
       "n_documents": 4,
       "expected": {
@@ -1943,9 +2762,9 @@
       "family": "phonemic_minimal_pairs",
       "target_level": "phonemic",
       "documents": [
-        "The night was gone.",
         "The light was gone.",
         "The sight was gone.",
+        "The night was gone.",
         "The might was gone."
       ],
       "n_documents": 4,
@@ -1965,8 +2784,8 @@
       "documents": [
         "The thrush glimpsed movement.",
         "The cat sat there.",
-        "The wolf slept nearby.",
-        "The ox brushed through."
+        "The ox brushed through.",
+        "The wolf slept nearby."
       ],
       "n_documents": 4,
       "expected": {
@@ -1983,8 +2802,8 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "That young girl painted the wall.",
-        "The city was destroyed by the army."
+        "The city lay destroyed by the army.",
+        "His refusal of the offer was final."
       ],
       "n_documents": 2,
       "expected": {
@@ -2002,7 +2821,7 @@
       "target_level": "ceiling",
       "documents": [
         "Tiger tiger burning bright.",
-        "They think that the price is high."
+        "When the rain stopped, the children played."
       ],
       "n_documents": 2,
       "expected": {
@@ -2019,8 +2838,8 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "After the meeting ended, the manager left.",
-        "Peter picked a peck quickly."
+        "The book on the table was missing.",
+        "The road beyond the hill was long."
       ],
       "n_documents": 2,
       "expected": {
@@ -2037,9 +2856,9 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "The city lay destroyed by the army.",
-        "And the sheen of their spears was like stars.",
-        "There is a stain on the carpet."
+        "There was a crack in the ceiling.",
+        "The offer was refused by him.",
+        "The painting in the hall was damaged."
       ],
       "n_documents": 3,
       "expected": {
@@ -2056,9 +2875,9 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "The keys in the drawer were stolen.",
-        "There is a knot in the rope.",
-        "The city was destroyed by the army."
+        "Because the road flooded, the bus stopped.",
+        "Boil the water and add the salt.",
+        "The train had arrived."
       ],
       "n_documents": 3,
       "expected": {
@@ -2075,9 +2894,9 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "The arrival of the train was late.",
-        "The city lay destroyed by the army.",
-        "That young girl painted the wall."
+        "Water falling over boulders.",
+        "There was a crack in the ceiling.",
+        "They think that the price is high."
       ],
       "n_documents": 3,
       "expected": {
@@ -2094,10 +2913,10 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "There was a gap in the fence.",
-        "The book on the table was missing.",
-        "In the blink of an eye it was gone.",
-        "Cannon to right of them thundered."
+        "The committee's decision was unanimous.",
+        "The army destroyed the city.",
+        "He refused the offer.",
+        "The city lay destroyed by the army."
       ],
       "n_documents": 4,
       "expected": {
@@ -2114,10 +2933,10 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "She believes that the plan is sound.",
-        "They think that the price is high.",
-        "That young girl painted the wall.",
-        "A decision was reached by the committee."
+        "His refusal of the offer was final.",
+        "Open the door and close the window.",
+        "A decision was reached by the committee.",
+        "The committee's decision was unanimous."
       ],
       "n_documents": 4,
       "expected": {
@@ -2134,10 +2953,10 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "Boil the water and add the salt.",
-        "And the sheen of their spears was like stars.",
-        "The book on the table was missing.",
-        "Read the book and write the essay."
+        "A bird beneath the bridge has flown.",
+        "Peter picked a peck quickly.",
+        "Double double toil and trouble.",
+        "The old woman watered the garden."
       ],
       "n_documents": 4,
       "expected": {
@@ -2154,12 +2973,12 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "He was refusing the offer.",
-        "Before the show started, the crowd cheered.",
-        "The road beyond the hill was long.",
-        "This is the forest primeval.",
-        "After the meeting ended, the manager left.",
-        "Peter picked a peck quickly."
+        "The book on the table was missing.",
+        "The arrival of the train was late.",
+        "On the edge of the world there is light.",
+        "The clock upon the wall was slow.",
+        "The train was arriving.",
+        "The army's destruction of the city was total."
       ],
       "n_documents": 6,
       "expected": {
@@ -2176,12 +2995,12 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "A decision was reached by the committee.",
-        "Merrily onward the travellers wandered.",
-        "Open the door and close the window.",
-        "Cannon to right of them thundered.",
-        "The committee had been deciding.",
-        "The committee's decision was unanimous."
+        "Peter picked a peck quickly.",
+        "The old woman watered the garden.",
+        "The book on the table was missing.",
+        "Before the show started, the crowd cheered.",
+        "Boil the water and add the salt.",
+        "It was late in the night when he came."
       ],
       "n_documents": 6,
       "expected": {
@@ -2198,12 +3017,12 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
+        "The committee had been deciding.",
+        "The train was arriving.",
         "The city was destroyed by the army.",
-        "They think that the price is high.",
-        "He knows that the answer is wrong.",
-        "He was refusing the offer.",
-        "The committee's decision was unanimous.",
-        "The letter on the desk was opened."
+        "In the blink of an eye it was gone.",
+        "Because the road flooded, the bus stopped.",
+        "A bird beneath the bridge has flown."
       ],
       "n_documents": 6,
       "expected": {
@@ -2220,13 +3039,13 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "The train was arriving.",
-        "There was a gap in the fence.",
-        "Read the book and write the essay.",
+        "Cannon to right of them thundered.",
+        "There was a crack in the ceiling.",
         "He knows that the answer is wrong.",
-        "The committee's decision was unanimous.",
-        "He was refusing the offer.",
-        "And the sheen of their spears was like stars.",
+        "The committee decided.",
+        "They think that the price is high.",
+        "The army's destruction of the city was total.",
+        "The tall boy kicked the ball.",
         "A light within the room was dim."
       ],
       "n_documents": 8,
@@ -2244,14 +3063,14 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "The arrival of the train was late.",
+        "A decision was reached by the committee.",
+        "The old woman watered the garden.",
+        "The train was arriving.",
+        "He refused the offer.",
         "And the sheen of their spears was like stars.",
-        "The letter on the desk was opened.",
-        "Half of the company faltered and scattered.",
-        "The road beyond the hill was long.",
-        "There was a crack in the ceiling.",
-        "Before the show started, the crowd cheered.",
-        "Peter picked a peck quickly."
+        "They think that the price is high.",
+        "The army destroyed the city.",
+        "The committee decided."
       ],
       "n_documents": 8,
       "expected": {
@@ -2268,14 +3087,14 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "The train arrived.",
-        "He was refusing the offer.",
-        "I doubt that the story is true.",
         "His refusal of the offer was final.",
-        "The offer was refused by him.",
-        "The tall boy kicked the ball.",
-        "The painting in the hall was damaged.",
-        "The committee decided."
+        "A bird beneath the bridge has flown.",
+        "Double double toil and trouble.",
+        "Because the road flooded, the bus stopped.",
+        "On the edge of the world there is light.",
+        "There is a knot in the rope.",
+        "The committee had been deciding.",
+        "The arrival of the train was late."
       ],
       "n_documents": 8,
       "expected": {
@@ -2292,15 +3111,15 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "The committee decided.",
-        "The offer was refused by him.",
-        "On the edge of the world there is light.",
-        "He refused the offer.",
-        "The city was destroyed by the army.",
-        "Because the road flooded, the bus stopped.",
-        "Take the money and leave the room.",
-        "Double double toil and trouble.",
-        "The committee's decision was unanimous."
+        "His refusal of the offer was final.",
+        "There is a knot in the rope.",
+        "There was a crack in the ceiling.",
+        "Boil the water and add the salt.",
+        "The army destroyed the city.",
+        "The keys in the drawer were stolen.",
+        "The clock upon the wall was slow.",
+        "The painting in the hall was damaged.",
+        "There is a stain on the carpet."
       ],
       "n_documents": 9,
       "expected": {
@@ -2317,15 +3136,15 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "Because the road flooded, the bus stopped.",
-        "After the meeting ended, the manager left.",
-        "I doubt that the story is true.",
-        "Open the door and close the window.",
-        "The city was destroyed by the army.",
-        "On the edge of the world there is light.",
-        "They think that the price is high.",
-        "A light within the room was dim.",
-        "The committee decided."
+        "The train was arriving.",
+        "He refused the offer.",
+        "Before the show started, the crowd cheered.",
+        "There is a knot in the rope.",
+        "The train had arrived.",
+        "A decision was reached by the committee.",
+        "The tall boy kicked the ball.",
+        "He knows that the answer is wrong.",
+        "The committee had been deciding."
       ],
       "n_documents": 9,
       "expected": {
@@ -2342,15 +3161,15 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "On the edge of the world there is light.",
-        "This is the forest primeval.",
-        "There was a gap in the fence.",
-        "Read the book and write the essay.",
-        "A red car struck the fence.",
-        "Boil the water and add the salt.",
-        "The offer was refused by him.",
-        "A bird beneath the bridge has flown.",
-        "He knows that the answer is wrong."
+        "The painting in the hall was damaged.",
+        "The city was destroyed by the army.",
+        "The book on the table was missing.",
+        "The committee's decision was unanimous.",
+        "He knows that the answer is wrong.",
+        "The train had arrived.",
+        "The arrival of the train was late.",
+        "There is a stain on the carpet.",
+        "There was a gap in the fence."
       ],
       "n_documents": 9,
       "expected": {
@@ -2367,18 +3186,18 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "A light within the room was dim.",
-        "He knows that the answer is wrong.",
-        "And the sheen of their spears was like stars.",
-        "The tall boy kicked the ball.",
-        "They think that the price is high.",
+        "There was a crack in the ceiling.",
+        "The committee decided.",
+        "I doubt that the story is true.",
+        "The painting in the hall was damaged.",
+        "The keys in the drawer were stolen.",
+        "It was late in the night when he came.",
+        "There was a gap in the fence.",
+        "When the rain stopped, the children played.",
+        "His refusal of the offer was final.",
         "A bird beneath the bridge has flown.",
-        "There is a knot in the rope.",
-        "Take the money and leave the room.",
-        "Half of the company faltered and scattered.",
-        "The road beyond the hill was long.",
-        "The arrival of the train was late.",
-        "Tiger tiger burning bright."
+        "A light within the room was dim.",
+        "A decision was reached by the committee."
       ],
       "n_documents": 12,
       "expected": {
@@ -2395,18 +3214,18 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "Double double toil and trouble.",
-        "Half of the company faltered and scattered.",
-        "The train arrived.",
-        "A bird beneath the bridge has flown.",
-        "In the blink of an eye it was gone.",
-        "Before the show started, the crowd cheered.",
-        "There was a crack in the ceiling.",
-        "This is the forest primeval.",
-        "Because the road flooded, the bus stopped.",
-        "The painting in the hall was damaged.",
         "The old woman watered the garden.",
-        "The city was destroyed by the army."
+        "A light within the room was dim.",
+        "The painting in the hall was damaged.",
+        "Because the road flooded, the bus stopped.",
+        "It was late in the night when he came.",
+        "The keys in the drawer were stolen.",
+        "Half of the company faltered and scattered.",
+        "On the edge of the world there is light.",
+        "The army destroyed the city.",
+        "The committee's decision was unanimous.",
+        "In the blink of an eye it was gone.",
+        "A red car struck the fence."
       ],
       "n_documents": 12,
       "expected": {
@@ -2423,18 +3242,18 @@
       "family": "random_controls",
       "target_level": "ceiling",
       "documents": [
-        "It was late in the night when he came.",
-        "A decision was reached by the committee.",
-        "A bird beneath the bridge has flown.",
-        "Tiger tiger burning bright.",
-        "Because the road flooded, the bus stopped.",
-        "Before the show started, the crowd cheered.",
-        "The offer was refused by him.",
+        "He was refusing the offer.",
+        "I doubt that the story is true.",
+        "Double double toil and trouble.",
+        "Merrily onward the travellers wandered.",
+        "That young girl painted the wall.",
         "The train had arrived.",
-        "The committee's decision was unanimous.",
-        "The old woman watered the garden.",
+        "The book on the table was missing.",
+        "Cannon to right of them thundered.",
         "The city was destroyed by the army.",
-        "The army destroyed the city."
+        "Water falling over boulders.",
+        "There is a stain on the carpet.",
+        "They think that the price is high."
       ],
       "n_documents": 12,
       "expected": {
@@ -3413,6 +4232,62 @@
       "greater": "random-n4-0",
       "lesser": "morph-arrive_train",
       "rationale": "random ceiling vs semantically compressed morphological_templates at n=4"
+    },
+    {
+      "level": "phonemic",
+      "kind": "graded",
+      "greater": "graded-tier2_shared_onset",
+      "lesser": "graded-tier1_rhyme",
+      "rationale": "tier 2 vs tier 1"
+    },
+    {
+      "level": "phonemic",
+      "kind": "graded",
+      "greater": "graded-tier2_shared_onset",
+      "lesser": "graded-tier1b_rhyme",
+      "rationale": "tier 2 vs tier 1"
+    },
+    {
+      "level": "phonemic",
+      "kind": "graded",
+      "greater": "graded-tier3_distant",
+      "lesser": "graded-tier1_rhyme",
+      "rationale": "tier 3 vs tier 1"
+    },
+    {
+      "level": "phonemic",
+      "kind": "graded",
+      "greater": "graded-tier3_distant",
+      "lesser": "graded-tier2_shared_onset",
+      "rationale": "tier 3 vs tier 2"
+    },
+    {
+      "level": "phonemic",
+      "kind": "graded",
+      "greater": "graded-tier3_distant",
+      "lesser": "graded-tier1b_rhyme",
+      "rationale": "tier 3 vs tier 1"
+    },
+    {
+      "level": "phonemic",
+      "kind": "graded",
+      "greater": "graded-tier3b_distant",
+      "lesser": "graded-tier1_rhyme",
+      "rationale": "tier 3 vs tier 1"
+    },
+    {
+      "level": "phonemic",
+      "kind": "graded",
+      "greater": "graded-tier3b_distant",
+      "lesser": "graded-tier2_shared_onset",
+      "rationale": "tier 3 vs tier 2"
+    },
+    {
+      "level": "phonemic",
+      "kind": "graded",
+      "greater": "graded-tier3b_distant",
+      "lesser": "graded-tier1b_rhyme",
+      "rationale": "tier 3 vs tier 1"
     }
   ]
 }

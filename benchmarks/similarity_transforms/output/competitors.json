@@ -1,0 +1,78 @@
+{
+  "limit": 400,
+  "results": {
+    "distinct-n (lexical)": {
+      "McDiv_nuggets": 0.389,
+      "conTest": 0.4891,
+      "decTest": 0.8148,
+      "agreement_mean": 0.5643,
+      "calib_rho": 0.5297,
+      "calib_ratio": null
+    },
+    "SelfBLEU (lexical)": {
+      "McDiv_nuggets": 0.4182,
+      "conTest": 0.5245,
+      "decTest": 0.8187,
+      "agreement_mean": 0.5871,
+      "calib_rho": 0.542,
+      "calib_ratio": null
+    },
+    "TTR (lexical)": {
+      "McDiv_nuggets": 0.389,
+      "conTest": 0.4891,
+      "decTest": 0.8148,
+      "agreement_mean": 0.5643,
+      "calib_rho": 0.5297,
+      "calib_ratio": null
+    },
+    "Vendi (spectral)": {
+      "McDiv_nuggets": 0.5755,
+      "conTest": 0.6699,
+      "decTest": 0.811,
+      "agreement_mean": 0.6855,
+      "calib_rho": 0.9741,
+      "calib_ratio": 0.9731
+    },
+    "PRDC coverage": {
+      "McDiv_nuggets": 0.2067,
+      "conTest": 0.2831,
+      "decTest": 0.3664,
+      "agreement_mean": 0.2854,
+      "calib_rho": 0.805,
+      "calib_ratio": null
+    },
+    "Decan (LM surprise)": {
+      "McDiv_nuggets": 0.4398,
+      "conTest": 0.5037,
+      "decTest": 0.7075,
+      "agreement_mean": 0.5503,
+      "calib_rho": 0.5984,
+      "calib_ratio": null
+    },
+    "OURS current default": {
+      "McDiv_nuggets": 0.5756,
+      "conTest": 0.6699,
+      "decTest": 0.8129,
+      "agreement_mean": 0.6861,
+      "calib_rho": 0.9743,
+      "calib_ratio": 0.9856
+    },
+    "OURS best kernel": {
+      "McDiv_nuggets": 0.8075,
+      "conTest": 0.8107,
+      "decTest": 0.8191,
+      "agreement_mean": 0.8124,
+      "calib_rho": 0.9747,
+      "calib_ratio": 1.0
+    },
+    "distribution_level": {
+      "PRDC coverage": -0.0488,
+      "PRDC recall": 0.9273,
+      "PRDC density": -0.8909,
+      "Vendi (spectral)": 0.9879,
+      "OURS small-set kernel": 0.9515,
+      "OURS scale kernel (tau only)": 1.0,
+      "Decan (LM surprise)": 0.7212
+    }
+  }
+}

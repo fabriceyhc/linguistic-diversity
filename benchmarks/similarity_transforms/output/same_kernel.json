@@ -1,0 +1,41 @@
+{
+  "Hill (Leinster-Cobbold)": {
+    "McDiv_nuggets": 0.8126,
+    "conTest": 0.7495,
+    "decTest": 0.8134,
+    "mean": 0.7918,
+    "calib_rho": 0.9721,
+    "calib_ratio": 0.9716
+  },
+  "Vendi Score (reference impl)": {
+    "McDiv_nuggets": 0.8406,
+    "conTest": 0.7788,
+    "decTest": 0.8333,
+    "mean": 0.8176,
+    "calib_rho": 0.9746,
+    "calib_ratio": 0.9998
+  },
+  "pVS_q (this library)": {
+    "McDiv_nuggets": 0.8406,
+    "conTest": 0.7788,
+    "decTest": 0.8333,
+    "mean": 0.8176,
+    "calib_rho": 0.9746,
+    "calib_ratio": 0.9998
+  },
+  "PRDC coverage": {
+    "McDiv_nuggets": NaN,
+    "conTest": NaN,
+    "decTest": -0.0863,
+    "mean": NaN,
+    "calib_rho": 0.1607,
+    "calib_ratio": 0.1667
+  },
+  "_pvs_vendi_max_abs_diff": 4.529709940470639e-14,
+  "abundance": {
+    "weighted_mean": 4.1782,
+    "spectral_mean": 5.1427,
+    "uniform_mean": 5.1427,
+    "mean_abs_diff_zipf": 0.9711
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "human_agreement": {
+    "Hill (this library)": {
+      "McDiv_nuggets": 0.5813,
+      "conTest": 0.6503
+    },
+    "Vendi": {
+      "McDiv_nuggets": 0.5959,
+      "conTest": 0.6668
+    }
+  },
+  "calibration": {
+    "Hill (this library)": {
+      "spearman_vs_expected": 0.9615,
+      "median_ratio": 0.8389,
+      "n": 69
+    },
+    "Vendi": {
+      "spearman_vs_expected": 0.9743,
+      "median_ratio": 0.9856,
+      "n": 69
+    }
+  },
+  "disagreement": {
+    "syntactic_alternations": 1.2379,
+    "syntactic_frames": 1.2836,
+    "random_controls": 1.3343
+  }
+}

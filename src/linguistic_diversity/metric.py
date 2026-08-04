@@ -12,6 +12,8 @@ from typing import Any, Generic, TypeVar
 import numpy as np
 import numpy.typing as npt
 
+from .utils import maximum_diversity
+
 try:
     from scipy import optimize
 
@@ -20,11 +22,71 @@ except ImportError:
     SCIPY_AVAILABLE = False
 
 
+def _nearest_psd(Z: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    """Closest positive semi-definite matrix, with the diagonal restored to 1.
+
+    Alignment identity and normalised tree-edit distance are not kernels, so the
+    similarity matrices at the structural and phonological levels routinely carry
+    negative eigenvalues -- DependencyParse reaches -1.6 on real text. A Hill
+    number does not mind; anything built on log(eigenvalue) is undefined without
+    this.
+
+    The correction is smaller than that figure suggests. Negative eigenvalues hold
+    0.7% (PartOfSpeechSequence) to 4.2% (DependencyParse) of total spectral
+    magnitude, and projecting moves the matrix 1.3% to 13.6% in Frobenius norm.
+
+    The result is a correlation matrix: PSD with unit diagonal, entries in [-1, 1].
+    Off-diagonal entries are deliberately *not* clipped back into [0, 1]. Clipping
+    after projecting un-does the projection -- it is a second, unconstrained
+    perturbation that pushes the matrix straight back out of the PSD cone, and the
+    caller then silently discards the negative eigenvalues it reintroduced. On a
+    rank-deficient input that inflates the score badly: for 200 unit vectors in 32
+    dimensions it raises the numerical rank from 32 to 200 and the reported
+    diversity from 29.5 to 85.0. A negative entry in a *projected* matrix is not a
+    similarity that has gone out of range; it is the coordinate the PSD cone
+    requires, and the spectral index needs only positive semi-definiteness.
+    """
+    sym = (Z + Z.T) / 2
+    eigenvalues, vectors = np.linalg.eigh(sym)
+    projected = vectors @ np.diag(np.clip(eigenvalues, 0.0, None)) @ vectors.T
+    # Congruence by a positive diagonal, so this preserves positive semi-definiteness.
+    scale = np.sqrt(np.clip(np.diag(projected), 1e-12, None))
+    projected = projected / np.outer(scale, scale)
+    np.fill_diagonal(projected, 1.0)
+    return np.asarray(projected, dtype=np.float64)
+
+
 @dataclass
 class MetricConfig:
     """Base configuration for metrics."""
 
     q: float = 1.0  # Diversity order parameter
+    # Which diversity index consumes the similarity matrix.
+    #   "hill"   Leinster-Cobbold, D_q = (sum_i p_i (Zp)_i^(q-1))^(1/(1-q)).
+    #   "vendi"  the probability-weighted Vendi Score at Renyi order q. The
+    #            weighting diag(sqrt p) Z diag(sqrt p) is Friedman & Dieng's own
+    #            (TMLR 2023, alongside the unweighted score); the order parameter
+    #            is Pasarkar & Dieng (2024). Neither is novel here -- see
+    #            tests/test_vendi_reference.py, which checks agreement against the
+    #            authors' `vendi-score` package.
+    #
+    # They agree at both extremes -- Z = I gives n, Z all-ones gives 1 -- and
+    # differ in between. A uniform baseline similarity contributes a rank-one
+    # component; the spectral form confines it to a single eigenvalue while the
+    # Hill form spreads it through every (Zp)_i, where it accumulates linearly in
+    # n and pulls the score toward 1/z regardless of corpus size.
+    #
+    # "vendi" is the default from v1.1.0 (v2.0.0 changed the similarity, not this). It is better on both criteria at every
+    # level measured -- rank agreement against known ground truth and calibration
+    # ratio -- and on human agreement, while preserving the discriminant
+    # behaviour and every metamorphic law. See benchmarks/vendi_comparison/.
+    #
+    # Costs, which is why "hill" remains available: an O(n^3) eigendecomposition
+    # rather than an O(n^2) matrix-vector product, and a projection onto the
+    # nearest PSD matrix, since alignment and tree-edit similarities are not
+    # kernels. Choose "hill" for very large corpora or when the exact
+    # Leinster-Cobbold quantity is wanted.
+    index: str = "vendi"
     normalize: bool = False  # Normalize diversity by number of species
     verbose: bool = False
 
@@ -554,15 +616,95 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
     Hill numbers, based on the framework from ecological diversity studies.
     """
 
-    def __call__(self, corpus: list[str]) -> float:
+    def __call__(
+        self,
+        corpus: list[str],
+        abundance: npt.ArrayLike | None = None,
+        deduplicate: bool = False,
+    ) -> float:
         """Compute diversity for a corpus."""
-        return self.diversity(corpus)
+        return self.diversity(corpus, abundance=abundance, deduplicate=deduplicate)
 
-    def diversity(self, corpus: list[str]) -> float:
+    def _resolve_abundance(
+        self,
+        corpus: list[str],
+        species: list[Any],
+        abundance: npt.ArrayLike | None,
+        deduplicate: bool,
+    ) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.intp] | None]:
+        """Work out the abundance vector, and which species survive deduplication.
+
+        Returns (p, keep) where ``keep`` indexes the retained species, or None if
+        every species is retained.
+
+        Abundance is what distinguishes this index from a purely spectral one: a
+        corpus of 20,000 documents with 500 distinct texts can be scored as a
+        500x500 matrix with counts as weights, rather than a 20,000x20,000 matrix
+        with the duplicates materialised. The two give identical answers, and the
+        eigendecomposition of the second is ~64,000x the work.
+        """
+        if abundance is None and not deduplicate:
+            return self.calculate_abundance(species), None
+
+        if len(species) != len(corpus):
+            raise ValueError(
+                f"{type(self).__name__} has {len(species)} species for {len(corpus)} "
+                "documents, so its species are not documents and per-document "
+                "abundance cannot be aligned to them. Drop the abundance and "
+                "deduplicate arguments for this metric."
+            )
+
+        weights = (
+            np.ones(len(corpus), dtype=np.float64)
+            if abundance is None
+            else np.asarray(abundance, dtype=np.float64)
+        )
+        if weights.shape != (len(corpus),):
+            raise ValueError(
+                f"abundance must have one entry per document: got {weights.shape}, "
+                f"expected ({len(corpus)},)"
+            )
+        if np.any(weights < 0):
+            raise ValueError("abundance entries must be non-negative")
+
+        keep: npt.NDArray[np.intp] | None = None
+        if deduplicate:
+            # Merge byte-identical documents and sum their weights. First
+            # occurrence wins, so the surviving order is the corpus order.
+            first: dict[str, int] = {}
+            merged: list[float] = []
+            keep_list: list[int] = []
+            for i, doc in enumerate(corpus):
+                if doc in first:
+                    merged[first[doc]] += float(weights[i])
+                else:
+                    first[doc] = len(keep_list)
+                    keep_list.append(i)
+                    merged.append(float(weights[i]))
+            keep = np.asarray(keep_list, dtype=np.intp)
+            weights = np.asarray(merged, dtype=np.float64)
+
+        total = weights.sum()
+        if total <= 0:
+            raise ValueError("abundance sums to zero")
+        return weights / total, keep
+
+    def diversity(
+        self,
+        corpus: list[str],
+        abundance: npt.ArrayLike | None = None,
+        deduplicate: bool = False,
+    ) -> float:
         """Calculate diversity using similarity-sensitive Hill numbers.
 
         Args:
             corpus: List of text documents.
+            abundance: Optional weight per document -- corpus frequencies, sampling
+                weights, duplicate counts. Defaults to uniform. Only meaningful for
+                metrics whose species are documents.
+            deduplicate: Merge byte-identical documents and weight each by how often
+                it occurred. Gives the same answer as leaving the duplicates in, on a
+                matrix the size of the distinct set.
 
         Returns:
             Diversity score (effective number of species).
@@ -618,11 +760,13 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
                     stacklevel=2,
                 )
 
-        # Calculate abundance vector p
-        p = self.calculate_abundance(species)
+        # Calculate abundance vector p, collapsing duplicates if asked
+        p, keep = self._resolve_abundance(corpus, species, abundance, deduplicate)
+        if keep is not None:
+            Z = Z[np.ix_(keep, keep)]
 
         # Calculate diversity
-        D = self._calc_diversity(p, Z, self.config.q)
+        D = self._calc_diversity(p, Z, self.config.q, self.config.index)
 
         # Validate result
         if np.isnan(D) or np.isinf(D):
@@ -637,6 +781,265 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
             D /= len(p)
 
         return float(D)
+
+    def diversity_profile(
+        self,
+        corpus: list[str],
+        q_values: Sequence[float] = (0.0, 0.5, 1.0, 2.0, 4.0, float("inf")),
+        abundance: npt.ArrayLike | None = None,
+        deduplicate: bool = False,
+    ) -> dict[float, float]:
+        """Diversity across a range of orders q, sharing one similarity matrix.
+
+        Ecology reports the *profile* rather than a single number, because the
+        shape carries what no one order can. Low q asks how many distinct things
+        are present at all; high q asks how many dominate. A flat profile means an
+        even corpus; a steeply falling one means a few items carry most of it.
+
+        The gap between D_0 and D_inf is exactly the information a spectral index
+        cannot express, since it has no abundance to be even or uneven about.
+
+        Args:
+            corpus: List of text documents.
+            q_values: Orders to evaluate. 0 approaches richness, 1 is Shannon,
+                2 is Simpson, and infinity is Berger-Parker.
+            abundance: Optional weight per document. See ``diversity``.
+            deduplicate: Merge identical documents and weight by count.
+
+        Returns:
+            Mapping of q to diversity. Empty if the corpus yields no features.
+        """
+        if not corpus:
+            return {}
+        features, species = self.extract_features(corpus)
+        if len(features) == 0:
+            return {}
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+        p, keep = self._resolve_abundance(corpus, species, abundance, deduplicate)
+        if keep is not None:
+            Z = Z[np.ix_(keep, keep)]
+        # Z and the features are computed once; only the cheap reduction repeats.
+        return {float(q): float(self._calc_diversity(p, Z, q, self.config.index)) for q in q_values}
+
+    def evenness(
+        self,
+        corpus: list[str],
+        q: float = 1.0,
+        measure: str = "E3",
+        abundance: npt.ArrayLike | None = None,
+        deduplicate: bool = False,
+    ) -> float:
+        """How evenly the corpus is spread across its distinct content, in [0, 1].
+
+        A single effective number conflates two things: *many* distinct items, and
+        *balanced* ones. A corpus of 3.0 effective documents out of 4 is nearly even;
+        3.0 out of 400 is dominated by a handful. Evenness divides the richness out,
+        so the two can be reported separately.
+
+        Args:
+            corpus: List of text documents.
+            q: Order, must be > 0. Higher q weights dominant items more.
+            measure: One of E1..E5 (Chao & Ricotta 2019). E3, the normalised slope
+                of the diversity profile, is their headline choice and the default.
+            abundance: Optional weight per document. See ``diversity``.
+            deduplicate: Merge identical documents and weight by count.
+
+        Returns:
+            Evenness in [0, 1]. 1.0 for a corpus with a single effective species,
+            which is trivially even. 0.0 for an empty corpus.
+
+        Note:
+            Richness is taken as this metric's own diversity at q = 0, so both terms
+            are similarity-sensitive. That reads as "even across distinct content"
+            rather than Chao & Ricotta's "even across species"; see
+            ``ecology.evenness``.
+        """
+        from .ecology import evenness as _evenness
+
+        profile = self.diversity_profile(
+            corpus, q_values=(0.0, q), abundance=abundance, deduplicate=deduplicate
+        )
+        if not profile:
+            return 0.0
+        return _evenness(profile[float(q)], profile[0.0], q=q, measure=measure)
+
+    def sample_coverage(self, corpus: list[str], tolerance: float = 1e-9) -> float:
+        """Estimated share of the population belonging to species already seen.
+
+        Chao & Jost (2012). Comparing two corpora at equal *size* is biased against
+        the more diverse one, because a size sufficient to characterise a dull corpus
+        is too small for a rich one. Coverage says how complete each sample is, so
+        they can be compared at equal completeness instead.
+
+        Species here are equivalence classes under ``Z = 1``: documents this metric
+        cannot tell apart are one species, whatever their surface text. That is the
+        library's own identical-species axiom rather than a new convention -- two
+        species at similarity 1 with weights w1 and w2 already give exactly the same
+        diversity as one of weight w1+w2 -- and it is what makes the count
+        metric-relative in the right way. Three sentences with the same POS skeleton
+        are one species to ``PartOfSpeechSequence`` and three to ``DocumentSemantics``.
+
+        Args:
+            corpus: List of text documents.
+            tolerance: How close to 1 counts as identical.
+
+        Returns:
+            Coverage in [0, 1]. **Zero when every species occurs exactly once**,
+            the normal case for whole documents -- with nothing repeated, the sample
+            carries no evidence about what it has missed. Informative for the levels
+            whose features collide: ``ConstituencyParse`` and ``Rhythmic`` often,
+            ``Phonemic`` and ``DocumentSemantics`` almost never.
+        """
+        from scipy.sparse import csr_matrix
+        from scipy.sparse.csgraph import connected_components
+
+        from .ecology import sample_coverage as _coverage
+
+        if not corpus:
+            return 0.0
+        features, _species = self.extract_features(corpus)
+        if len(features) == 0:
+            return 0.0
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+        identical = csr_matrix(Z >= 1.0 - tolerance)
+        _n_species, labels = connected_components(identical, directed=False)
+        counts = np.bincount(labels).astype(np.float64)
+        return _coverage(counts)
+
+    def partition(
+        self,
+        corpora: dict[str, list[str]] | Sequence[list[str]],
+        q: float = 1.0,
+    ) -> Any:
+        """Split diversity into within-source and between-source components.
+
+        Answers the question a single number cannot: is this corpus diverse because
+        each source is internally varied, or because the sources differ from one
+        another? Reeve et al. (2016), the similarity-sensitive continuation of the
+        Leinster-Cobbold measure this library computes.
+
+        One similarity matrix is built over the pooled documents, so cross-source
+        similarity is measured rather than assumed -- two sources sharing no literal
+        text can still be near-identical in content, and beta will say so.
+
+        Args:
+            corpora: Either a mapping of source name to documents, or a sequence of
+                document lists.
+            q: Order.
+
+        Returns:
+            A ``PartitionResult`` with ``gamma`` (pooled diversity), ``alpha`` (mean
+            within-source diversity) and ``beta`` (effective number of *distinct*
+            sources: 1 when interchangeable, N when mutually unrelated).
+
+        Raises:
+            ValueError: If fewer than two sources are given, or a metric whose
+                species are not documents is used -- the partition needs to know
+                which source each species came from.
+        """
+        from .ecology import partition_diversity
+
+        if isinstance(corpora, dict):
+            names, groups = list(corpora.keys()), list(corpora.values())
+        else:
+            groups = [list(g) for g in corpora]
+            names = [f"subcommunity_{i}" for i in range(len(groups))]
+        if len(groups) < 2:
+            raise ValueError("partitioning needs at least two subcommunities")
+        if any(len(g) == 0 for g in groups):
+            raise ValueError("every subcommunity must hold at least one document")
+
+        pooled = [doc for group in groups for doc in group]
+        features, species = self.extract_features(pooled)
+        if len(species) != len(pooled):
+            raise ValueError(
+                f"{type(self).__name__} produces {len(species)} species for "
+                f"{len(pooled)} documents, so its species are not documents and "
+                "cannot be assigned to a subcommunity. Use a document-level metric."
+            )
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+
+        P = np.zeros((len(pooled), len(groups)), dtype=np.float64)
+        offset = 0
+        for j, group in enumerate(groups):
+            P[offset : offset + len(group), j] = 1.0
+            offset += len(group)
+        return partition_diversity(P, Z, q=q, names=names)
+
+    def max_diversity(self, corpus: list[str]) -> float:
+        """Highest diversity this corpus's species could reach at any abundance.
+
+        The species count is the wrong ceiling for a similarity-sensitive index: n
+        documents can only reach n effective species if they are mutually
+        dissimilar. This returns the ceiling that actually applies, which is a
+        property of the similarity structure alone and -- by Leinster & Meckes
+        (2016) -- the same for every value of q.
+
+        **This is the ceiling for the Hill index specifically.** The theorem is
+        about max_p of the Leinster-Cobbold quantity; the spectral index is a
+        different functional of the same matrix and routinely exceeds it. There is
+        no comparable standard result for it, so ``relative_diversity`` refuses
+        rather than return a ratio above 1.
+
+        Args:
+            corpus: List of text documents.
+
+        Returns:
+            Maximum achievable diversity for this corpus's similarity matrix.
+        """
+        if not corpus:
+            return 0.0
+        features, _species = self.extract_features(corpus)
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+        return maximum_diversity(Z)[0]
+
+    def relative_diversity(self, corpus: list[str]) -> float:
+        """Diversity as a fraction of what this corpus could achieve, in (0, 1].
+
+        ``diversity(corpus) / max_diversity(corpus)``. Where the raw score answers
+        "how many effective species are here", this answers "how close is the
+        abundance distribution to the most diverse arrangement of *these* species".
+
+        Hill index only. The denominator comes from Leinster & Meckes (2016), a
+        result about the Leinster-Cobbold quantity; applying it to the spectral
+        index gives ratios above 1 rather than a fraction.
+
+        Read the result with care even where it is defined: at uniform abundance
+        it is near 1 by construction, since for a similarity matrix of the form
+        (1-z)I + zJ the magnitude equals the Hill number at uniform p exactly. It
+        reports that the abundance is optimal for this index, not that the index
+        is extracting everything the data holds.
+
+        The two come apart, and the gap is what makes raw scores look
+        under-calibrated: a corpus of near-paraphrases has a low ceiling, so a low
+        raw score against it may be near-optimal rather than poor. Reach for this
+        when comparing corpora whose species differ in how distinguishable they
+        are; reach for the raw score when the effective count is the quantity you
+        want.
+
+        Args:
+            corpus: List of text documents.
+
+        Returns:
+            Diversity relative to the achievable maximum.
+        """
+        if self.config.index != "hill":
+            raise ValueError(
+                f"relative_diversity is defined for the Hill index only; this metric "
+                f"uses index={self.config.index!r}. The ceiling comes from Leinster & "
+                f"Meckes (2016), a result about the Leinster-Cobbold quantity, and the "
+                f"spectral index routinely exceeds it. Set index='hill' to use this."
+            )
+        if not corpus:
+            return 0.0
+        features, species = self.extract_features(corpus)
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+        p = self.calculate_abundance(species)
+        observed = self._calc_diversity(p, Z, self.config.q, self.config.index)
+        ceiling = maximum_diversity(Z)[0]
+        if ceiling <= 0:
+            return 0.0
+        return float(observed / ceiling)
 
     def similarity(self, corpus: list[str]) -> float:
         """Calculate average similarity across corpus.
@@ -759,10 +1162,55 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         )
 
     @staticmethod
+    def _calc_vendi(
+        p: npt.NDArray[np.float64],
+        Z: npt.NDArray[np.float64],
+        q: float = 1.0,
+    ) -> float:
+        """Probability-weighted Vendi Score at Renyi order q.
+
+        exp of the entropy of the eigenvalues of ``diag(sqrt p) Z diag(sqrt p)``.
+        That matrix has trace 1, so its eigenvalues form a probability distribution
+        and the entropy is taken of them directly.
+
+        Both ingredients are published. The probability weighting is Friedman &
+        Dieng's (*The Vendi Score*, TMLR 2023), which defines it alongside the
+        unweighted form; the order parameter is Pasarkar & Dieng (2024), where low
+        q is more sensitive to rare features and high q to common ones. Agreement
+        with the reference `vendi-score` package is asserted in
+        tests/test_vendi_reference.py: exact across 1000 comparisons on full-rank
+        matrices.
+
+        It reduces to the unweighted Vendi Score at uniform abundance and to the
+        classical Hill number when Z is the identity, which is why it can serve as
+        the default without giving up either behaviour.
+        """
+        Zp = _nearest_psd(np.asarray(Z, dtype=np.float64))
+        root = np.sqrt(np.clip(np.asarray(p, dtype=np.float64), 0.0, None))
+        weighted = (Zp * root[None, :]) * root[:, None]
+        eigenvalues = np.clip(np.linalg.eigvalsh((weighted + weighted.T) / 2), 0.0, None)
+        total = eigenvalues.sum()
+        if total <= 0:
+            return 0.0
+        # Discard numerical dust with a relative rank tolerance rather than a bare
+        # ">0". At q=0 every surviving eigenvalue contributes a whole unit, so an
+        # eigenvalue of 1e-17 -- which is what a rank-deficient matrix leaves after
+        # eigendecomposition -- otherwise moves the score by 1. The convention is
+        # numpy.linalg.matrix_rank's: n * eps * largest eigenvalue.
+        tolerance = eigenvalues.size * np.finfo(np.float64).eps * eigenvalues.max()
+        eigenvalues = eigenvalues[eigenvalues > tolerance] / total
+        if q == 1.0:
+            return float(np.exp(-np.sum(eigenvalues * np.log(eigenvalues))))
+        if np.isinf(q):
+            return float(1.0 / eigenvalues.max())
+        return float(np.power(np.sum(np.power(eigenvalues, q)), 1.0 / (1.0 - q)))
+
+    @staticmethod
     def _calc_diversity(
         p: npt.NDArray[np.float64],
         Z: npt.NDArray[np.float64],
         q: float = 1.0,
+        index: str = "hill",
     ) -> float:
         """Calculate diversity using Hill number formula.
 
@@ -774,6 +1222,11 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         Returns:
             Diversity value.
         """
+        if index == "vendi":
+            return TextDiversity._calc_vendi(p, Z, q)
+        if index != "hill":
+            raise ValueError(f"index must be 'hill' or 'vendi', got {index!r}")
+
         Zp = Z @ p
 
         if q == 1:

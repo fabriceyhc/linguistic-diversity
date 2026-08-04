@@ -1,0 +1,131 @@
+{
+  "sentence-transformers/all-mpnet-base-v2": {
+    "floor_estimate": {
+      "mean": 0.08919974859090268,
+      "median": 0.07505931332707405,
+      "p10": 0.0,
+      "p90": 0.1964953169226648,
+      "n_pairs": 359400
+    },
+    "sweep": [
+      {
+        "floor": null,
+        "mean_ceiling": 2.36,
+        "agreement": {
+          "McDiv_nuggets": 0.5814,
+          "conTest": 0.6498
+        }
+      },
+      {
+        "floor": 0.0,
+        "mean_ceiling": 2.36,
+        "agreement": {
+          "McDiv_nuggets": 0.5814,
+          "conTest": 0.6498
+        }
+      },
+      {
+        "floor": 0.075,
+        "mean_ceiling": 2.656,
+        "agreement": {
+          "McDiv_nuggets": 0.5811,
+          "conTest": 0.6505
+        }
+      },
+      {
+        "floor": 0.089,
+        "mean_ceiling": 2.718,
+        "agreement": {
+          "McDiv_nuggets": 0.5809,
+          "conTest": 0.6508
+        }
+      }
+    ]
+  },
+  "sentence-transformers/all-MiniLM-L6-v2": {
+    "floor_estimate": {
+      "mean": 0.1041669534304487,
+      "median": 0.09327155351638794,
+      "p10": 0.0,
+      "p90": 0.21270375847816475,
+      "n_pairs": 359400
+    },
+    "sweep": [
+      {
+        "floor": null,
+        "mean_ceiling": 2.351,
+        "agreement": {
+          "McDiv_nuggets": 0.5302,
+          "conTest": 0.5825
+        }
+      },
+      {
+        "floor": 0.0,
+        "mean_ceiling": 2.351,
+        "agreement": {
+          "McDiv_nuggets": 0.5302,
+          "conTest": 0.5825
+        }
+      },
+      {
+        "floor": 0.093,
+        "mean_ceiling": 2.725,
+        "agreement": {
+          "McDiv_nuggets": 0.5296,
+          "conTest": 0.5832
+        }
+      },
+      {
+        "floor": 0.104,
+        "mean_ceiling": 2.777,
+        "agreement": {
+          "McDiv_nuggets": 0.5295,
+          "conTest": 0.5834
+        }
+      }
+    ]
+  },
+  "BAAI/bge-large-en-v1.5": {
+    "floor_estimate": {
+      "mean": 0.42449983224994153,
+      "median": 0.4231807291507721,
+      "p10": 0.32271047234535216,
+      "p90": 0.5265669822692873,
+      "n_pairs": 359400
+    },
+    "sweep": [
+      {
+        "floor": null,
+        "mean_ceiling": 1.477,
+        "agreement": {
+          "McDiv_nuggets": 0.7786,
+          "conTest": 0.7714
+        }
+      },
+      {
+        "floor": 0.323,
+        "mean_ceiling": 1.964,
+        "agreement": {
+          "McDiv_nuggets": 0.7774,
+          "conTest": 0.7703
+        }
+      },
+      {
+        "floor": 0.423,
+        "mean_ceiling": 2.396,
+        "agreement": {
+          "McDiv_nuggets": 0.7788,
+          "conTest": 0.7741
+        }
+      },
+      {
+        "floor": 0.424,
+        "mean_ceiling": 2.401,
+        "agreement": {
+          "McDiv_nuggets": 0.7788,
+          "conTest": 0.7742
+        }
+      }
+    ]
+  }
+}

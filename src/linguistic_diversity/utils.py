@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import string
 from collections.abc import Callable, Iterator
 from functools import lru_cache
 from typing import Any, Literal, overload
@@ -10,7 +11,113 @@ from typing import Any, Literal, overload
 import numpy as np
 import numpy.typing as npt
 import torch
+from Bio import Align
 from tqdm import tqdm
+
+
+def make_identity_aligner() -> Align.PairwiseAligner:
+    """A global aligner whose score is the length of the longest common subsequence.
+
+    Biopython's defaults are match=1, mismatch=0, open/extend gap=-1, which makes
+    the raw score *negative* whenever two sequences differ in length. Those scores
+    were being used directly as entries of a similarity matrix, and a
+    similarity-sensitive Hill number requires Z in [0, 1].
+
+    Scoring matches only, with free gaps, bounds the score to
+    [0, min(len_a, len_b)] and makes it monotone in shared content.
+    """
+    aligner = Align.PairwiseAligner()
+    aligner.match_score = 1.0
+    aligner.mismatch_score = 0.0
+    aligner.open_gap_score = 0.0
+    aligner.extend_gap_score = 0.0
+    return aligner
+
+
+def normalized_alignment_similarity(aligner: Align.PairwiseAligner, seq1: str, seq2: str) -> float:
+    """Alignment identity of two sequences, in [0, 1].
+
+    Dividing the alignment score by the longer of the two sequences gives 1.0 only
+    for identical sequences and 0.0 when nothing aligns. Normalising by the *pair*
+    is what keeps the value local: a corpus-wide divisor makes every similarity
+    shift whenever an unrelated long document joins the corpus, and drives the
+    off-diagonal toward zero as the corpus grows until diversity saturates at the
+    species count.
+
+    Args:
+        aligner: Aligner to score with, normally from ``make_identity_aligner``.
+        seq1: First sequence.
+        seq2: Second sequence.
+
+    Returns:
+        Similarity in [0, 1].
+    """
+    if not seq1 or not seq2:
+        return 0.0
+    try:
+        score = float(aligner.align(seq1, seq2).score)
+    except (ValueError, IndexError):
+        # Alignment failed (e.g. empty sequences after processing).
+        return 0.0
+    longest = max(len(seq1), len(seq2))
+    if longest == 0:
+        return 0.0
+    # Clamp defensively against a scoring scheme that could exceed the length.
+    return float(min(max(score / longest, 0.0), 1.0))
+
+
+def maximum_diversity(
+    Z: npt.NDArray[np.float64], tol: float = 1e-9
+) -> tuple[float, npt.NDArray[np.float64]]:
+    """Largest diversity any abundance distribution can achieve for this Z.
+
+    Leinster & Meckes, *Maximizing diversity in biology and beyond* (Entropy 18,
+    2016): for a fixed similarity matrix, the maximum of D_q over all abundance
+    distributions is **the same for every q >= 0**. That makes it a well-defined
+    property of the similarity structure alone, and the natural denominator for a
+    relative measure.
+
+    It matters because dividing by the species count is the wrong ceiling. A
+    corpus of n documents can only reach n effective species if they are mutually
+    dissimilar; for any realistic Z the true ceiling is far lower, so scores read
+    against n look like systematic under-reporting when they are in fact close to
+    the achievable maximum.
+
+    When the weighting ``w = Z^-1 1`` is non-negative, the maximum equals
+    ``sum(w)`` -- the magnitude of Z -- and is attained at ``p = w / sum(w)``.
+    When it is not, the true maximum requires searching subsets of species, which
+    is exponential; this drops the most negative species and retries, a standard
+    heuristic that gives a lower bound rather than a guarantee.
+
+    Args:
+        Z: Similarity matrix (n x n), symmetric with unit diagonal.
+        tol: Tolerance for treating a weight as non-negative.
+
+    Returns:
+        Tuple of (maximum diversity, the abundance distribution attaining it).
+        The distribution is over the *surviving* species, zero elsewhere.
+    """
+    n = Z.shape[0]
+    if n == 0:
+        return 0.0, np.zeros(0, dtype=np.float64)
+
+    keep = np.arange(n)
+    while keep.size:
+        sub = Z[np.ix_(keep, keep)]
+        try:
+            w = np.linalg.solve(sub, np.ones(keep.size))
+        except np.linalg.LinAlgError:
+            w = np.linalg.lstsq(sub, np.ones(keep.size), rcond=None)[0]
+
+        if (w >= -tol).all() and w.sum() > 0:
+            p = np.zeros(n, dtype=np.float64)
+            p[keep] = np.clip(w, 0.0, None) / np.clip(w, 0.0, None).sum()
+            return float(w.sum()), p
+
+        # Drop the species pulling the weighting negative and try again.
+        keep = np.delete(keep, int(np.argmin(w)))
+
+    return 1.0, np.full(n, 1.0 / n, dtype=np.float64)
 
 
 def chunker(seq: Any, size: int) -> Iterator[Any]:
@@ -243,6 +350,14 @@ def compute_similarity_matrix_faiss(
     elif postprocess == "invert":
         Z = 1.0 - Z
 
+    # Cosine similarity is defined on [-1, 1], but a similarity-sensitive Hill
+    # number requires Z on [0, 1]: p_i (Zp)_i^(q-1) is not meaningful when an
+    # entry of Zp is negative. Embeddings that point more than 90 degrees apart
+    # are simply maximally dissimilar, so the negative range clamps to 0 rather
+    # than being rescaled -- rescaling would put orthogonal vectors at 0.5 and
+    # systematically understate diversity.
+    np.clip(Z, 0.0, 1.0, out=Z)
+
     # Ensure diagonal is 1
     np.fill_diagonal(Z, 1.0)
 
@@ -394,6 +509,12 @@ def split_sentences(
     return sentences
 
 
+# Symbols the pairwise aligner sees. Letters and digits only: alignment treats
+# every symbol as opaque, but keeping them alphanumeric avoids any interaction
+# with tokenisation or escaping downstream.
+_ALIGNMENT_ALPHABET = string.ascii_uppercase + string.ascii_lowercase + string.digits
+
+
 def tag_to_alpha(tags: list[list[str]]) -> list[list[str]]:
     """Convert tag sequences to alphabetic sequences.
 
@@ -405,9 +526,16 @@ def tag_to_alpha(tags: list[list[str]]) -> list[list[str]]:
     Returns:
         List of alphabetic tag sequences.
     """
-    # Build unique tag mapping
+    # Build unique tag mapping. chr(65 + i) walks out of the uppercase letters at
+    # the 27th tag and into punctuation, which matters now that the fine-grained
+    # PTB tagset (~50 tags) is in use rather than UPOS (~17).
     unique_tags = sorted({tag for seq in tags for tag in seq})
-    tag_map = {tag: chr(65 + i) for i, tag in enumerate(unique_tags)}
+    if len(unique_tags) > len(_ALIGNMENT_ALPHABET):
+        raise ValueError(
+            f"{len(unique_tags)} distinct tags exceeds the {len(_ALIGNMENT_ALPHABET)}-symbol "
+            "alignment alphabet. Use a coarser tagset."
+        )
+    tag_map = {tag: _ALIGNMENT_ALPHABET[i] for i, tag in enumerate(unique_tags)}
 
     # Apply mapping
     return [[tag_map[tag] for tag in seq] for seq in tags]

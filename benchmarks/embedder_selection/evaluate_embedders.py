@@ -8,6 +8,7 @@ Usage:
     python evaluate_embedders.py --models all-mpnet-base-v2 BAAI/bge-large-en-v1.5
     python evaluate_embedders.py --preset default
 """
+
 from __future__ import annotations
 
 import argparse
@@ -126,7 +127,7 @@ def main() -> None:
     args = parser.parse_args()
 
     corpora = json.loads(args.benchmark.read_text())["corpora"]
-    specs = ([{"name": m} for m in args.models] if args.models else PRESETS[args.preset])
+    specs = [{"name": m} for m in args.models] if args.models else PRESETS[args.preset]
 
     results = []
     for spec in specs:
@@ -143,17 +144,25 @@ def main() -> None:
 
     # Rank by how close the calibration ratio is to 1.0
     results.sort(key=lambda r: abs(r["calibration_ratio"] - 1.0))
-    print(f"\n{'model':44s} {'calib':>7s} {'MAE':>6s} {'synonymy':>9s} "
-          f"{'polysemy':>9s} {'cos':>6s} {'rank r':>7s}")
+    print(
+        f"\n{'model':44s} {'calib':>7s} {'MAE':>6s} {'synonymy':>9s} "
+        f"{'polysemy':>9s} {'cos':>6s} {'rank r':>7s}"
+    )
     print("-" * 92)
     for r in results:
-        syn = np.mean([
-            v["calibration_ratio"] for k, v in r["per_axis"].items() if k.startswith("synonymy")
-        ])
-        poly = r["per_axis"].get("polysemy/shared_surface_form", {}).get("calibration_ratio", float("nan"))
-        print(f"{r['model'][:43]:44s} {r['calibration_ratio']:7.3f} {r['mean_abs_error']:6.2f} "
-              f"{syn:9.3f} {poly:9.3f} {r['mean_cosine']:+6.3f} "
-              f"{r.get('synonymy_rank_corr', float('nan')):7.3f}")
+        syn = np.mean(
+            [v["calibration_ratio"] for k, v in r["per_axis"].items() if k.startswith("synonymy")]
+        )
+        poly = (
+            r["per_axis"]
+            .get("polysemy/shared_surface_form", {})
+            .get("calibration_ratio", float("nan"))
+        )
+        print(
+            f"{r['model'][:43]:44s} {r['calibration_ratio']:7.3f} {r['mean_abs_error']:6.2f} "
+            f"{syn:9.3f} {poly:9.3f} {r['mean_cosine']:+6.3f} "
+            f"{r.get('synonymy_rank_corr', float('nan')):7.3f}"
+        )
     print("\ncalib/synonymy/polysemy: measured / true. 1.000 is perfectly calibrated.")
     print("Values <1 under-report diversity (over-merging); >1 over-report (under-merging).")
 

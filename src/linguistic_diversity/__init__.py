@@ -22,7 +22,7 @@ For diversity-based text selection:
     >>> result = select_diverse_texts(embeddings, n_select=100)
 """
 
-__version__ = "1.0.2"
+__version__ = "2.0.0"
 
 from .diversities import (
     # Embedding constants
@@ -46,6 +46,16 @@ from .diversities import (
     UniversalLinguisticDiversity,
     clear_model_cache,
     get_preset_config,
+)
+from .ecology import (
+    EVENNESS_CLASSES,
+    PartitionResult,
+    coverage_deficit,
+    evenness,
+    expected_coverage,
+    partition_diversity,
+    sample_coverage,
+    size_for_coverage,
 )
 from .metric import DiversityMetric, Metric, ScaledEstimationResult, SimilarityMetric, TextDiversity
 from .selection import (
@@ -88,6 +98,15 @@ __all__ = [
     "DIVERSITY_EMBEDDING_METRICS",
     "METRIC_TO_INDEX",
     # Selection
+    # Ecology: evenness, sample coverage, alpha/beta/gamma partitioning
+    "EVENNESS_CLASSES",
+    "PartitionResult",
+    "coverage_deficit",
+    "evenness",
+    "expected_coverage",
+    "partition_diversity",
+    "sample_coverage",
+    "size_for_coverage",
     "SelectionResult",
     "DiversitySelector",
     "FacilityLocationSelector",

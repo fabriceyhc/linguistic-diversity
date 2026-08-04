@@ -15,6 +15,7 @@ Get the data first:
 Then:
     python evaluate_mcdiv.py --data-dir /path/to/data
 """
+
 from __future__ import annotations
 
 import argparse
@@ -106,8 +107,10 @@ def main() -> None:
 
     nuggets = load_nuggets(args.data_dir)
     human = nuggets["metric_abs_hds_mean"].to_numpy()
-    print(f"Loaded {len(nuggets)} nugget sets with human scores "
-          f"(human score range {human.min():.2f}-{human.max():.2f})")
+    print(
+        f"Loaded {len(nuggets)} nugget sets with human scores "
+        f"(human score range {human.min():.2f}-{human.max():.2f})"
+    )
 
     # Paper's own metrics, as a reference point
     print("\n--- baselines shipped with the dataset ---")
@@ -129,9 +132,12 @@ def main() -> None:
 
     results = []
     for spec in MODELS:
-        config = {"model_name": spec["name"], "verbose": False,
-                  "trust_remote_code": spec.get("trust_remote_code", False),
-                  "encode_kwargs": spec.get("encode_kwargs", {})}
+        config = {
+            "model_name": spec["name"],
+            "verbose": False,
+            "trust_remote_code": spec.get("trust_remote_code", False),
+            "encode_kwargs": spec.get("encode_kwargs", {}),
+        }
         try:
             metric = DocumentSemantics(config)
             measured = score_sets(metric, nuggets)
@@ -158,8 +164,11 @@ def main() -> None:
                 rec["n_pairs"] = total
 
             results.append(rec)
-            print(f"done {spec['name']}: rho={rho:+.3f}"
-                  + (f" acc={rec['pair_accuracy']:.3f}" if pairs is not None else ""), flush=True)
+            print(
+                f"done {spec['name']}: rho={rho:+.3f}"
+                + (f" acc={rec['pair_accuracy']:.3f}" if pairs is not None else ""),
+                flush=True,
+            )
         except Exception as exc:  # noqa: BLE001
             print(f"FAILED {spec['name']}: {type(exc).__name__}: {exc}"[:150], flush=True)
         finally:
@@ -168,8 +177,7 @@ def main() -> None:
             clear_model_cache()
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(
-        {"baselines": baseline_rows, "models": results}, indent=2))
+    args.out.write_text(json.dumps({"baselines": baseline_rows, "models": results}, indent=2))
 
     results.sort(key=lambda r: -r["spearman_vs_human"])
     print(f"\n{'model':44s} {'rho(human)':>11s} {'pair acc':>9s}")

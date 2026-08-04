@@ -1,0 +1,114 @@
+{
+  "limit": 400,
+  "model": "cross-encoder/nli-deberta-v3-base",
+  "results": {
+    "CURRENT: cosine + floor 0.053": {
+      "McDiv_nuggets": 0.5756,
+      "conTest": 0.6699,
+      "decTest": 0.8129,
+      "agreement_mean": 0.6861,
+      "calib_rho": 0.9743,
+      "calib_ratio": 0.9856,
+      "ceiling": 2.307
+    },
+    "best embedding: ctx + LS + tau": {
+      "McDiv_nuggets": 0.689,
+      "conTest": 0.7531,
+      "decTest": 0.8219,
+      "agreement_mean": 0.7547,
+      "calib_rho": 0.9714,
+      "calib_ratio": 1.0,
+      "ceiling": 3.416
+    },
+    "ctx + tau": {
+      "McDiv_nuggets": 0.6759,
+      "conTest": 0.7316,
+      "decTest": 0.8068,
+      "agreement_mean": 0.7381,
+      "calib_rho": 0.975,
+      "calib_ratio": 1.0,
+      "ceiling": 3.63
+    },
+    "NLI entailment": {
+      "McDiv_nuggets": 0.7808,
+      "conTest": 0.6921,
+      "decTest": 0.7432,
+      "agreement_mean": 0.7387,
+      "calib_rho": 0.973,
+      "calib_ratio": 1.0,
+      "ceiling": 3.879
+    },
+    "NLI ent-contra": {
+      "McDiv_nuggets": 0.8076,
+      "conTest": 0.7372,
+      "decTest": 0.7259,
+      "agreement_mean": 0.7569,
+      "calib_rho": 0.968,
+      "calib_ratio": 0.9787,
+      "ceiling": 2.053
+    },
+    "NLI-ec + cosine (geometric)": {
+      "McDiv_nuggets": 0.7915,
+      "conTest": 0.7864,
+      "decTest": 0.8105,
+      "agreement_mean": 0.7961,
+      "calib_rho": 0.9734,
+      "calib_ratio": 0.9985,
+      "ceiling": 2.334
+    },
+    "NLI-ec + ctxLS (geometric)": {
+      "McDiv_nuggets": 0.8075,
+      "conTest": 0.8107,
+      "decTest": 0.8191,
+      "agreement_mean": 0.8124,
+      "calib_rho": 0.9747,
+      "calib_ratio": 1.0,
+      "ceiling": 3.105
+    },
+    "NLI-ec + ctxLS (arithmetic)": {
+      "McDiv_nuggets": 0.8507,
+      "conTest": 0.8292,
+      "decTest": 0.8111,
+      "agreement_mean": 0.8303,
+      "calib_rho": 0.9734,
+      "calib_ratio": 0.9923,
+      "ceiling": 2.452
+    },
+    "NLI-ec + ctxLS (product)": {
+      "McDiv_nuggets": 0.7954,
+      "conTest": 0.8075,
+      "decTest": 0.8218,
+      "agreement_mean": 0.8082,
+      "calib_rho": 0.9714,
+      "calib_ratio": 1.0,
+      "ceiling": 3.954
+    },
+    "NLI-ec + ctxLS (min)": {
+      "McDiv_nuggets": 0.7454,
+      "conTest": 0.7783,
+      "decTest": 0.8135,
+      "agreement_mean": 0.7791,
+      "calib_rho": 0.9714,
+      "calib_ratio": 1.0,
+      "ceiling": 3.568
+    },
+    "NLI-ent + ctxLS (geometric)": {
+      "McDiv_nuggets": 0.8267,
+      "conTest": 0.802,
+      "decTest": 0.8035,
+      "agreement_mean": 0.8107,
+      "calib_rho": 0.9747,
+      "calib_ratio": 1.0,
+      "ceiling": 4.02
+    },
+    "NLI-ent + ctxLS (min)": {
+      "McDiv_nuggets": 0.7943,
+      "conTest": 0.781,
+      "decTest": 0.7926,
+      "agreement_mean": 0.7893,
+      "calib_rho": 0.9714,
+      "calib_ratio": 1.0,
+      "ceiling": 4.264
+    }
+  }
+}

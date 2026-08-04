@@ -110,14 +110,22 @@ class TestSemanticDefaults:
     """
 
     def test_token_semantics_uses_squared_cosine(self):
-        """TokenSemantics defaults to cosine + power_reg + mean_adj."""
+        """TokenSemantics defaults to cosine + power_reg, without mean_adj.
+
+        mean_adj was on until v1.0.3. Re-ablated on all 600 human-scored McDiv
+        sets, turning it off improved agreement (rho +0.348 -> +0.388) *and*
+        restored replication invariance, which it had been breaking: subtracting
+        the off-diagonal mean left two identical occurrences at 0.78 while the
+        diagonal stayed at 1.0. Both criteria pointed the same way, so it is off.
+        See benchmarks/embedder_selection/ablate_similarity.py.
+        """
         import faiss
 
         config = TokenSemantics._default_config()
         assert config["distance_fn"] == faiss.METRIC_INNER_PRODUCT
         assert config["scale_dist"] is None
         assert config["power_reg"] is True
-        assert config["mean_adj"] is True
+        assert config["mean_adj"] is False
 
     def test_document_semantics_uses_plain_cosine(self):
         """DocumentSemantics defaults to cosine with no squaring or adjustment."""
@@ -127,3 +135,196 @@ class TestSemanticDefaults:
         assert config["distance_fn"] == faiss.METRIC_INNER_PRODUCT
         assert config["scale_dist"] is None
         assert config["mean_adj"] is False
+
+    def test_document_semantics_default_encoder_is_calibration_optimised(self):
+        """The encoder moves every score, so pin it rather than let it drift.
+
+        The two halves of benchmarks/embedder_selection/ disagree about which
+        encoder is best, and the default follows the calibration half: mpnet
+        reports 0.97 of true k against bge-large's 0.58. bge-large wins on human
+        agreement (+0.779 vs +0.581) and is the documented recommendation for
+        *comparing* corpora, but it is not the default -- a score read as a
+        quantity should mean what it says, and mpnet is a third of the size.
+
+        Changing this is a legitimate decision; it just has to be a deliberate
+        one, because it moves every documented DocumentSemantics number.
+        """
+        config = DocumentSemantics._default_config()
+        assert config["model_name"] == "all-mpnet-base-v2"
+
+
+class TestSimilarityRangeAndInvariance:
+    """Z must be a similarity matrix, and identical items must score 1.0.
+
+    Cosine is defined on [-1, 1] while a similarity-sensitive Hill number needs
+    [0, 1]; with all-mpnet-base-v2 about 1.35% of McDiv response pairs land
+    below zero. Separately, mean_adj subtracted the off-diagonal mean from every
+    off-diagonal entry, so an occurrence and its exact replica scored 0.78 while
+    the diagonal stayed 1.0, and diversity was not invariant to replication.
+    """
+
+    def test_cosine_similarities_are_clamped_to_unit_interval(self):
+        import numpy as np
+
+        from linguistic_diversity import DocumentSemantics
+
+        metric = DocumentSemantics({"verbose": False})
+        corpus = [
+            "The tall boy kicked the ball.",
+            "Quantum chromodynamics predicts asymptotic freedom.",
+            "She believes that the plan is sound.",
+            "There was a crack in the ceiling.",
+        ]
+        features, _ = metric.extract_features(corpus)
+        Z = metric.calculate_similarities(features)
+
+        assert Z.min() >= 0.0, f"negative similarity {Z.min()} reached the Hill number"
+        assert Z.max() <= 1.0, f"similarity above 1: {Z.max()}"
+        assert np.allclose(np.diag(Z), 1.0)
+
+    def test_token_semantics_is_replication_invariant(self):
+        """Duplicating a corpus leaves relative abundance, so diversity, unchanged."""
+        from linguistic_diversity import TokenSemantics
+
+        metric = TokenSemantics({"verbose": False})
+        corpus = [
+            "The tall boy kicked the ball.",
+            "When the rain stopped, the children played.",
+            "There was a crack in the ceiling.",
+        ]
+        once, thrice = float(metric(corpus)), float(metric(corpus * 3))
+
+        assert (
+            abs(once - thrice) < 1e-4
+        ), f"diversity moved from {once} to {thrice} when the corpus was tripled"
+
+    def test_identical_tokens_score_one(self):
+        """An occurrence and its exact replica are the same species."""
+        import numpy as np
+
+        from linguistic_diversity import TokenSemantics
+
+        metric = TokenSemantics({"verbose": False})
+        corpus = ["The tall boy kicked the ball.", "Birds fly."]
+        features, species = metric.extract_features(corpus * 2)
+        Z = metric.calculate_similarities(features)
+        half = len(species) // 2
+
+        replicas = np.array([Z[i, i + half] for i in range(half)])
+        assert np.allclose(replicas, 1.0, atol=1e-4), (
+            f"identical token occurrences scored {replicas.min():.4f}..{replicas.max():.4f}, "
+            "not 1.0"
+        )
+
+
+class TestSimilarityFloor:
+    """Rescaling away the encoder's baseline similarity.
+
+    Encoders do not send unrelated text to orthogonal vectors. Because every
+    document is slightly similar to every other, that baseline accumulates: the
+    achievable ceiling is n / (1 + (n-1)z), tending to 1/z. Removing the floor
+    raises the ceiling; these pin the properties that must survive it.
+    """
+
+    CORPUS = [
+        "The tall boy kicked the ball.",
+        "When the rain stopped, the children played.",
+        "She believes that the plan is sound.",
+        "There was a crack in the ceiling.",
+    ]
+
+    def test_identical_documents_still_score_one(self):
+        """The property mean_adj broke, and the reason the floor is a constant."""
+        import numpy as np
+
+        from linguistic_diversity import DocumentSemantics
+
+        metric = DocumentSemantics({"similarity_floor": 0.4, "verbose": False})
+        features, _ = metric.extract_features(self.CORPUS + [self.CORPUS[0]])
+        Z = metric.calculate_similarities(features)
+
+        assert Z[0, 4] == pytest.approx(
+            1.0, abs=1e-6
+        ), "a document and its exact copy no longer score 1.0"
+        assert np.allclose(np.diag(Z), 1.0)
+        assert Z.min() >= 0.0 and Z.max() <= 1.0
+
+    def test_replication_invariance_survives(self):
+        from linguistic_diversity import DocumentSemantics
+
+        metric = DocumentSemantics({"similarity_floor": 0.4, "verbose": False})
+        once, thrice = float(metric(self.CORPUS)), float(metric(self.CORPUS * 3))
+        assert abs(once - thrice) < 1e-4
+
+    def test_a_corpus_of_copies_is_still_one_species(self):
+        from linguistic_diversity import DocumentSemantics
+
+        metric = DocumentSemantics({"similarity_floor": 0.4, "verbose": False})
+        assert metric(["The committee reached a decision."] * 5) == pytest.approx(1.0, abs=1e-3)
+
+    def test_raising_the_floor_never_lowers_diversity(self):
+        """The transform is monotone, so it can only push species apart."""
+        from linguistic_diversity import DocumentSemantics
+
+        values = []
+        for floor in (None, 0.1, 0.3, 0.5):
+            metric = DocumentSemantics({"similarity_floor": floor, "verbose": False})
+            values.append(float(metric(self.CORPUS)))
+        for lower, higher in zip(values, values[1:], strict=False):
+            assert higher >= lower - 1e-6, f"diversity fell as the floor rose: {values}"
+
+    def test_floor_is_automatic_by_default(self):
+        """Default is "auto": look the floor up, or calibrate and cache it.
+
+        On by default because the effective-number reading is the point of the
+        library, and an uncorrected encoder floor caps it -- bge-large at ~2.9
+        effective species however large the corpus.
+        """
+        from linguistic_diversity import DocumentSemantics
+
+        assert DocumentSemantics({}).config.similarity_floor == "auto"
+
+    def test_auto_resolves_to_the_shipped_value_for_a_known_encoder(self):
+        from linguistic_diversity import DocumentSemantics
+        from linguistic_diversity.diversities.semantic import (
+            KNOWN_SIMILARITY_FLOORS,
+            _resolve_similarity_floor,
+            clear_floor_cache,
+        )
+
+        clear_floor_cache()
+        metric = DocumentSemantics({"verbose": False})
+        expected = KNOWN_SIMILARITY_FLOORS[("DocumentSemantics", "all-mpnet-base-v2")]
+        assert _resolve_similarity_floor(metric) == pytest.approx(expected)
+
+    def test_explicit_none_disables_the_correction(self):
+        from linguistic_diversity import DocumentSemantics
+        from linguistic_diversity.diversities.semantic import _resolve_similarity_floor
+
+        assert _resolve_similarity_floor(DocumentSemantics({"similarity_floor": None})) is None
+
+    def test_unknown_floor_spec_is_rejected(self):
+        from linguistic_diversity import DocumentSemantics
+        from linguistic_diversity.diversities.semantic import _resolve_similarity_floor
+
+        with pytest.raises(ValueError, match="similarity_floor"):
+            _resolve_similarity_floor(DocumentSemantics({"similarity_floor": "median"}))
+
+    def test_out_of_range_floor_is_rejected(self):
+        """Rejected at construction, not at the first score.
+
+        The cross-encoder path never consults the floor, so deferring the check to
+        scoring time would let a bad value pass silently under the default config.
+        """
+        from linguistic_diversity import DocumentSemantics
+
+        for bad in (-0.1, 1.0, 1.5):
+            with pytest.raises(ValueError, match="similarity_floor"):
+                DocumentSemantics({"similarity_floor": bad, "verbose": False})
+
+    def test_floor_is_reported_as_ignored_under_the_cross_encoder(self):
+        """A floor set alongside a cross-encoder does nothing, so say so."""
+        from linguistic_diversity import DocumentSemantics
+
+        with pytest.warns(RuntimeWarning, match="ignored when cross_encoder"):
+            DocumentSemantics({"similarity_floor": 0.3, "verbose": False})

@@ -1,0 +1,294 @@
+{
+  "stage1": {
+    "baseline: raw cosine": {
+      "McDiv_nuggets": 0.5952,
+      "conTest": 0.6663,
+      "decTest": 0.816,
+      "agreement_mean": 0.6925,
+      "calib_rho": 0.9741,
+      "calib_ratio": 0.9731,
+      "ceiling": 2.156
+    },
+    "CURRENT: floor 0.053": {
+      "McDiv_nuggets": 0.5959,
+      "conTest": 0.6668,
+      "decTest": 0.8178,
+      "agreement_mean": 0.6935,
+      "calib_rho": 0.9743,
+      "calib_ratio": 0.9856,
+      "ceiling": 2.316
+    },
+    "tau=0.99 (z0=0.01)": {
+      "McDiv_nuggets": 0.5952,
+      "conTest": 0.6665,
+      "decTest": 0.8163,
+      "agreement_mean": 0.6927,
+      "calib_rho": 0.9741,
+      "calib_ratio": 0.9748,
+      "ceiling": 2.184
+    },
+    "tau=0.95 (z0=0.05)": {
+      "McDiv_nuggets": 0.5957,
+      "conTest": 0.6668,
+      "decTest": 0.8177,
+      "agreement_mean": 0.6934,
+      "calib_rho": 0.9743,
+      "calib_ratio": 0.9849,
+      "ceiling": 2.306
+    },
+    "tau=0.90 (z0=0.10)": {
+      "McDiv_nuggets": 0.5959,
+      "conTest": 0.668,
+      "decTest": 0.8195,
+      "agreement_mean": 0.6945,
+      "calib_rho": 0.9744,
+      "calib_ratio": 0.9935,
+      "ceiling": 2.482
+    },
+    "tau=0.85 (z0=0.15)": {
+      "McDiv_nuggets": 0.5963,
+      "conTest": 0.6682,
+      "decTest": 0.8213,
+      "agreement_mean": 0.6953,
+      "calib_rho": 0.9744,
+      "calib_ratio": 0.9982,
+      "ceiling": 2.677
+    },
+    "tau=0.80 (z0=0.20)": {
+      "McDiv_nuggets": 0.5967,
+      "conTest": 0.6684,
+      "decTest": 0.8234,
+      "agreement_mean": 0.6962,
+      "calib_rho": 0.9747,
+      "calib_ratio": 0.9996,
+      "ceiling": 2.88
+    },
+    "tau=0.70 (z0=0.30)": {
+      "McDiv_nuggets": 0.5961,
+      "conTest": 0.6675,
+      "decTest": 0.8269,
+      "agreement_mean": 0.6968,
+      "calib_rho": 0.975,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "tau=0.60 (z0=0.40)": {
+      "McDiv_nuggets": 0.5931,
+      "conTest": 0.6651,
+      "decTest": 0.8286,
+      "agreement_mean": 0.6956,
+      "calib_rho": 0.9756,
+      "calib_ratio": 1.0,
+      "ceiling": 3.676
+    },
+    "tau=0.50 (z0=0.50)": {
+      "McDiv_nuggets": 0.5872,
+      "conTest": 0.6597,
+      "decTest": 0.8264,
+      "agreement_mean": 0.6911,
+      "calib_rho": 0.9759,
+      "calib_ratio": 1.0,
+      "ceiling": 4.065
+    },
+    "tau=dmean (0.917)": {
+      "McDiv_nuggets": 0.5961,
+      "conTest": 0.6676,
+      "decTest": 0.8189,
+      "agreement_mean": 0.6942,
+      "calib_rho": 0.9744,
+      "calib_ratio": 0.9919,
+      "ceiling": 2.419
+    },
+    "whitened": {
+      "McDiv_nuggets": 0.5297,
+      "conTest": 0.6275,
+      "decTest": 0.8313,
+      "agreement_mean": 0.6628,
+      "calib_rho": 0.9746,
+      "calib_ratio": 0.9967,
+      "ceiling": 3.044
+    },
+    "local scaling k=10": {
+      "McDiv_nuggets": 0.6405,
+      "conTest": 0.7086,
+      "decTest": 0.8205,
+      "agreement_mean": 0.7232,
+      "calib_rho": 0.9746,
+      "calib_ratio": 0.9002,
+      "ceiling": 1.928
+    },
+    "local scaling k=50": {
+      "McDiv_nuggets": 0.6357,
+      "conTest": 0.7013,
+      "decTest": 0.8268,
+      "agreement_mean": 0.7213,
+      "calib_rho": 0.9746,
+      "calib_ratio": 0.8834,
+      "ceiling": 1.819
+    },
+    "local scaling k=200": {
+      "McDiv_nuggets": 0.6231,
+      "conTest": 0.6897,
+      "decTest": 0.8251,
+      "agreement_mean": 0.7126,
+      "calib_rho": 0.9743,
+      "calib_ratio": 0.8648,
+      "ceiling": 1.736
+    },
+    "mutual proximity": {
+      "McDiv_nuggets": 0.582,
+      "conTest": 0.6431,
+      "decTest": 0.7495,
+      "agreement_mean": 0.6582,
+      "calib_rho": 0.9572,
+      "calib_ratio": 0.6326,
+      "ceiling": 1.112
+    },
+    "context projected": {
+      "McDiv_nuggets": 0.7006,
+      "conTest": 0.7334,
+      "decTest": 0.8069,
+      "agreement_mean": 0.747,
+      "calib_rho": 0.9741,
+      "calib_ratio": 0.9731,
+      "ceiling": 2.4
+    },
+    "context projected + floor": {
+      "McDiv_nuggets": 0.7007,
+      "conTest": 0.7346,
+      "decTest": 0.8104,
+      "agreement_mean": 0.7486,
+      "calib_rho": 0.9743,
+      "calib_ratio": 0.9856,
+      "ceiling": 2.591
+    }
+  },
+  "stage2": {
+    "context + tau": {
+      "McDiv_nuggets": 0.6967,
+      "conTest": 0.7278,
+      "decTest": 0.8228,
+      "agreement_mean": 0.7491,
+      "calib_rho": 0.975,
+      "calib_ratio": 1.0,
+      "ceiling": 3.621
+    },
+    "context + local scaling": {
+      "McDiv_nuggets": 0.716,
+      "conTest": 0.7555,
+      "decTest": 0.8156,
+      "agreement_mean": 0.7624,
+      "calib_rho": 0.9746,
+      "calib_ratio": 0.9002,
+      "ceiling": 1.979
+    },
+    "local scaling + tau": {
+      "McDiv_nuggets": 0.6325,
+      "conTest": 0.7031,
+      "decTest": 0.8323,
+      "agreement_mean": 0.7226,
+      "calib_rho": 0.9714,
+      "calib_ratio": 1.0,
+      "ceiling": 3.251
+    },
+    "context + LS + tau": {
+      "McDiv_nuggets": 0.7075,
+      "conTest": 0.751,
+      "decTest": 0.83,
+      "agreement_mean": 0.7628,
+      "calib_rho": 0.9714,
+      "calib_ratio": 1.0,
+      "ceiling": 3.411
+    },
+    "vendi q=0.0": {
+      "McDiv_nuggets": NaN,
+      "conTest": 0.0543,
+      "decTest": 0.6338,
+      "agreement_mean": NaN,
+      "calib_rho": 0.7876,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "hill q=0.0": {
+      "McDiv_nuggets": 0.5762,
+      "conTest": 0.6528,
+      "decTest": 0.7941,
+      "agreement_mean": 0.6744,
+      "calib_rho": 0.9745,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "vendi q=0.5": {
+      "McDiv_nuggets": 0.5979,
+      "conTest": 0.6693,
+      "decTest": 0.8312,
+      "agreement_mean": 0.6995,
+      "calib_rho": 0.9413,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "hill q=0.5": {
+      "McDiv_nuggets": 0.5778,
+      "conTest": 0.6545,
+      "decTest": 0.798,
+      "agreement_mean": 0.6768,
+      "calib_rho": 0.9738,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "vendi q=1.0": {
+      "McDiv_nuggets": 0.5961,
+      "conTest": 0.6675,
+      "decTest": 0.8269,
+      "agreement_mean": 0.6968,
+      "calib_rho": 0.975,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "hill q=1.0": {
+      "McDiv_nuggets": 0.5796,
+      "conTest": 0.655,
+      "decTest": 0.8014,
+      "agreement_mean": 0.6787,
+      "calib_rho": 0.9736,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "vendi q=2.0": {
+      "McDiv_nuggets": 0.5914,
+      "conTest": 0.6641,
+      "decTest": 0.8219,
+      "agreement_mean": 0.6925,
+      "calib_rho": 0.9736,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "hill q=2.0": {
+      "McDiv_nuggets": 0.5821,
+      "conTest": 0.6566,
+      "decTest": 0.8057,
+      "agreement_mean": 0.6815,
+      "calib_rho": 0.9732,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "vendi q=4.0": {
+      "McDiv_nuggets": 0.5876,
+      "conTest": 0.662,
+      "decTest": 0.8173,
+      "agreement_mean": 0.689,
+      "calib_rho": 0.9687,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    },
+    "hill q=4.0": {
+      "McDiv_nuggets": 0.5842,
+      "conTest": 0.6589,
+      "decTest": 0.8089,
+      "agreement_mean": 0.684,
+      "calib_rho": 0.966,
+      "calib_ratio": 1.0,
+      "ceiling": 3.281
+    }
+  }
+}

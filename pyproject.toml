@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "linguistic-diversity"
-version = "1.0.2"
+version = "2.0.0"
 description = "Linguistic diversity metrics using similarity-sensitive Hill numbers"
 authors = [
     {name = "Fabrice Harel-Canada", email = "fabriceyhc@gmail.com"}
@@ -64,6 +64,7 @@ dev = [
     "ipython>=8.20.0",
     "jupyter>=1.0.0",
     "pre-commit>=3.6.0",
+    "vendi-score>=0.0.3",  # cross-validates the spectral index in tests
 ]
 
 viz = [
