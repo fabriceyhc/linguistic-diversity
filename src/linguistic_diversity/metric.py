@@ -34,13 +34,24 @@ def _nearest_psd(Z: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     The correction is smaller than that figure suggests. Negative eigenvalues hold
     0.7% (PartOfSpeechSequence) to 4.2% (DependencyParse) of total spectral
     magnitude, and projecting moves the matrix 1.3% to 13.6% in Frobenius norm.
+
+    The result is a correlation matrix: PSD with unit diagonal, entries in [-1, 1].
+    Off-diagonal entries are deliberately *not* clipped back into [0, 1]. Clipping
+    after projecting un-does the projection -- it is a second, unconstrained
+    perturbation that pushes the matrix straight back out of the PSD cone, and the
+    caller then silently discards the negative eigenvalues it reintroduced. On a
+    rank-deficient input that inflates the score badly: for 200 unit vectors in 32
+    dimensions it raises the numerical rank from 32 to 200 and the reported
+    diversity from 29.5 to 85.0. A negative entry in a *projected* matrix is not a
+    similarity that has gone out of range; it is the coordinate the PSD cone
+    requires, and the spectral index needs only positive semi-definiteness.
     """
     sym = (Z + Z.T) / 2
     eigenvalues, vectors = np.linalg.eigh(sym)
     projected = vectors @ np.diag(np.clip(eigenvalues, 0.0, None)) @ vectors.T
+    # Congruence by a positive diagonal, so this preserves positive semi-definiteness.
     scale = np.sqrt(np.clip(np.diag(projected), 1e-12, None))
     projected = projected / np.outer(scale, scale)
-    np.clip(projected, 0.0, 1.0, out=projected)
     np.fill_diagonal(projected, 1.0)
     return np.asarray(projected, dtype=np.float64)
 
