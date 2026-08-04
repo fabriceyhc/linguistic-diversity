@@ -1,0 +1,52 @@
+{
+  "model": "cross-encoder/nli-deberta-v3-base",
+  "limit": 400,
+  "results": {
+    "NLI entailment": {
+      "McDiv_nuggets": {
+        "spearman": 0.7808,
+        "mean_D": 4.261,
+        "ceiling": 3.879
+      },
+      "conTest": {
+        "spearman": 0.6921,
+        "mean_D": 4.521,
+        "ceiling": 4.189
+      },
+      "decTest": {
+        "spearman": 0.7432,
+        "mean_D": 7.732,
+        "ceiling": 7.034
+      },
+      "calibration": {
+        "spearman": 0.973,
+        "mean_D": 4.176,
+        "ceiling": 3.912,
+        "median_ratio": 1.0
+      }
+    },
+    "NLI ent-contra": {
+      "McDiv_nuggets": {
+        "spearman": 0.8076,
+        "mean_D": 3.237,
+        "ceiling": 2.053
+      },
+      "conTest": {
+        "spearman": 0.7372,
+        "mean_D": 3.435,
+        "ceiling": 2.138
+      },
+      "decTest": {
+        "spearman": 0.7259,
+        "mean_D": 5.245,
+        "ceiling": 2.988
+      },
+      "calibration": {
+        "spearman": 0.968,
+        "mean_D": 3.587,
+        "ceiling": 2.802,
+        "median_ratio": 0.9787
+      }
+    }
+  }
+}

@@ -107,3 +107,172 @@ class VendiWrapper:
 
     def calculate_similarities(self, features: Any) -> Any:
         return self.base.calculate_similarities(features)
+
+
+# ---------------------------------------------------------------------------------
+# Decan: progressive conditional surprise
+# ---------------------------------------------------------------------------------
+
+
+class Decan:
+    """Diversity as how much surprise survives in-context learning.
+
+    Khoriaty, Williams-King & Feng, *"I've Seen How This Goes": Characterizing the
+    Diversity of LLM Generations and Human Writing via Progressive Conditional
+    Surprise* (arXiv:2606.01811, ICML 2026 workshop).
+
+    A different paradigm from everything else here. There is no embedder, no
+    similarity matrix and no reference corpus -- diversity is read off a base
+    language model's per-token log-probabilities. Show the model k-1 responses, then
+    ask how surprised it still is by the k-th. If the responses are alike, it has
+    learned what it needs and the surprise collapses; if they are genuinely varied,
+    it stays high.
+
+        a_n  bits per byte of the last response, conditioned on all the others,
+             averaged over random permutations so the score does not depend on
+             which response happened to land last
+        C    reciprocal of the geometric-mean per-byte perplexity of the responses
+             scored individually -- without it, incoherent noise reads as maximally
+             diverse
+        D    C * a_n
+
+    Relevant to this library precisely because it *cannot* have a similarity floor:
+    it never computes a similarity. Whatever it gets wrong, it gets wrong for
+    different reasons.
+
+    Reimplemented from the paper's description rather than the authors' code, so
+    treat absolute values as indicative and comparisons across corpora as the
+    meaningful part.
+    """
+
+    def __init__(
+        self,
+        model_name: str = "gpt2",
+        permutations: int = 8,
+        seed: int = 20260803,
+        device: str | None = None,
+        max_tokens: int = 900,
+    ) -> None:
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+
+        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name).to(self.device).eval()
+        self.permutations = permutations
+        self.rng = np.random.default_rng(seed)
+        self.max_tokens = max_tokens
+        self._sep = "\n\n"
+
+    def _token_bits(self, texts: list[str]) -> tuple[list[float], list[int]]:
+        """Total surprise in bits for each text, given everything before it.
+
+        One forward pass over the concatenation. Returns per-text bits and the byte
+        length each should be normalised by.
+        """
+        import torch
+
+        ids: list[int] = []
+        spans: list[tuple[int, int]] = []
+        for i, text in enumerate(texts):
+            piece = (self._sep if i else "") + text
+            tokens = self.tokenizer.encode(piece)
+            spans.append((len(ids), len(ids) + len(tokens)))
+            ids += tokens
+        ids = ids[: self.max_tokens]
+        if len(ids) < 2:
+            return [0.0] * len(texts), [max(len(t.encode()), 1) for t in texts]
+
+        with torch.no_grad():
+            tensor = torch.tensor([ids], device=self.device)
+            logits = self.model(tensor).logits[0].float()
+            logprobs = torch.log_softmax(logits[:-1], dim=-1)
+            targets = tensor[0][1:]
+            token_logprobs = logprobs.gather(1, targets.unsqueeze(1)).squeeze(1)
+        # token_logprobs[j] is the log-probability of ids[j+1].
+        lp = token_logprobs.cpu().numpy()
+
+        bits, byte_lens = [], []
+        for text, (start, end) in zip(texts, spans, strict=True):
+            end = min(end, len(ids))
+            # The first token of the whole sequence has no prediction to score.
+            lo, hi = max(start - 1, 0), max(end - 1, 0)
+            segment = lp[lo:hi] if hi > lo else np.zeros(0)
+            bits.append(float(-segment.sum() / np.log(2)))
+            byte_lens.append(max(len(text.encode()), 1))
+        return bits, byte_lens
+
+    def __call__(self, corpus: list[str]) -> float:
+        if len(corpus) < 2:
+            return 0.0
+        texts = [t for t in corpus if t and t.strip()]
+        if len(texts) < 2:
+            return 0.0
+
+        # Coherence: per-byte perplexity of each response on its own.
+        solo_bpb = []
+        for text in texts:
+            bits, byte_lens = self._token_bits([text])
+            solo_bpb.append(bits[0] / byte_lens[0])
+        coherence = float(2.0 ** (-np.mean(solo_bpb)))
+
+        # a_n: bits per byte of the final response given all the others.
+        finals = []
+        for _ in range(self.permutations):
+            order = self.rng.permutation(len(texts))
+            ordered = [texts[i] for i in order]
+            bits, byte_lens = self._token_bits(ordered)
+            finals.append(bits[-1] / byte_lens[-1])
+        return float(coherence * np.mean(finals))
+
+
+# ---------------------------------------------------------------------------------
+# PRDC: precision, recall, density, coverage
+# ---------------------------------------------------------------------------------
+
+
+def prdc(
+    real: npt.NDArray[np.float64], fake: npt.NDArray[np.float64], k: int = 5
+) -> dict[str, float]:
+    """Fidelity and diversity against a *reference distribution*.
+
+    Naeem, Oh, Uh, Choi & Yoo, *Reliable Fidelity and Diversity Metrics for
+    Generative Models* (ICML 2020); precision/recall from Kynkaanniemi et al. (2019).
+
+    The only entry here that measures diversity **relative to a reference** rather
+    than internally. `recall` and `coverage` are the diversity halves: coverage asks
+    what fraction of reference points have a generated point inside their k-NN ball,
+    which is robust to the outliers that make recall unstable.
+
+    A caveat that matters for how the results are read: these are distribution-level
+    statistics designed for hundreds or thousands of samples. Applied to a five-item
+    response set they are far outside their design regime, and any weak result there
+    is a statement about sample size, not about the method.
+    """
+    if real.size == 0 or fake.size == 0:
+        return {"precision": 0.0, "recall": 0.0, "density": 0.0, "coverage": 0.0}
+    k = max(1, min(k, len(real) - 1, len(fake) - 1)) if min(len(real), len(fake)) > 1 else 1
+
+    def pairwise(a: npt.NDArray[np.float64], b: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        return np.sqrt(
+            np.maximum((a**2).sum(1)[:, None] + (b**2).sum(1)[None, :] - 2 * a @ b.T, 0.0)
+        )
+
+    def knn_radius(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        d = pairwise(x, x)
+        np.fill_diagonal(d, np.inf)
+        kk = min(k, d.shape[1] - 1) if d.shape[1] > 1 else 0
+        return np.partition(d, kk, axis=1)[:, kk] if d.shape[1] > 1 else np.full(len(x), np.inf)
+
+    r_radius = knn_radius(real)
+    f_radius = knn_radius(fake)
+    d_rf = pairwise(real, fake)  # (n_real, n_fake)
+
+    within_real = d_rf <= r_radius[:, None]
+    within_fake = d_rf <= f_radius[None, :]
+    return {
+        "precision": float(within_real.any(axis=0).mean()),
+        "recall": float(within_fake.any(axis=1).mean()),
+        "density": float(within_real.sum(axis=0).mean() / k),
+        "coverage": float(within_real.any(axis=1).mean()),
+    }
