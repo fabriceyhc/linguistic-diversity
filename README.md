@@ -59,8 +59,8 @@ semantically_diverse = [
 ]
 
 metric = DocumentSemantics()
-print(f"{metric(lexically_diverse):.2f}")     # 3.10
-print(f"{metric(semantically_diverse):.2f}")  # 4.60
+print(f"{metric(lexically_diverse):.2f}")     # 3.54
+print(f"{metric(semantically_diverse):.2f}")  # 4.57
 ```
 
 Set A is **perfect on every standard lexical measure** — type-token ratio 1.000,
@@ -87,13 +87,13 @@ documents / 30 words / 30 token species, so ceilings are identical):
 | `DistinctN` (n=2) | Lexical *(baseline)* | unique bigrams / total | 1.000 | 1.000 | 1 |
 | `SelfBLEU` | Lexical *(baseline)* | n-gram overlap — *lower* is diverse | **0.000** | 0.049 | 0 |
 | `TokenSemantics` | Semantic | contextualized token embeddings | 15.41 | **21.11** | 30 |
-| `DocumentSemantics` | Semantic | sentence embeddings | 3.10 | **4.60** | 5 |
+| `DocumentSemantics` | Semantic | cross-encoded document pairs | 3.54 | **4.57** | 5 |
 | `DependencyParse` | Syntactic | dependency tree structure | 2.13 | **4.36** | 5 |
 | `ConstituencyParse` | Syntactic | phrase structure *(needs benepar)* | 1.33 | **1.86** | 5 |
 | `PartOfSpeechSequence` | Morphological | POS sequences, aligned biologically | 2.43 | **3.34** | 5 |
 | `Rhythmic` | Phonological | stress and syllable weight | 2.59 | 2.72 | 5 |
 | `Phonemic` | Phonological | phoneme sequences | 3.25 | 3.07 | 5 |
-| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 3.49 | **5.13** | — |
+| `UniversalLinguisticDiversity` | Combined | all branches, hierarchically | 3.57 | **5.13** | — |
 
 ```python
 from linguistic_diversity import DependencyParse, UniversalLinguisticDiversity
@@ -112,7 +112,7 @@ detailed = universal.get_detailed_scores(corpus)   # {'universal': ..., 'branche
 
 Reading the results:
 
-- **Document semantics separates the sets** (3.10 vs 4.60). Reach
+- **Document semantics separates the sets** (3.54 vs 4.57). Reach
   for it when you care how many distinct *things* a corpus says.
 - **Syntax is an independent signal** (2.13 vs 4.36). Set A leans on one frame without
   repeating it exactly — four distinct POS sequences across five sentences, three of them
@@ -244,27 +244,45 @@ there, and one of them is effectively all of it. Both readings are true, and nei
 number alone tells you which case you are in. The similarity matrix is computed once and
 reused across every *q*.
 
-## Cross-encoder kernel
+## The cross-encoder default, and when to turn it off
 
-A bi-encoder reads each document once and compares vectors, so unrelated text lands on
-the encoder's floor rather than on 0 — which is why `similarity_floor` exists. A
+`DocumentSemantics` scores document **pairs** with a cross-encoder by default. A
+bi-encoder reads each document once and compares vectors, so unrelated text lands on the
+encoder's floor rather than on 0 — which is the whole reason `similarity_floor` exists. A
 cross-encoder reads both documents together and outputs the comparison directly, so
-unrelated text scores ~0.01 and there is no floor to correct.
+unrelated text scores ~0.01 and there is nothing to correct.
+
+On 1,270 held-out human-scored sets it is better on both criteria that decide anything:
+
+| | agreement with people | calibration ratio |
+|---|---:|---:|
+| bi-encoder + similarity floor | 0.709 | 0.986 |
+| **cross-encoder** | **0.816** | **0.9998** |
+
+and it needs no similarity floor, no hubness correction and no prompt.
+
+**It is quadratic, and that is not a small constant.** Measured on an RTX 2060 at ~170
+forward passes/s, against 0.1–0.2s for the bi-encoder at *any* of these sizes:
+
+| n | 10 | 25 | 100 | 200 | 500 | 1000 |
+|---|---:|---:|---:|---:|---:|---:|
+| cross-encoder | 0.5s | 3.2s | 55s | 3.9 min | ~25 min | ~1.6 h |
 
 ```python
-metric = DocumentSemantics({"cross_encoder": "cross-encoder/stsb-roberta-large"})
+DocumentSemantics()                          # cross-encoder, the default
+DocumentSemantics({"cross_encoder": None})   # bi-encoder, O(n) encodes
 ```
 
-Measured on 1,270 human-scored sets, it matches the best embedding pipeline while
-needing no similarity floor, no hubness correction and no prompt. NLI checkpoints are
-auto-detected from their label map and scored on entailment; prefer one whose *neutral*
-class is calibrated, such as
-`MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli`, since SNLI/MNLI-only models
-label unrelated text "contradiction".
+**Turn it off** for corpora beyond a few hundred documents, for `estimate_diversity`
+(which rescores many subsamples), and for anything in a loop. A warning fires above 64
+documents and `cross_encoder_max_docs` (512) refuses rather than hangs. Note this also
+affects `UniversalLinguisticDiversity`, whose semantic branch is a `DocumentSemantics`.
 
-**Opt-in because of cost**: O(n²) forward passes against O(n) encodes — roughly 45× a
-bi-encoder at 40 documents, quadratic thereafter. `cross_encoder_max_docs` (default 512)
-refuses rather than hangs.
+NLI checkpoints are auto-detected from their label map and scored on entailment; prefer
+one whose *neutral* class is calibrated, such as
+`MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli`, since SNLI/MNLI-only models
+label unrelated text "contradiction" and any formula tuned on them is fitted to that
+artefact.
 
 ## Beyond one number
 

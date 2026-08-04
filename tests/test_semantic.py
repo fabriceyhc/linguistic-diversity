@@ -311,9 +311,20 @@ class TestSimilarityFloor:
             _resolve_similarity_floor(DocumentSemantics({"similarity_floor": "median"}))
 
     def test_out_of_range_floor_is_rejected(self):
+        """Rejected at construction, not at the first score.
+
+        The cross-encoder path never consults the floor, so deferring the check to
+        scoring time would let a bad value pass silently under the default config.
+        """
         from linguistic_diversity import DocumentSemantics
 
         for bad in (-0.1, 1.0, 1.5):
-            metric = DocumentSemantics({"similarity_floor": bad, "verbose": False})
             with pytest.raises(ValueError, match="similarity_floor"):
-                metric(self.CORPUS)
+                DocumentSemantics({"similarity_floor": bad, "verbose": False})
+
+    def test_floor_is_reported_as_ignored_under_the_cross_encoder(self):
+        """A floor set alongside a cross-encoder does nothing, so say so."""
+        from linguistic_diversity import DocumentSemantics
+
+        with pytest.warns(RuntimeWarning, match="ignored when cross_encoder"):
+            DocumentSemantics({"similarity_floor": 0.3, "verbose": False})

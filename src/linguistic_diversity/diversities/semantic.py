@@ -290,10 +290,15 @@ class SemanticConfig(MetricConfig):
     # The cost is the reason this is opt-in rather than the default: O(n^2) forward
     # passes against O(n) encodes, about 45x a bi-encoder at 40 documents and
     # quadratic thereafter.
+    # Set per class, not here: DocumentSemantics defaults to a cross-encoder,
+    # TokenSemantics cannot use one because its species are tokens, not documents.
     cross_encoder: str | None = None
     cross_encoder_batch_size: int = 64
-    # Refuse rather than hang: n documents cost n*(n-1) forward passes.
+    # Refuse rather than hang: n documents cost n*(n-1) forward passes. At the
+    # measured 170 passes/s this limit is roughly 25 minutes.
     cross_encoder_max_docs: int = 512
+    # Warn above this, since the cost is quadratic and easy to walk into unawares.
+    cross_encoder_warn_docs: int = 64
 
     # Model settings
     model_name: str = "bert-base-uncased"
@@ -812,6 +817,20 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
         )
         self._pair_corpus: list[str] | None = None
 
+        # The cross-encoder path never consults the floor, so validate it here rather
+        # than let a bad or pointless value pass silently.
+        floor = self.config.similarity_floor
+        if isinstance(floor, (int, float)) and not 0.0 <= float(floor) < 1.0:
+            raise ValueError(f"similarity_floor must be in [0, 1), got {floor}")
+        if self.cross_encoder is not None and floor is not None and floor != "auto":
+            warnings.warn(
+                f"similarity_floor={floor!r} is ignored when cross_encoder is set: a "
+                "cross-encoder puts unrelated text at ~0.01, so there is no floor to "
+                "subtract. Pass cross_encoder=None to use the bi-encoder and the floor.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+
     @classmethod
     def _config_class(cls) -> type[SemanticConfig]:
         return SemanticConfig
@@ -834,8 +853,24 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
         # mpnet's cosines do fall below zero on about 1.35% of McDiv response
         # pairs, which is why compute_similarity_matrix_faiss clamps to [0, 1];
         # bge-large never goes below +0.32 and never needs it.
+        # The cross-encoder is the default because it is markedly better on both
+        # criteria that decide anything: held-out human agreement 0.709 -> 0.816
+        # and calibration ratio 0.986 -> 0.9998, with no similarity floor, no
+        # hubness correction and no prompt required.
+        #
+        # It is also **quadratic**, and that is not a small constant. Measured on
+        # an RTX 2060 at ~170 forward passes/s:
+        #
+        #     n=10    0.5s      n=100    55s      n=500   ~25 min
+        #     n=25    3.2s      n=200   3.9 min   n=1000  ~1.6 h
+        #
+        # against 0.1-0.2s for the bi-encoder at any of those sizes. Pass
+        # cross_encoder=None to restore the bi-encoder, which is what to do for
+        # corpora of more than a few hundred documents, for estimate_diversity,
+        # and for anything that scores repeatedly.
         return {
             "model_name": "all-mpnet-base-v2",
+            "cross_encoder": "cross-encoder/stsb-roberta-large",
             "batch_size": 32,
             "use_cuda": True,
             "distance_fn": faiss.METRIC_INNER_PRODUCT,
@@ -926,12 +961,22 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
                 "do that for you."
             )
         limit = self.config.cross_encoder_max_docs
+        passes = n * (n - 1)
         if n > limit:
             raise ValueError(
-                f"cross-encoder mode would need {n * (n - 1):,} forward passes for "
-                f"{n} documents, above the cross_encoder_max_docs limit of {limit}. "
-                "Raise the limit deliberately, or drop cross_encoder and use the "
-                "bi-encoder, which is O(n) encodes."
+                f"the cross-encoder would need {passes:,} forward passes for {n} "
+                f"documents (roughly {passes / 170 / 60:.0f} minutes), above the "
+                f"cross_encoder_max_docs limit of {limit}. Pass cross_encoder=None "
+                "for the bi-encoder, which is O(n) encodes and the right choice at "
+                "this size, or raise cross_encoder_max_docs deliberately."
+            )
+        if n > self.config.cross_encoder_warn_docs:
+            warnings.warn(
+                f"scoring {n} documents with a cross-encoder needs {passes:,} forward "
+                f"passes, roughly {passes / 170:.0f}s. The cost is quadratic; pass "
+                "cross_encoder=None for the bi-encoder if that is too slow.",
+                RuntimeWarning,
+                stacklevel=3,
             )
         return cross_encoder_similarities(
             corpus, self.cross_encoder, batch_size=self.config.cross_encoder_batch_size
