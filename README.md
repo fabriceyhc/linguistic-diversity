@@ -244,6 +244,86 @@ there, and one of them is effectively all of it. Both readings are true, and nei
 number alone tells you which case you are in. The similarity matrix is computed once and
 reused across every *q*.
 
+## Cross-encoder kernel
+
+A bi-encoder reads each document once and compares vectors, so unrelated text lands on
+the encoder's floor rather than on 0 — which is why `similarity_floor` exists. A
+cross-encoder reads both documents together and outputs the comparison directly, so
+unrelated text scores ~0.01 and there is no floor to correct.
+
+```python
+metric = DocumentSemantics({"cross_encoder": "cross-encoder/stsb-roberta-large"})
+```
+
+Measured on 1,270 human-scored sets, it matches the best embedding pipeline while
+needing no similarity floor, no hubness correction and no prompt. NLI checkpoints are
+auto-detected from their label map and scored on entailment; prefer one whose *neutral*
+class is calibrated, such as
+`MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli`, since SNLI/MNLI-only models
+label unrelated text "contradiction".
+
+**Opt-in because of cost**: O(n²) forward passes against O(n) encodes — roughly 45× a
+bi-encoder at 40 documents, quadratic thereafter. `cross_encoder_max_docs` (default 512)
+refuses rather than hangs.
+
+## Beyond one number
+
+Three questions an effective number cannot answer on its own. Each has a settled answer
+in ecology, and each is implemented here from the reference implementations.
+
+### Evenness — many things, or balanced things?
+
+A diversity of 3.0 means something different out of 4 documents than out of 400.
+Evenness divides the richness out, so the two can be reported separately.
+
+```python
+metric.evenness(corpus)                                # 0.99  balanced
+metric.evenness(corpus, abundance=[97, 1, 1, 1])       # 0.06  one item dominates
+```
+
+Five classes, `E1`–`E5` (Chao & Ricotta 2019); `E3`, the normalised slope of the
+diversity profile, is their headline choice and the default here. Passing
+similarity-sensitive values for both terms is a generalisation of ours, not theirs: it
+reads as "even across *distinct content*" rather than "even across species".
+
+### Coverage — is this sample complete enough to compare?
+
+Comparing two corpora at equal **size** is biased against the more diverse one: a size
+sufficient to characterise a dull corpus is too small for a rich one. Coverage says how
+complete each sample is, so they can be compared at equal completeness instead
+(Chao & Jost 2012).
+
+```python
+metric.sample_coverage(corpus)   # 0.0 for wholly distinct documents -- see below
+```
+
+Species here are equivalence classes under `Z = 1`: documents *this metric* cannot tell
+apart. Three sentences sharing a POS skeleton are one species to `PartOfSpeechSequence`
+and three to `DocumentSemantics`.
+
+**Coverage is 0 when every species occurs exactly once**, the normal case for whole
+documents. That is the honest answer, not a bug — with nothing repeated, the sample
+carries no evidence about what it has missed. The measure is informative for the levels
+whose features collide (`ConstituencyParse` 0.50, `Rhythmic` 0.45 on real text) and
+vacuous for semantics on distinct documents.
+
+### Partition — within sources, or between them?
+
+```python
+metric.partition({"finance": docs_a, "baking": docs_b})
+# PartitionResult(q=1, gamma=3.5077, alpha=1.9593, beta=1.7903)
+```
+
+`gamma` is the pooled diversity, `alpha` the average within a source, and `beta` the
+effective number of **distinct** sources — 1 when interchangeable, N when they share
+nothing. One similarity matrix is built over the pooled documents, so cross-source
+similarity is *measured*: two sources with no shared wording but the same content come
+back as one. Reeve et al. (2016), the similarity-sensitive continuation of the
+Leinster–Cobbold measure this library is built on.
+
+Measured on real corpora: three different generation tasks read as **2.01** distinct
+sources; one task cut arbitrarily into three reads as **1.27**.
+
 ### Why there is no species aggregation
 
 Ecology assigns individuals to species before counting — two cows are one species despite

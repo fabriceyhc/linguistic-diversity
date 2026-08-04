@@ -117,6 +117,95 @@ def _resolve_similarity_floor(metric: Any) -> float | None:
     return floor
 
 
+def _load_cross_encoder(model_name: str, device: Any) -> Any:
+    """Load and cache a cross-encoder, alongside the bi-encoders."""
+    from sentence_transformers import CrossEncoder
+
+    cache_key = f"CrossEncoder:{model_name}:device={device}"
+    if cache_key not in _MODEL_CACHE:
+        _MODEL_CACHE[cache_key] = CrossEncoder(model_name, device=str(device))
+    return _MODEL_CACHE[cache_key]
+
+
+def _entailment_index(model: Any) -> int | None:
+    """Which output is 'entailment', or None if this is a graded-similarity model.
+
+    Detected from the model's own label map rather than assumed, because the three
+    NLI classes are not in a consistent order across checkpoints.
+    """
+    if getattr(model.config, "num_labels", 1) <= 1:
+        return None
+    id2label = getattr(model.config, "id2label", None) or {}
+    for idx, label in id2label.items():
+        if str(label).lower().startswith("entail"):
+            return int(idx)
+    raise ValueError(
+        f"cross_encoder has {model.config.num_labels} outputs but no 'entailment' "
+        f"label among {list(id2label.values())}. Use a graded similarity model "
+        "(single output, e.g. cross-encoder/stsb-roberta-large) or an NLI model "
+        "whose config declares an entailment class."
+    )
+
+
+def cross_encoder_similarities(
+    corpus: list[str],
+    model: Any,
+    batch_size: int = 64,
+) -> npt.NDArray[np.float64]:
+    """Similarity matrix from a cross-encoder, symmetrised over both orderings.
+
+    Every unordered pair is scored twice, once in each direction, and averaged --
+    cross-encoders are not symmetric, and a diversity measure must be. Graded models
+    contribute their score directly; NLI models contribute the entailment probability.
+
+    Returns a matrix in [0, 1] with a unit diagonal, which is what the Hill number and
+    the spectral index both require. The diagonal is set rather than measured: a
+    document is identical to itself by definition, and asking the model costs n passes
+    to be told so approximately.
+    """
+    n = len(corpus)
+    Z = np.eye(n, dtype=np.float64)
+    if n < 2:
+        return Z
+
+    pairs: list[tuple[str, str]] = []
+    slots: list[tuple[int, int]] = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            slots.append((i, j))
+            pairs.append((corpus[i], corpus[j]))
+            pairs.append((corpus[j], corpus[i]))
+
+    entail = _entailment_index(model)
+    scores = model.predict(
+        pairs,
+        batch_size=batch_size,
+        show_progress_bar=False,
+        convert_to_numpy=True,
+        **({"apply_softmax": True} if entail is not None else {}),
+    )
+    scores = np.asarray(scores, dtype=np.float64)
+    values = scores[:, entail] if entail is not None else scores.ravel()
+
+    for k, (i, j) in enumerate(slots):
+        v = float(np.clip(0.5 * (values[2 * k] + values[2 * k + 1]), 0.0, 1.0))
+        Z[i, j] = Z[j, i] = v
+
+    # Identical strings are identical, whatever the model says. Cross-encoders score
+    # a sentence against itself at ~0.96 rather than 1.0, and that gap is not small:
+    # four byte-identical documents come out at 1.149 effective species instead of 1.
+    # A bi-encoder never has this problem, since identical text gives identical
+    # vectors and cosine 1 exactly.
+    groups: dict[str, list[int]] = {}
+    for idx, text in enumerate(corpus):
+        groups.setdefault(text, []).append(idx)
+    for members in groups.values():
+        if len(members) > 1:
+            block = np.ix_(members, members)
+            Z[block] = 1.0
+    return Z
+
+
 def _apply_similarity_floor(
     Z: npt.NDArray[np.float64], floor: float | None
 ) -> npt.NDArray[np.float64]:
@@ -179,6 +268,32 @@ class SemanticConfig(MetricConfig):
     remove_stopwords: bool = False
     remove_punct: bool = False
     n_components: int | str | None = None  # PCA dimensions ("auto" or int)
+
+    # Score pairs with a cross-encoder instead of comparing bi-encoder embeddings.
+    #
+    # A bi-encoder reads each document once and compares vectors, so "unrelated" lands
+    # on the encoder's floor rather than on 0 and the cap above applies. A cross-encoder
+    # reads both documents together and is trained to output the comparison directly,
+    # so unrelated text scores ~0.01 and there is no floor to correct.
+    #
+    # Recommended: "cross-encoder/stsb-roberta-large", trained for *graded* similarity,
+    # which is what a similarity matrix wants. Measured on 1,270 human-scored sets it
+    # matches the best embedding pipeline while needing no similarity floor, no
+    # hubness correction and no prompt. See benchmarks/similarity_transforms/.
+    #
+    # NLI cross-encoders also work and are auto-detected: the entailment probability
+    # is used, symmetrised over both orderings. Prefer a model whose *neutral* class
+    # is well calibrated -- "MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli"
+    # -- because SNLI/MNLI-only models label unrelated text "contradiction" and the
+    # entailment reading then depends on an artefact of that training data.
+    #
+    # The cost is the reason this is opt-in rather than the default: O(n^2) forward
+    # passes against O(n) encodes, about 45x a bi-encoder at 40 documents and
+    # quadratic thereafter.
+    cross_encoder: str | None = None
+    cross_encoder_batch_size: int = 64
+    # Refuse rather than hang: n documents cost n*(n-1) forward passes.
+    cross_encoder_max_docs: int = 512
 
     # Model settings
     model_name: str = "bert-base-uncased"
@@ -688,6 +803,15 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
             )
         self.model = _MODEL_CACHE[cache_key]
 
+        # Optional cross-encoder kernel. The bi-encoder is still loaded: its
+        # embeddings remain the features, so ranking and selection keep working.
+        self.cross_encoder = (
+            _load_cross_encoder(self.config.cross_encoder, self.device)
+            if self.config.cross_encoder
+            else None
+        )
+        self._pair_corpus: list[str] | None = None
+
     @classmethod
     def _config_class(cls) -> type[SemanticConfig]:
         return SemanticConfig
@@ -738,6 +862,12 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
             **self.config.encode_kwargs,
         )
 
+        # A cross-encoder scores text pairs, not vectors, so the documents have to
+        # reach calculate_similarities. Held here rather than threaded through the
+        # feature type, which every other metric shares.
+        if self.cross_encoder is not None:
+            self._pair_corpus = list(corpus)
+
         return embeddings, corpus
 
     def calculate_similarities(self, features: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -748,7 +878,14 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
 
         Returns:
             Similarity matrix (n_docs x n_docs).
+
+        Raises:
+            ValueError: In cross-encoder mode, if ``extract_features`` was not called
+                for this corpus, or if the corpus exceeds ``cross_encoder_max_docs``.
         """
+        if self.cross_encoder is not None:
+            return self._cross_encoder_similarities(features)
+
         Z = compute_similarity_matrix_faiss(
             features,
             distance_metric=self.config.distance_fn,
@@ -768,6 +905,37 @@ class DocumentSemantics(TextDiversity[npt.NDArray[np.float64]]):
             Z = np.maximum(Z, 0)
 
         return Z
+
+    def _cross_encoder_similarities(
+        self, features: npt.NDArray[np.float64]
+    ) -> npt.NDArray[np.float64]:
+        """Pairwise scores from the configured cross-encoder.
+
+        No similarity floor is applied. The floor exists because a bi-encoder puts
+        unrelated text at cosine 0.05-0.46 rather than 0; a cross-encoder puts it at
+        about 0.01, so there is nothing to subtract and subtracting anyway would only
+        add a second, unvalidated constant.
+        """
+        corpus = self._pair_corpus
+        n = len(features)
+        if corpus is None or len(corpus) != n:
+            raise ValueError(
+                "cross-encoder mode needs the documents themselves, which are captured "
+                "by extract_features. Call extract_features(corpus) immediately before "
+                "calculate_similarities, or use diversity()/diversity_profile(), which "
+                "do that for you."
+            )
+        limit = self.config.cross_encoder_max_docs
+        if n > limit:
+            raise ValueError(
+                f"cross-encoder mode would need {n * (n - 1):,} forward passes for "
+                f"{n} documents, above the cross_encoder_max_docs limit of {limit}. "
+                "Raise the limit deliberately, or drop cross_encoder and use the "
+                "bi-encoder, which is O(n) encodes."
+            )
+        return cross_encoder_similarities(
+            corpus, self.cross_encoder, batch_size=self.config.cross_encoder_batch_size
+        )
 
     def calculate_abundance(self, species: list[str]) -> npt.NDArray[np.float64]:
         """Calculate uniform abundance distribution.

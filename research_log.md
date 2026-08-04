@@ -12,6 +12,545 @@ Newest first.
 
 ---
 
+## 2026-08-04 — Same kernel for everyone: the index contributes nothing here
+
+`run_same_kernel.py`. Every comparison so far gave our configuration a cross-encoder
+and the alternatives bi-encoder cosine, which confounds index with representation.
+This holds the matrix fixed.
+
+| index | McDiv | conTest | decTest | mean | calib ρ | ratio |
+|---|---:|---:|---:|---:|---:|---:|
+| Hill (Leinster–Cobbold) | +0.8126 | +0.7495 | +0.8134 | 0.7918 | +0.9721 | 0.9716 |
+| Vendi Score (reference impl) | +0.8406 | +0.7788 | +0.8333 | **0.8176** | +0.9746 | 0.9998 |
+| pVS_q (this library) | +0.8406 | +0.7788 | +0.8333 | **0.8176** | +0.9746 | 0.9998 |
+
+**max |pVS_q − Vendi| = 4.5e-14.** They are the same number. At uniform abundance
+`diag(√p) Z diag(√p) = Z/n`, so pVS_q *is* the Vendi Score, and on uniformly-weighted
+benchmarks the two cannot differ by construction. Every gap previously reported between
+"ours" and "Vendi" was a difference of **kernel**, not of index.
+
+So the honest accounting on these benchmarks: the entire improvement is representation.
+The index contributes zero, and the one index that does differ — the Leinster–Cobbold
+Hill number the library is named for — is *worse* by 0.026.
+
+**Two places the index does contribute, neither visible in these benchmarks:**
+
+1. **Abundance.** Same matrices, Zipfian weights instead of uniform: ours moves to 4.178
+   mean, the spectral form stays at 5.143 because it has no way to accept weights. Mean
+   absolute divergence 0.971. Every human-rating benchmark here is uniformly weighted,
+   so none of them can see this.
+2. **Non-kernel matrices.** **21/679** cross-encoder matrices are not positive
+   semi-definite (down to −9e-4), and the published Vendi Score raises on them — it is
+   *undefined*, not merely inaccurate. The reference implementation only appears in the
+   table above because it was handed the PSD projection first.
+
+**Baselines that cannot participate at all**, which is a finding rather than an omission:
+distinct-n, Self-BLEU and Decan have no notion of a similarity matrix, so "same kernel"
+is undefined for them. PRDC needs a metric space and hundreds of samples; via classical
+MDS on 1 − Z it degenerates on five-item sets and returns nan.
+
+**Consequence for the paper.** The claim cannot be "a better diversity index". It has to
+be one of: a better *representation* for diversity measurement (the cross-encoder
+result), the *abundance* generalisation, or the surrounding apparatus — partition,
+evenness, coverage, non-PSD handling, validated axioms.
+
+---
+
+## 2026-08-04 — The NLI kernel worked by accident; four alternatives measured
+
+`run_nli_models.py`. Five cross-encoders, each on a four-pair diagnostic probe and on
+the real criteria.
+
+**Better NLI models do fix the labelling defect.** Probability assigned to *neutral* for
+an unrelated pair, where neutral is the correct label:
+
+| model | P(neutral), unrelated | argmax |
+|---|---:|---|
+| `cross-encoder/nli-deberta-v3-base` *(shipped)* | 0.0002 | **contradiction** |
+| `MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli` | **0.959** | neutral |
+| `MoritzLaurer/DeBERTa-v3-large-…-ling-wanli` | **0.932** | neutral |
+| `tasksource/deberta-base-long-nli` | 0.143 | contradiction |
+
+**But swapping the model alone makes the kernel worse, because the formula was fitted to
+the defect.** `Z = 0.5(1 + e − c)` sends unrelated text to 0 *only if* unrelated is
+labelled contradiction. Give it a correctly-calibrated model and unrelated lands on
+neutral, so `e ≈ 0.01`, `c ≈ 0.03`, and **Z ≈ 0.49** — a 0.49 similarity floor, which is
+precisely the pathology the NLI kernel was introduced to remove. Calibration ratio falls
+0.979 → 0.836.
+
+**The fix is to match the formula to the model** (150-set subsample, NLI kernel alone):
+
+| model | formula | mean ρ | calib ratio |
+|---|---|---:|---:|
+| shipped (mislabels) | ent−contra | +0.7121 | 0.9787 |
+| shipped (mislabels) | entailment only | +0.6636 | 1.0000 |
+| MoritzLaurer large | ent−contra | +0.6905 | **0.8364** |
+| **MoritzLaurer large** | **entailment only** | **+0.7156** | **0.9999** |
+
+Each model needs the formula that maps *its* "unrelated" verdict to zero. Net accuracy
+between the two correct pairings is a wash. So the case for switching is not accuracy —
+it is that the shipped pairing works by an artefact of SNLI/MNLI and would break
+unpredictably wherever the contradiction class absorbs something different.
+
+**The better answer is to stop using NLI at all.** `cross-encoder/stsb-roberta-large` is
+trained directly for *graded* similarity, which is what a similarity matrix wants; using
+a 3-way classifier to approximate one was the wrong tool. On the full held-out split:
+
+| configuration | McDiv | conTest | decTest | mean | calib ratio |
+|---|---:|---:|---:|---:|---:|
+| NLI-ec + ctx + LS + τ *(previous best)* | +0.8319 | +0.7973 | +0.8441 | **0.8245** | 1.0000 |
+| **STS alone** | +0.8406 | +0.7778 | +0.8308 | 0.8164 | 0.9998 |
+| STS + ctx + LS + τ | +0.8175 | +0.7812 | +0.8437 | 0.8141 | 1.0000 |
+
+0.008 behind the four-component pipeline — inside the bootstrap CI, and almost exactly
+the +0.018 that context projection was worth, which is the component STS does without.
+**One model, one matrix, and no prompt required**, against NLI + context projection +
+local scaling + τ. Blending it with the embedding kernel *hurts*, so the simplification
+is real rather than a trade.
+
+That also disposes of the fairness objection to the headline number: the prompt was the
+input the baselines never received, and this configuration does not use it.
+
+**Recommendations.** Keep NLI only with `MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-
+ling-wanli` *and* the entailment-only formula — never one without the other. Prefer
+`cross-encoder/stsb-roberta-large` alone. Neither is shipped yet; both are opt-in kernels
+at O(n²) cross-encoder cost.
+
+---
+
+## 2026-08-03 — What the NLI kernel is actually doing (and a retracted mechanism)
+
+Two things I had been running together under the word "prompt". They are independent and
+only one of them is an extra input.
+
+**The cross-encoder needs no query.** An NLI cross-encoder consumes a *sentence pair*,
+premise and hypothesis — not a query and a document. The pairs are just the documents in
+the set: for n documents, all C(n,2) pairs scored in both orderings, n(n−1) forward
+passes, symmetrised. Nothing external is required, which is why it can be a drop-in
+kernel for `DocumentSemantics`.
+
+Model: **`cross-encoder/nli-deberta-v3-base`**, 184M parameters, 3-way softmax over
+`{contradiction, entailment, neutral}` (id2label 0/1/2).
+
+**Context projection is the separate thing, and it *is* an extra input.** It embeds the
+dataset's `context` column and projects that direction out of each response. Worth
++0.018 of the +0.117 total, and unavailable whenever there is no prompt — which is most
+real use.
+
+**Retraction.** I documented the kernel as working because "unrelated sentences are
+neutral, and neutral means entailment near zero". The conclusion holds; the mechanism is
+wrong. Measured:
+
+| pair | entail | contra | Z (ent-contra) |
+|---|---:|---:|---:|
+| paraphrase | 0.993 | 0.000 | **0.994** |
+| same topic, not entailed | 0.001 | 0.000 | **0.500** |
+| different topic | 0.000 | 1.000 | **0.000** |
+| contradiction | 0.000 | 1.000 | **0.000** |
+
+Unrelated pairs are classified as **contradiction with p ≈ 1.0**, not neutral. That is an
+artefact of MNLI-style training, where the neutral class means "same topic, not entailed"
+rather than "unrelated". Consequences worth being explicit about:
+
+1. The floor-free property is genuine — entailment for unrelated text is 0.000, so
+   nothing accumulates. That part of the claim survives.
+2. `ent-contra` is really a **three-level topical scale** (paraphrase 1.0 / same-topic
+   0.5 / off-topic 0.0), which is a sensible similarity structure and probably explains
+   why it beat raw entailment.
+3. It **cannot distinguish an off-topic sentence from a contradictory one**. Defensible
+   for diversity, since both are maximally dissimilar, but it is not a property of NLI —
+   it is a property of this training data.
+
+So the kernel should be described as domain-dependent, not universal. Anything that
+shifts what MNLI's contradiction class absorbs will move the scores, and nothing in the
+benchmarks tests for that.
+
+---
+
+## 2026-08-03 — The lead is real, significant, and mostly a bigger model
+
+`run_significance.py`. 2000 paired bootstrap resamples over held-out sets, same
+resample indices for every configuration.
+
+| configuration | mean ρ | 95% CI |
+|---|---:|---|
+| Self-BLEU | 0.5714 | [0.5149, 0.6213] |
+| Vendi (raw cosine) | 0.7078 | [0.6630, 0.7444] |
+| ours, current default | 0.7092 | [0.6641, 0.7457] |
+| ours, no prompt no NLI | 0.7320 | [0.6884, 0.7658] |
+| ours, no prompt (+NLI) | 0.8062 | [0.7744, 0.8299] |
+| **ours, full** | **0.8245** | [0.7954, 0.8454] |
+
+Every pairwise gap excludes zero. But the ablation is the finding, and it is not
+flattering:
+
+| against Vendi | Δ | 95% CI |
+|---|---:|---|
+| transform only (no prompt, no NLI) | **+0.024** | [+0.009, +0.039] |
+| + NLI cross-encoder | **+0.099** | [+0.074, +0.125] |
+| + prompt | +0.117 | [+0.088, +0.148] |
+
+**Roughly 85% of the lead is the NLI cross-encoder.** Strip it and the similarity
+transforms beat Vendi by 0.024 — real, but a rounding error next to the headline. So
+what has been demonstrated is *not* a better diversity index. It is that a cross-encoder
+makes a better similarity function than a bi-encoder, which is unsurprising, costs 45× at
+n = 40, and would presumably help every competing metric equally if they were given one.
+
+A further 0.018 comes from the prompt, which the baselines are not given at all. Any
+comparison table that keeps both advantages and calls the result state of the art is
+comparing a bigger model with more inputs against smaller models with fewer.
+
+**What this does license**, stated narrowly: on these three datasets, at these sizes,
+with a cross-encoder kernel and prompt conditioning, the similarity-sensitive index
+tracks human diversity judgement better than the published alternatives measured the same
+way, and the gap is not noise. That is a much smaller claim than "best metric" and it is
+the one the evidence supports.
+
+---
+
+## 2026-08-03 — "We win small and lose large" was mostly my measurement error
+
+`benchmarks/similarity_transforms/run_scale.py`. Prompted by the obvious objection that
+large-scale application is where a diversity metric earns its keep.
+
+**Retraction first.** The claim that Vendi beats us at distribution level is wrong. Two
+errors compounded: I compared *different tasks* (per-set human ratings at n=5 against
+temperature bins at n=200) and I carried the small-set-tuned kernel to a setting two of
+its three components do not apply in. Measured properly, within one task across sizes:
+
+| kernel | n=5 | n=25 | n=100 | n=200 | n=400 |
+|---|---:|---:|---:|---:|---:|
+| raw cosine (= Vendi) | +0.649 | +0.952 | +0.927 | +0.976 | +0.988 |
+| **τ=0.70 only** | +0.682 | +0.976 | +0.952 | **+1.000** | **+1.000** |
+| local scaling k=10 | +0.515 | +0.879 | +0.721 | +0.818 | +0.733 |
+| LS + τ *(small-set winner)* | +0.576 | +0.939 | +0.927 | +0.952 | +0.927 |
+
+**With the right kernel we beat Vendi at every size**, including the largest. The
+distribution-level table now reports both kernels rather than the one that flattered the
+wrong conclusion.
+
+**What actually fails to transfer, and it is not scale as such:**
+
+- **Context projection** — structurally unavailable. It removes a *shared prompt*, and a
+  pooled corpus has no single prompt. This is the biggest single small-set correction
+  (+0.105 on McDiv), and it is simply not defined at scale.
+- **Local scaling** — a *task* effect, not a size effect. It helps human ratings at every
+  size and hurts temperature at every size. It was selected on human ratings, so
+  carrying it elsewhere was the mistake.
+- **NLI kernel** — a genuine scale barrier, but of cost, not accuracy: 40,000
+  cross-encoder pairs per 200-document bin, quadratic thereafter.
+- **τ-truncation** — transfers cleanly, and is the component doing the work.
+
+**The real scale problem is the opposite of the one I claimed, and it is about the
+absolute number rather than the ranking.** Saturation, mean D / n:
+
+| floor | n=5 | n=50 | n=200 | n=400 |
+|---|---:|---:|---:|---:|
+| z₀ = 0 | 0.884 | 0.621 | 0.422 | **0.306** |
+| z₀ = 0.053 (shipped) | 0.901 | 0.674 | 0.491 | 0.374 |
+| z₀ = 0.30 (small-set best) | 0.950 | 0.867 | 0.849 | **0.829** |
+
+At n = 400 the aggressive floor reports **332 effective documents out of 400 generated
+sentences**. That is not a credible effective count, and the effective count is the whole
+selling point. Meanwhile ranking is nearly *insensitive* to the floor — every value from
+0 to 0.5 scores ≥ 0.95 at n ≥ 25.
+
+So the floor should be chosen on the calibration criterion, not the ranking one, and the
+choice is size-dependent: **z₀ = 0.30 is a five-item-set constant that must not be
+shipped as a global default.** This follows from the motivation itself — the cap
+`D_max = n/(1+(n−1)z)` is a function of n, so its correction should be too. Worth noting
+that the uniform-z model also *overstates* the problem at scale: it predicts a cap near
+1/z ≈ 14 at z = 0.07, but real heterogeneous Z gives 122 at n = 400.
+
+**Latent defect found and fixed: `_nearest_psd` un-did its own projection.** It projected
+onto the PSD cone, restored the unit diagonal, and then clipped off-diagonal entries back
+into [0, 1] — a second unconstrained perturbation straight back out of the cone, whose
+damage `_calc_vendi` then silently absorbed by clipping negative eigenvalues. On a
+rank-deficient input this is severe: 200 unit vectors in 32 dimensions went from rank 32
+to rank 200, and the score from 29.5 to **85.0**.
+
+After removing the clip, our index reproduces the reference `vendi-score` **exactly** at
+uniform abundance for every size and rank tested — the identity pVS(uniform) = VS, which
+was silently violated before. Impact on shipped results: **none measurable**. The library
+clamps cosine to [0, 1] and every transform ends in [0, 1], so the projection rarely
+produces negatives. On real text with genuinely non-PSD matrices (`DependencyParse` min
+eigenvalue −0.22, 0.47% negative mass) the change is ≤ 0.06%, and on the validation
+corpora it is exactly zero. Every previously reported number stands.
+
+---
+
+## 2026-08-03 — Against the published alternatives
+
+`benchmarks/similarity_transforms/run_competitors.py`. Decan and PRDC added to
+`baselines.py`, then everything scored on the same fixed subsample as the hybrid table.
+
+**Per response set (5–10 documents):**
+
+| metric | McDiv | conTest | decTest | mean | calib ρ | ratio |
+|---|---:|---:|---:|---:|---:|---:|
+| distinct-n / TTR | +0.389 | +0.489 | +0.815 | 0.564 | +0.530 | — |
+| Self-BLEU | +0.418 | +0.525 | +0.819 | 0.587 | +0.542 | — |
+| Decan (LM surprise) | +0.440 | +0.504 | +0.708 | 0.550 | +0.598 | — |
+| PRDC coverage | +0.207 | +0.283 | +0.366 | 0.285 | +0.805 | — |
+| Vendi | +0.576 | +0.670 | +0.811 | 0.686 | +0.974 | 0.973 |
+| ours, current default | +0.576 | +0.670 | +0.813 | 0.686 | +0.974 | 0.986 |
+| **ours, best kernel** | **+0.808** | **+0.811** | **+0.819** | **0.812** | **+0.975** | **1.000** |
+
+The gap that matters for the paper is not against the lexical baselines — it is that
+**calibration separates the families completely**. Every surface metric sits at ρ ≈ 0.53
+against a known concept count while the similarity-sensitive ones sit at ρ ≈ 0.97. A
+Self-BLEU of 0.4 is not an answer to "how many distinct ideas are in here"; distinct-n
+and TTR are also literally identical to four decimal places on all three datasets,
+which is worth a footnote.
+
+**Two results I would have got wrong by assuming.**
+
+*PRDC is not weak; it was being asked the wrong question.* On five-item sets its recall
+is 0 for **every** set — correlation undefined, not poor. Run where it was designed to
+run (10 temperature bins, ≤200 documents each, held-out reference) it recovers
+temperature at **+0.927**. Reporting the per-set number alone would have been a rigged
+comparison.
+
+*Decan is genuinely different, and mid-table.* No embedder, no similarity matrix, no
+reference corpus — diversity read off GPT-2's per-token log-probabilities. It lands
+between the lexical metrics and the similarity-sensitive ones (0.550 per-set, +0.721
+distribution-level). Sanity check on constructed sets confirms the reimplementation
+behaves as the paper describes, including that the coherence term keeps noise (0.171)
+below genuinely diverse text (0.555) — without it, gibberish reads as maximally diverse.
+
+**Distribution level (10 temperature bins, ≤200 documents each):**
+
+| metric | ρ vs temperature |
+|---|---:|
+| Vendi | **+0.988** |
+| ours, best kernel *(no NLI half)* | +0.952 |
+| PRDC recall | +0.927 |
+| Decan | +0.721 |
+| PRDC coverage | −0.049 |
+| PRDC density | **−0.891** |
+
+Two honest notes. **Vendi beats us here**, on raw cosine at n=200 and uniform abundance
+— the regime where a spectral index is strongest and where our kernel is running without
+its NLI component, because 40,000 cross-encoder pairs per bin is exactly the practical
+limit the cost table predicted. And PRDC density going *strongly negative* is correct
+behaviour, not a bug: density is the fidelity half, and raising temperature lowers
+fidelity. That it comes out at −0.891 is the best evidence the PRDC implementation is
+sound.
+
+**Fixed while running this:** `vendi_score` was being handed a clipped cosine matrix,
+which is not PSD at n=200 and which it rightly refuses. It now gets the raw Gram matrix,
+PSD by construction. The clip was harmless at n=5 and would have gone unnoticed.
+
+---
+
+## 2026-08-03 — Evenness, coverage and the alpha/beta/gamma partition
+
+`src/linguistic_diversity/ecology.py`, `benchmarks/ecology/`. The three remaining items
+from the literature review — capability additions rather than score improvements, since
+none of them touches the agreement or calibration numbers.
+
+Formulas were transcribed from the reference implementations rather than reconstructed:
+`iNEXT.4steps` (R) for the evenness classes, `rdiversity` (R) for the partition, the
+Chao & Jost paper text for the coverage estimators. Worth the effort — three of them are
+easy to get subtly wrong, and the rarefaction estimator is now checked against a
+brute-force simulation of the resampling algorithm those authors describe.
+
+**Evenness** (Chao & Ricotta 2019, E1–E5). Same 24 documents, only the weights change:
+
+| profile | D₁ | richness | E3 |
+|---|---:|---:|---:|
+| uniform | 12.541 | 24.000 | 0.502 |
+| zipf | 9.362 | 24.000 | 0.364 |
+| near_degenerate | 2.006 | 24.000 | 0.044 |
+
+Richness is fixed by the documents, so evenness is exactly the part diversity conflates:
+"fewer distinct things" versus "the same things, less balanced". Note the generalisation
+is ours — Chao & Ricotta define these over classical Hill numbers, and passing
+similarity-sensitive values for both terms changes the reading to "even across *distinct
+content*". It stays in [0,1] because D_q is non-increasing in q either way.
+
+**Coverage** (Chao & Jost 2012). The interesting design question was what counts as a
+species. Documents are the wrong answer — `PartOfSpeechSequence` returns raw documents as
+species, so counting duplicates there measures nothing about POS. The right answer is
+**equivalence classes under Z = 1**, which is the library's own identical-species axiom
+rather than a new convention, and makes the count correctly metric-relative.
+
+| metric | coverage |
+|---|---:|
+| DocumentSemantics | 0.360 |
+| Phonemic | 0.374 |
+| DependencyParse / PartOfSpeechSequence | 0.407 |
+| Rhythmic | 0.454 |
+| ConstituencyParse | **0.501** |
+
+Ordering reproduces the duplicate-rate study exactly: alphabet size against sequence
+length, not linguistic level. **Coverage is 0 for a corpus of distinct documents**, and
+that is the honest answer rather than a defect — with every species seen once there is no
+evidence about what was missed. The measure is informative for the colliding levels and
+vacuous for semantics on distinct text, which is worth saying plainly in the docs so
+nobody reads 0.0 as a bug.
+
+**Partition** (Reeve et al. 2016). The similarity-sensitive continuation of the
+Leinster–Cobbold measure this library already computes, so it is the natural extension
+rather than a bolt-on. Verified: gamma equals the ordinary similarity-sensitive Hill
+number of the pooled abundance vector, to 1e-9, at every q.
+
+| corpus | beta (q=1) |
+|---|---:|
+| three different decTest generation tasks | **2.010** |
+| one task split arbitrarily three ways | **1.272** |
+
+That contrast is the test. Three genuinely different sources read as 2.0 distinct out of
+a possible 3 — they differ substantially but share a language and a generator; three
+arbitrary slices of one source read near the floor of 1. No unpartitioned number can
+make that distinction.
+
+**One thing to keep in mind for the paper.** Reeve et al.'s partition is *not*
+`gamma = alpha × beta` at every q; that identity is exact at q = 1 and approximate
+elsewhere. All three are reported rather than two and a derivation.
+
+---
+
+## 2026-08-03 — Three corrections, each attacking a different failure, and they compose
+
+`benchmarks/similarity_transforms/`. Every angle from the literature review that could
+move a score, tested on identical cached embeddings so the only difference between rows
+is the transform. ~35 configurations.
+
+**Headline, on sets no configuration was selected on:**
+
+| | McDiv | conTest | decTest | mean | calib ratio | ceiling |
+|---|---:|---:|---:|---:|---:|---:|
+| current default | +0.635 | +0.663 | +0.829 | 0.709 | 0.986 | 2.33 |
+| **NLI-ec + ctx + LS + τ (geometric)** | **+0.832** | **+0.797** | **+0.844** | **0.824** | **1.000** | **3.08** |
+
+**+0.115 mean agreement, and the calibration ratio reaches 1.000 rather than trading
+against it.** As a fraction of the annotator noise ceiling, on this same split:
+McDiv 65→85%, conTest 71→85%, decTest 86→87%. (The 60/70/81% quoted in the entry below
+are the full-dataset figures; these are the held-out split, so they differ slightly.)
+
+### The three wins are independent because they fix different things
+
+| correction | fixes | effect alone |
+|---|---|---|
+| **context projection** | shared prompt inflates every pair | McDiv +0.596 → **+0.701** |
+| **local scaling** (hubness, k=10) | a few documents are near-neighbours of everything | McDiv +0.596 → **+0.641** |
+| **τ-truncation** at τ=0.70 | the residual similarity floor | calib ratio 0.986 → **1.000**, ceiling 2.32 → 3.28 |
+| **NLI entailment kernel** | cosine is not calibrated at all | McDiv +0.596 → **+0.808** |
+
+Context projection removes the *known* context direction rather than one estimated from
+the corpus, which is why it succeeds where common-component removal failed. It is
+Conditional-Vendi in spirit and it needs an API that accepts the prompt.
+
+**τ-truncation is not a new transform.** Chao's `d_ij(τ) = min(τ, d_ij)` with the linear
+similarity `1 − d_ij(τ)/τ` is algebraically *identical* to this library's floor with
+z₀ = 1 − τ. What the ecology literature contributes is the default: τ should be far more
+aggressive than the median-of-unrelated-pairs value we shipped. Sweeping it, 0.053 →
+0.30 gains on both criteria at once. Their own τ = d_mean recommendation (0.917 here)
+is close to what we already had and is *not* where the optimum sits.
+
+### The entailment kernel is the single biggest lever
+
+Unrelated sentences are *neutral*, and neutral means entailment near zero — so there is
+no floor to remove. It beats every transform of the cosine matrix, which is the point:
+three years of corrections applied to an uncalibrated matrix, against one calibrated
+matrix. `P(entail) − P(contradict)` beats raw `P(entail)` on agreement (+0.808 vs
++0.776 on McDiv) but has a much worse ceiling (2.05 vs 3.88).
+
+**Cost is the catch.** O(n²) cross-encoder passes: 1.6× a cosine encode at n=5, **45× at
+n=40**, quadratic after that. This has to be opt-in, not the default.
+
+### Axioms hold, and replication is *better* than the current default
+
+| kernel | k=2 | k=3 | k=5 | D(5 identical) | monotonicity |
+|---|---:|---:|---:|---:|---:|
+| cosine + floor 0.053 | 1.903 | 2.752 | 4.613 | 1.0000 | ok |
+| ctx + LS + τ | 1.986 | 2.913 | 4.911 | 1.0000 | ok |
+| hybrid geometric | 1.974 | 2.903 | 4.923 | 1.0057 | 0/200 |
+
+The current default is the *furthest* from exact replication, because its residual floor
+accumulates with corpus size — exactly the mechanism the floor was introduced to fix.
+Correcting it properly improves the axiom as a side effect.
+
+### Rejected here
+
+- **Mutual proximity.** Agreement +0.658, ratio 0.633, ceiling 1.11. Over-corrects.
+- **Global ZCA whitening.** Confirmed again: best ceiling of any linear fix, worst
+  agreement. Fourth member of the flatten-the-dominant-directions family.
+- **Order parameter.** q = 0.5 is marginally better than q = 1 on agreement (+0.6995 vs
+  +0.6968) and clearly worse on calibration rank (0.941 vs 0.975). q = 1 stays.
+  Note vendi at q = 0 returns the numerical rank, which is constant at n for
+  general-position embeddings, so agreement is undefined — expected, not a defect.
+
+### Caveat
+
+The winner was chosen after ~35 configurations against these datasets, so the selection
+split is optimistic by construction. The table above is the held-out complement, which
+is why it is the one quoted; the two agree to within 0.01 on ranking. What is *not*
+established is generalisation beyond these three datasets and one encoder.
+
+---
+
+## 2026-08-03 — The human ceiling is high, so the remaining gap is ours
+
+Before hunting for better indices, it is worth knowing how much of the agreement gap
+is annotator noise. Tevet & Berant collected **10 ratings per set** (§6.2), and ship
+`metric_abs_hds_std` alongside the mean, so the reliability of the averaged label can
+be computed directly:
+
+```
+Var(true) = Var(observed mean) − E[σ²_within] / k       ceiling ρ = √(Var(true)/Var(obs))
+```
+
+| dataset | reliability | ceiling ρ | ours | % of ceiling |
+|---|---:|---:|---:|---:|
+| McDiv_nuggets | 0.951 | 0.975 | 0.581 | **60%** |
+| conTest | 0.870 | 0.933 | 0.650 | **70%** |
+| decTest | 0.932 | 0.966 | 0.778 | **81%** |
+
+**The labels are not the bottleneck.** Averaging ten ratings gives a very reliable
+target, and attenuation correction buys almost nothing. There is 20–40% real headroom
+and no excuse available.
+
+Context from the paper worth carrying: on conTest, *absHDS itself* correlates
+0.70–0.84 with the binary content-diversity parameter, and the best automatic metric
+they tested (sent-BERT) reaches 0.60–0.75. On decTest, plain distinct-n reaches
+0.86–0.91 against temperature — which is why `TypeTokenRatio` beats every semantic
+metric on that dataset here (0.817 against 0.778). decTest rewards form; conTest and
+McDiv reward content. A metric should not be tuned to one of those.
+
+---
+
+## 2026-08-03 — Whitening removes the similarity floor completely, and costs agreement
+
+The anisotropy literature (WhiteningBERT and successors) says the encoder's baseline
+inflation is *directional*, not scalar: a handful of dominant directions carry most of
+the covariance. The shipped floor is a rank-one fix for a full-covariance problem, so
+ZCA whitening should be strictly better. Fitted mean and covariance on 6,000 held-out
+decTest responses, applied unchanged to every scored set — so replication invariance
+survives, exactly as with the floor.
+
+| variant | McDiv | conTest | mean D | ceiling |
+|---|---:|---:|---:|---:|
+| raw cosine | +0.5952 | +0.6663 | 3.659 | 2.158 |
+| scalar floor (shipped, 0.053) | +0.5959 | +0.6668 | 3.769 | 2.320 |
+| scalar floor (background-fit, 0.071) | +0.5958 | +0.6675 | 3.807 | 2.383 |
+| **whitened** | **+0.5297** | **+0.6275** | **4.292** | **3.015** |
+
+**It works on the criterion it was aimed at and fails on the other.** Background median
+cosine goes 0.0714 → −0.0014, so the `1/z` cap disappears outright (14.0 → unbounded),
+the achievable ceiling rises 40% and reported diversity rises 17%. Human agreement
+drops 0.066 and 0.039.
+
+This is the *third* time a correction that flattens the dominant directions has traded
+ranking for calibration — after common-component removal and top-eigencomponent
+deflation. The pattern is now firm enough to state as a finding rather than a
+coincidence: **in sentence-encoder space the concentrated directions carry semantic
+signal, not only baseline inflation.** Any future fix has to be non-linear or local
+(hubness/local-scaling), not a global linear flattening. Kept at the scalar floor.
+
+---
+
 ## 2026-08-03 — The "new" index was already published, and validates against its authors
 
 **Naming question, answered by the literature rather than by invention.** What
