@@ -821,6 +821,151 @@ class TextDiversity(DiversityMetric, Generic[FeaturesT]):
         # Z and the features are computed once; only the cheap reduction repeats.
         return {float(q): float(self._calc_diversity(p, Z, q, self.config.index)) for q in q_values}
 
+    def evenness(
+        self,
+        corpus: list[str],
+        q: float = 1.0,
+        measure: str = "E3",
+        abundance: npt.ArrayLike | None = None,
+        deduplicate: bool = False,
+    ) -> float:
+        """How evenly the corpus is spread across its distinct content, in [0, 1].
+
+        A single effective number conflates two things: *many* distinct items, and
+        *balanced* ones. A corpus of 3.0 effective documents out of 4 is nearly even;
+        3.0 out of 400 is dominated by a handful. Evenness divides the richness out,
+        so the two can be reported separately.
+
+        Args:
+            corpus: List of text documents.
+            q: Order, must be > 0. Higher q weights dominant items more.
+            measure: One of E1..E5 (Chao & Ricotta 2019). E3, the normalised slope
+                of the diversity profile, is their headline choice and the default.
+            abundance: Optional weight per document. See ``diversity``.
+            deduplicate: Merge identical documents and weight by count.
+
+        Returns:
+            Evenness in [0, 1]. 1.0 for a corpus with a single effective species,
+            which is trivially even. 0.0 for an empty corpus.
+
+        Note:
+            Richness is taken as this metric's own diversity at q = 0, so both terms
+            are similarity-sensitive. That reads as "even across distinct content"
+            rather than Chao & Ricotta's "even across species"; see
+            ``ecology.evenness``.
+        """
+        from .ecology import evenness as _evenness
+
+        profile = self.diversity_profile(
+            corpus, q_values=(0.0, q), abundance=abundance, deduplicate=deduplicate
+        )
+        if not profile:
+            return 0.0
+        return _evenness(profile[float(q)], profile[0.0], q=q, measure=measure)
+
+    def sample_coverage(self, corpus: list[str], tolerance: float = 1e-9) -> float:
+        """Estimated share of the population belonging to species already seen.
+
+        Chao & Jost (2012). Comparing two corpora at equal *size* is biased against
+        the more diverse one, because a size sufficient to characterise a dull corpus
+        is too small for a rich one. Coverage says how complete each sample is, so
+        they can be compared at equal completeness instead.
+
+        Species here are equivalence classes under ``Z = 1``: documents this metric
+        cannot tell apart are one species, whatever their surface text. That is the
+        library's own identical-species axiom rather than a new convention -- two
+        species at similarity 1 with weights w1 and w2 already give exactly the same
+        diversity as one of weight w1+w2 -- and it is what makes the count
+        metric-relative in the right way. Three sentences with the same POS skeleton
+        are one species to ``PartOfSpeechSequence`` and three to ``DocumentSemantics``.
+
+        Args:
+            corpus: List of text documents.
+            tolerance: How close to 1 counts as identical.
+
+        Returns:
+            Coverage in [0, 1]. **Zero when every species occurs exactly once**,
+            the normal case for whole documents -- with nothing repeated, the sample
+            carries no evidence about what it has missed. Informative for the levels
+            whose features collide: ``ConstituencyParse`` and ``Rhythmic`` often,
+            ``Phonemic`` and ``DocumentSemantics`` almost never.
+        """
+        from scipy.sparse import csr_matrix
+        from scipy.sparse.csgraph import connected_components
+
+        from .ecology import sample_coverage as _coverage
+
+        if not corpus:
+            return 0.0
+        features, _species = self.extract_features(corpus)
+        if len(features) == 0:
+            return 0.0
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+        identical = csr_matrix(Z >= 1.0 - tolerance)
+        _n_species, labels = connected_components(identical, directed=False)
+        counts = np.bincount(labels).astype(np.float64)
+        return _coverage(counts)
+
+    def partition(
+        self,
+        corpora: dict[str, list[str]] | Sequence[list[str]],
+        q: float = 1.0,
+    ) -> Any:
+        """Split diversity into within-source and between-source components.
+
+        Answers the question a single number cannot: is this corpus diverse because
+        each source is internally varied, or because the sources differ from one
+        another? Reeve et al. (2016), the similarity-sensitive continuation of the
+        Leinster-Cobbold measure this library computes.
+
+        One similarity matrix is built over the pooled documents, so cross-source
+        similarity is measured rather than assumed -- two sources sharing no literal
+        text can still be near-identical in content, and beta will say so.
+
+        Args:
+            corpora: Either a mapping of source name to documents, or a sequence of
+                document lists.
+            q: Order.
+
+        Returns:
+            A ``PartitionResult`` with ``gamma`` (pooled diversity), ``alpha`` (mean
+            within-source diversity) and ``beta`` (effective number of *distinct*
+            sources: 1 when interchangeable, N when mutually unrelated).
+
+        Raises:
+            ValueError: If fewer than two sources are given, or a metric whose
+                species are not documents is used -- the partition needs to know
+                which source each species came from.
+        """
+        from .ecology import partition_diversity
+
+        if isinstance(corpora, dict):
+            names, groups = list(corpora.keys()), list(corpora.values())
+        else:
+            groups = [list(g) for g in corpora]
+            names = [f"subcommunity_{i}" for i in range(len(groups))]
+        if len(groups) < 2:
+            raise ValueError("partitioning needs at least two subcommunities")
+        if any(len(g) == 0 for g in groups):
+            raise ValueError("every subcommunity must hold at least one document")
+
+        pooled = [doc for group in groups for doc in group]
+        features, species = self.extract_features(pooled)
+        if len(species) != len(pooled):
+            raise ValueError(
+                f"{type(self).__name__} produces {len(species)} species for "
+                f"{len(pooled)} documents, so its species are not documents and "
+                "cannot be assigned to a subcommunity. Use a document-level metric."
+            )
+        Z = np.asarray(self.calculate_similarities(features), dtype=np.float64)
+
+        P = np.zeros((len(pooled), len(groups)), dtype=np.float64)
+        offset = 0
+        for j, group in enumerate(groups):
+            P[offset : offset + len(group), j] = 1.0
+            offset += len(group)
+        return partition_diversity(P, Z, q=q, names=names)
+
     def max_diversity(self, corpus: list[str]) -> float:
         """Highest diversity this corpus's species could reach at any abundance.
 

@@ -1,0 +1,251 @@
+{
+  "evenness": {
+    "uniform": {
+      "note": "even coverage; the flat-profile control",
+      "diversity_q1": 12.5406,
+      "richness": 24.0,
+      "E3": 0.5018,
+      "E5": 0.7958
+    },
+    "zipf": {
+      "note": "Zipfian topic frequency, the usual shape of a real corpus",
+      "diversity_q1": 9.362,
+      "richness": 24.0,
+      "E3": 0.3636,
+      "E5": 0.7038
+    },
+    "heavy_head": {
+      "note": "one boilerplate response dominating, as in scraped or templated data",
+      "diversity_q1": 3.5438,
+      "richness": 24.0,
+      "E3": 0.1106,
+      "E5": 0.3981
+    },
+    "long_tail": {
+      "note": "two common cases and a tail of rare ones",
+      "diversity_q1": 5.4152,
+      "richness": 24.0,
+      "E3": 0.192,
+      "E5": 0.5315
+    },
+    "near_degenerate": {
+      "note": "a single case is effectively the whole corpus",
+      "diversity_q1": 2.0063,
+      "richness": 24.0,
+      "E3": 0.0438,
+      "E5": 0.2191
+    }
+  },
+  "coverage": {
+    "DocumentSemantics": {
+      "coverage": 0.3604,
+      "deficit": 0.6396
+    },
+    "Phonemic": {
+      "coverage": 0.3738,
+      "deficit": 0.6262
+    },
+    "DependencyParse": {
+      "coverage": 0.407,
+      "deficit": 0.593
+    },
+    "PartOfSpeechSequence": {
+      "coverage": 0.407,
+      "deficit": 0.593
+    },
+    "Rhythmic": {
+      "coverage": 0.4538,
+      "deficit": 0.5462
+    },
+    "ConstituencyParse": {
+      "coverage": 0.5006,
+      "deficit": 0.4994
+    }
+  },
+  "partition": {
+    "different_tasks": {
+      "0.0": {
+        "q": 0.0,
+        "gamma": 19.164660177932376,
+        "alpha": 10.391000662051464,
+        "beta": 1.9661213041915664,
+        "raw_alpha": 31.17300198615441,
+        "raw_beta": 0.6553737680638551,
+        "representativeness": 0.5155788214578642,
+        "redundancy": 1.5467364643735935,
+        "subcommunities": {
+          "story_gen": {
+            "alpha": 5.830616814838294,
+            "beta": 2.233479803769956,
+            "representativeness": 0.4477318300850855,
+            "weight": 0.33333333333333315
+          },
+          "resp_gen": {
+            "alpha": 11.161582778757147,
+            "beta": 1.9844734087174591,
+            "representativeness": 0.5039120179727113,
+            "weight": 0.33333333333333315
+          },
+          "prompt_gen": {
+            "alpha": 14.180802392558952,
+            "beta": 1.6804107000872845,
+            "representativeness": 0.5950926163157957,
+            "weight": 0.33333333333333315
+          }
+        }
+      },
+      "1.0": {
+        "q": 1.0,
+        "gamma": 17.151372044698252,
+        "alpha": 8.532063898759848,
+        "beta": 2.0102254563741875,
+        "raw_alpha": 25.596191696279575,
+        "raw_beta": 0.6700751521247288,
+        "representativeness": 0.4974566394177917,
+        "redundancy": 1.492369918253376,
+        "subcommunities": {
+          "story_gen": {
+            "alpha": 5.4784909787269385,
+            "beta": 2.272741991243429,
+            "representativeness": 0.4399971505137258,
+            "weight": 0.33333333333333315
+          },
+          "resp_gen": {
+            "alpha": 9.135130233042322,
+            "beta": 2.0619185615014954,
+            "representativeness": 0.48498520682203716,
+            "weight": 0.33333333333333315
+          },
+          "prompt_gen": {
+            "alpha": 12.41042356093135,
+            "beta": 1.733455354536407,
+            "representativeness": 0.5768824662158308,
+            "weight": 0.33333333333333315
+          }
+        }
+      },
+      "2.0": {
+        "q": 2.0,
+        "gamma": 15.677951072285309,
+        "alpha": 7.252234381808634,
+        "beta": 2.0505195168743473,
+        "raw_alpha": 21.756703145425913,
+        "raw_beta": 0.683506505624782,
+        "representativeness": 0.48217929935611376,
+        "redundancy": 1.446537898068342,
+        "subcommunities": {
+          "story_gen": {
+            "alpha": 5.199505192217705,
+            "beta": 2.308149050723635,
+            "representativeness": 0.43324758411355063,
+            "weight": 0.33333333333333315
+          },
+          "resp_gen": {
+            "alpha": 7.791520649415684,
+            "beta": 2.1262293146078113,
+            "representativeness": 0.4703161569308213,
+            "weight": 0.33333333333333315
+          },
+          "prompt_gen": {
+            "alpha": 10.753269628913872,
+            "beta": 1.7873735929257848,
+            "representativeness": 0.5594801243332019,
+            "weight": 0.33333333333333315
+          }
+        }
+      }
+    },
+    "same_task_split": {
+      "0.0": {
+        "q": 0.0,
+        "gamma": 7.021616600391302,
+        "alpha": 5.624518779437363,
+        "beta": 1.2556503999287325,
+        "raw_alpha": 16.8735563383121,
+        "raw_beta": 0.41855013330957724,
+        "representativeness": 0.797930427551861,
+        "redundancy": 2.3937912826555845,
+        "subcommunities": {
+          "slice_0": {
+            "alpha": 5.830616609441427,
+            "beta": 1.2155392180038183,
+            "representativeness": 0.8226801613544145,
+            "weight": 0.33333333333333315
+          },
+          "slice_1": {
+            "alpha": 5.978450922403052,
+            "beta": 1.2167830950937601,
+            "representativeness": 0.8218391626512072,
+            "weight": 0.33333333333333315
+          },
+          "slice_2": {
+            "alpha": 5.06448880646761,
+            "beta": 1.3346288866886196,
+            "representativeness": 0.7492719586499619,
+            "weight": 0.33333333333333315
+          }
+        }
+      },
+      "1.0": {
+        "q": 1.0,
+        "gamma": 6.475014819991631,
+        "alpha": 5.088855897762773,
+        "beta": 1.2723910737653736,
+        "raw_alpha": 15.26656769328833,
+        "raw_beta": 0.424130357921791,
+        "representativeness": 0.7859218919547356,
+        "redundancy": 2.357765675864208,
+        "subcommunities": {
+          "slice_0": {
+            "alpha": 5.478490729659247,
+            "beta": 1.244447563616511,
+            "representativeness": 0.8035694144427284,
+            "weight": 0.33333333333333315
+          },
+          "slice_1": {
+            "alpha": 5.454764804510183,
+            "beta": 1.2264976000475276,
+            "representativeness": 0.8153297649838445,
+            "weight": 0.33333333333333315
+          },
+          "slice_2": {
+            "alpha": 4.409846761366298,
+            "beta": 1.3496418505683734,
+            "representativeness": 0.740937308352487,
+            "weight": 0.33333333333333315
+          }
+        }
+      },
+      "2.0": {
+        "q": 2.0,
+        "gamma": 6.149469383963794,
+        "alpha": 4.7705160434067375,
+        "beta": 1.2894407234667449,
+        "raw_alpha": 14.311548130220224,
+        "raw_beta": 0.4298135744889148,
+        "representativeness": 0.7742367617260453,
+        "redundancy": 2.322710285178137,
+        "subcommunities": {
+          "slice_0": {
+            "alpha": 5.199504926699247,
+            "beta": 1.2742526053007701,
+            "representativeness": 0.7847737535242971,
+            "weight": 0.33333333333333315
+          },
+          "slice_1": {
+            "alpha": 5.178622129320706,
+            "beta": 1.2368363377960152,
+            "representativeness": 0.8085144084478901,
+            "weight": 0.33333333333333315
+          },
+          "slice_2": {
+            "alpha": 4.1078689704807605,
+            "beta": 1.3636947772111323,
+            "representativeness": 0.7333019211564937,
+            "weight": 0.33333333333333315
+          }
+        }
+      }
+    }
+  }
+}
