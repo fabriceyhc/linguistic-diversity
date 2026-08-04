@@ -76,7 +76,7 @@ class MetricConfig:
     # Hill form spreads it through every (Zp)_i, where it accumulates linearly in
     # n and pulls the score toward 1/z regardless of corpus size.
     #
-    # "vendi" is the default from v1.1.0. It is better on both criteria at every
+    # "vendi" is the default from v1.1.0 (v2.0.0 changed the similarity, not this). It is better on both criteria at every
     # level measured -- rank agreement against known ground truth and calibration
     # ratio -- and on human agreement, while preserving the discriminant
     # behaviour and every metamorphic law. See benchmarks/vendi_comparison/.

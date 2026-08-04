@@ -22,7 +22,7 @@ For diversity-based text selection:
     >>> result = select_diverse_texts(embeddings, n_select=100)
 """
 
-__version__ = "1.1.0"
+__version__ = "2.0.0"
 
 from .diversities import (
     # Embedding constants
